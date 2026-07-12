@@ -1,5 +1,5 @@
 import { MinecraftItem } from '../enums/minecraft-item.enum'
-import type { PotionEffect } from '../enums/potion-effects.enum'
+import type { PotionEffect } from '../enums/potion-effect.enum'
 
 export const createPotion = (
   item: MinecraftItem = MinecraftItem.POTION,

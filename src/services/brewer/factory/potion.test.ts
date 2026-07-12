@@ -1,6 +1,6 @@
 import { assert, describe, expect, it } from 'vitest'
 import { createPotion } from './potion'
-import { PotionEffect } from '../enums/potion-effects.enum'
+import { PotionEffect } from '../enums/potion-effect.enum'
 import { MinecraftItem } from '../enums/minecraft-item.enum'
 
 describe('Potion input factory function', () => {

@@ -1,4 +1,4 @@
-import type { PotionEffect } from './enums/potion-effects.enum'
+import type { PotionEffect } from './enums/potion-effect.enum'
 
 export type PotionInput = {
   item: string
