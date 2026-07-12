@@ -1,15 +1,15 @@
-import { MinecraftItem } from '../enums/minecraft-item.enum'
-import type { PotionEffect } from '../enums/potion-effect.enum'
+import { MinecraftItem } from '../../enums/minecraft-item.enum'
+import type { PotionType } from '../../enums/potion-effect.enum'
 
 export const createPotion = (
   item: MinecraftItem = MinecraftItem.POTION,
   potionContents?: Readonly<
     Partial<{
-      potion: PotionEffect
+      potion: PotionType
       customColor: number
       customName: string
       customEffects: ReadonlyArray<{
-        id: PotionEffect
+        id: PotionType
         amplifier?: number
         duration?: number
         ambient?: boolean

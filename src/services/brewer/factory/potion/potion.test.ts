@@ -1,7 +1,7 @@
 import { assert, describe, expect, it } from 'vitest'
 import { createPotion } from './potion'
-import { PotionEffect } from '../enums/potion-effect.enum'
-import { MinecraftItem } from '../enums/minecraft-item.enum'
+import { PotionType } from '../../enums/potion-effect.enum'
+import { MinecraftItem } from '../../enums/minecraft-item.enum'
 
 describe('Potion input factory function', () => {
   it('should have item id by default', () => {
@@ -21,11 +21,11 @@ describe('Potion input factory function', () => {
   describe('potion content options', () => {
     it('can accept potion_content.potion', () => {
       const potion = createPotion(MinecraftItem.POTION, {
-        potion: PotionEffect.AWKWARD,
+        potion: PotionType.AWKWARD,
       })
       expect(potion).toHaveProperty(
         'potion_contents.potion',
-        PotionEffect.AWKWARD,
+        PotionType.AWKWARD,
       )
     })
 
@@ -60,7 +60,7 @@ describe('Potion input factory function', () => {
 
       it('accept one-element potion_content.custom_effects array', () => {
         const potion = createPotion(MinecraftItem.POTION, {
-          customEffects: [{ id: PotionEffect.AWKWARD }],
+          customEffects: [{ id: PotionType.AWKWARD }],
         })
         expect(potion).toHaveProperty(
           'potion_contents.custom_effects.length',
@@ -71,8 +71,8 @@ describe('Potion input factory function', () => {
       it('accept many-element potion_content.custom_effects array', () => {
         const potion = createPotion(MinecraftItem.POTION, {
           customEffects: [
-            { id: PotionEffect.FIRE_RESISTANCE },
-            { id: PotionEffect.HARMING },
+            { id: PotionType.FIRE_RESISTANCE },
+            { id: PotionType.HARMING },
           ],
         })
         expect(potion).toHaveProperty(
@@ -86,7 +86,7 @@ describe('Potion input factory function', () => {
       describe('potion_contents.custom_effects[index].amplifier', () => {
         it('default amplifier is 0', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS }],
+            customEffects: [{ id: PotionType.SWIFTNESS }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.amplifier',
@@ -96,7 +96,7 @@ describe('Potion input factory function', () => {
 
         it('accept amplifier', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, amplifier: 1 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, amplifier: 1 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.amplifier',
@@ -107,7 +107,7 @@ describe('Potion input factory function', () => {
         it('reject negative amplifier', () => {
           expect(() =>
             createPotion(MinecraftItem.POTION, {
-              customEffects: [{ id: PotionEffect.SWIFTNESS, amplifier: -1 }],
+              customEffects: [{ id: PotionType.SWIFTNESS, amplifier: -1 }],
             }),
           ).toThrow('amplifier must be non-negative')
         })
@@ -115,7 +115,7 @@ describe('Potion input factory function', () => {
         it('reject non-integer amplifier', () => {
           expect(() => {
             createPotion(MinecraftItem.POTION, {
-              customEffects: [{ id: PotionEffect.SWIFTNESS, amplifier: 0.2 }],
+              customEffects: [{ id: PotionType.SWIFTNESS, amplifier: 0.2 }],
             })
           }).toThrow('amplifier must be an integer')
         })
@@ -124,7 +124,7 @@ describe('Potion input factory function', () => {
       describe('potion_contents.custom_effects[index].duration', () => {
         it('default duration is 1', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS }],
+            customEffects: [{ id: PotionType.SWIFTNESS }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -134,7 +134,7 @@ describe('Potion input factory function', () => {
 
         it('accept duration', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, duration: 10 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, duration: 10 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -144,7 +144,7 @@ describe('Potion input factory function', () => {
 
         it('duration 0 is treated as 1', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, duration: 0 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, duration: 0 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -154,7 +154,7 @@ describe('Potion input factory function', () => {
 
         it('duration -2 is treated as 1', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, duration: -2 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, duration: -2 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -164,7 +164,7 @@ describe('Potion input factory function', () => {
 
         it('duration -1 is kept', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, duration: -1 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, duration: -1 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -174,7 +174,7 @@ describe('Potion input factory function', () => {
 
         it('duration less than -2 is treated as 1', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, duration: -3 }],
+            customEffects: [{ id: PotionType.SWIFTNESS, duration: -3 }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.duration',
@@ -185,7 +185,7 @@ describe('Potion input factory function', () => {
         it('reject non-integer duration', () => {
           expect(() => {
             createPotion(MinecraftItem.POTION, {
-              customEffects: [{ id: PotionEffect.SWIFTNESS, duration: -0.2 }],
+              customEffects: [{ id: PotionType.SWIFTNESS, duration: -0.2 }],
             })
           }).toThrow('duration must be an integer')
         })
@@ -194,7 +194,7 @@ describe('Potion input factory function', () => {
       describe('potion_contents.custom_effects[index].ambient', () => {
         it('defaults to `false` when not provided', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS }],
+            customEffects: [{ id: PotionType.SWIFTNESS }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.ambient',
@@ -204,7 +204,7 @@ describe('Potion input factory function', () => {
 
         it('accept ambient', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, ambient: true }],
+            customEffects: [{ id: PotionType.SWIFTNESS, ambient: true }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.ambient',
@@ -214,7 +214,7 @@ describe('Potion input factory function', () => {
 
         it('accept explicit false', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, ambient: false }],
+            customEffects: [{ id: PotionType.SWIFTNESS, ambient: false }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.ambient',
@@ -226,7 +226,7 @@ describe('Potion input factory function', () => {
       describe('potion_contents.custom_effects[index].show_particles', () => {
         it('defaults to `true` when not provided', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS }],
+            customEffects: [{ id: PotionType.SWIFTNESS }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_particles',
@@ -236,9 +236,7 @@ describe('Potion input factory function', () => {
 
         it('accept explicit true', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [
-              { id: PotionEffect.SWIFTNESS, showParticles: true },
-            ],
+            customEffects: [{ id: PotionType.SWIFTNESS, showParticles: true }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_particles',
@@ -248,9 +246,7 @@ describe('Potion input factory function', () => {
 
         it('accept explicit false', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [
-              { id: PotionEffect.SWIFTNESS, showParticles: false },
-            ],
+            customEffects: [{ id: PotionType.SWIFTNESS, showParticles: false }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_particles',
@@ -262,7 +258,7 @@ describe('Potion input factory function', () => {
       describe('potion_contents.custom_effects[index].show_icon', () => {
         it('defaults to `true` when not provided', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS }],
+            customEffects: [{ id: PotionType.SWIFTNESS }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_icon',
@@ -272,7 +268,7 @@ describe('Potion input factory function', () => {
 
         it('accept explicit true', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, showIcon: true }],
+            customEffects: [{ id: PotionType.SWIFTNESS, showIcon: true }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_icon',
@@ -282,7 +278,7 @@ describe('Potion input factory function', () => {
 
         it('accept explicit false', () => {
           const potion = createPotion(MinecraftItem.POTION, {
-            customEffects: [{ id: PotionEffect.SWIFTNESS, showIcon: false }],
+            customEffects: [{ id: PotionType.SWIFTNESS, showIcon: false }],
           })
           expect(potion).toHaveProperty(
             'potion_contents.custom_effects.0.show_icon',

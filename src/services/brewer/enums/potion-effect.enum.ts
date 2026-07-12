@@ -1,4 +1,4 @@
-export const enum PotionEffect {
+export const enum PotionType {
   WATER = 'minecraft:water',
   MUNDANE = 'minecraft:mundane',
   THICK = 'minecraft:thick',
