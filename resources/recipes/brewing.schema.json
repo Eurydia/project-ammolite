@@ -1,0 +1,150 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "minecraft:brewing",
+      "type": "string"
+    },
+    "input": {
+      "type": "object",
+      "properties": {
+        "item": { "type": "string" },
+        "potion_contents": {
+          "type": "object",
+          "properties": {
+            "potions": {
+              "oneOf": [
+                { "type": "string" },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "$ref": "../enums/potion_effects.schema.json#/$defs/potion_effect"
+                  }
+                }
+              ]
+            },
+            "effects": {
+              "type": "object",
+              "properties": {
+                "contains": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "propertyNames": {
+                      "$ref": "../enums/potion_effects.schema.json#/$defs/potion_effect",
+                      "type": "string"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "duration": {
+                          "oneOf": [
+                            { "type": "integer" },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "min": { "type": "integer" },
+                                "max": { "type": "integer" }
+                              }
+                            }
+                          ]
+                        },
+                        "amplifier": {
+                          "oneOf": [
+                            { "type": "integer" },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "min": { "type": "integer" },
+                                "max": { "type": "integer" }
+                              }
+                            }
+                          ]
+                        },
+                        "ambient": { "type": "boolean" },
+                        "visible": { "type": "boolean" }
+                      }
+                    }
+                  }
+                },
+                "count": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "test": {
+                        "propertyNames": {
+                          "$ref": "../enums/potion_effects.schema.json#/$defs/potion_effect",
+                          "type": "string"
+                        },
+                        "additionalProperties": {
+                          "type": "object",
+                          "properties": {
+                            "duration": {
+                              "oneOf": [
+                                { "type": "integer" },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "min": { "type": "integer" },
+                                    "max": { "type": "integer" }
+                                  }
+                                }
+                              ]
+                            },
+                            "amplifier": {
+                              "oneOf": [
+                                { "type": "integer" },
+                                {
+                                  "type": "object",
+                                  "properties": {
+                                    "min": { "type": "integer" },
+                                    "max": { "type": "integer" }
+                                  }
+                                }
+                              ]
+                            },
+                            "ambient": { "type": "boolean" },
+                            "visible": { "type": "boolean" }
+                          }
+                        }
+                      },
+                      "count": {
+                        "oneOf": [
+                          { "type": "integer" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "min": { "type": "integer" },
+                              "max": { "type": "integer" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "size": {
+                  "oneOf": [
+                    { "type": "integer" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "min": { "type": "integer" },
+                        "max": { "type": "integer" }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "required": ["item"]
+    }
+  },
+  "reagent": { "type": "object" },
+  "output": { "type": "object" }
+}
