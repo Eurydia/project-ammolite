@@ -1,14 +1,22 @@
+import { FieldGroup$MobEffect } from '#/components/form/field-groups/mob-effect.field-group'
+import { AppFormHook } from '#/lib/form/form-hooks'
+import { PotionType } from '#/services/brewer/enums/potion-effect.enum'
+import type { Type$MobEffect } from '#/services/brewer/schema'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({ component: Home })
 
 function Home() {
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
-    </div>
-  )
+  const form = AppFormHook.useAppForm({
+    defaultValues: {
+      effect: {
+        effect: PotionType.AWKWARD,
+        ambient: true,
+        amplifier: 1,
+        duration: 1,
+        visible: false,
+      },
+    },
+  })
+  return <FieldGroup$MobEffect form={form} fields={'effect'} />
 }

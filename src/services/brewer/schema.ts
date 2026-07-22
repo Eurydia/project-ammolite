@@ -19,6 +19,8 @@ export const Schema$MobEffect = z.object({
   ambient: z.boolean().optional(),
 })
 
+export type Type$MobEffect = z.input<typeof Schema$MobEffect>
+
 export const Schema$PotionContents = z.object({
   potions: z.union([(z.enum(PotionType).array(), z.string())]).optional(),
   effects: z
