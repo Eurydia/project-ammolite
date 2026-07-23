@@ -2,17 +2,25 @@ import z from 'zod/v4'
 import { PotionType } from './enums/potion-effect.enum'
 import { MinecraftItem } from './enums/minecraft-item.enum'
 import { _isoDuration } from 'zod/v4/core'
+import { ssrExportAllKey } from 'vite/module-runner'
 
-export const Schema$NumberRange = z.union([
-  z.number(),
+export const Schema$NumberRange = z.discriminatedUnion('mode', [
+  z.object({ mode: z.literal('exact'), value: z.number().optional() }),
   z.object({
-    min: z.number().optional(),
-    max: z.number().optional(),
+    mode: z.literal('range'),
+    value: z
+      .object({
+        valueMin: z.number().optional(),
+        valueMax: z.number().optional(),
+      })
+      .optional(),
   }),
 ])
 
+export type Type$NumberRange$In = z.input<typeof Schema$NumberRange>
+
 export const Schema$MobEffect = z.object({
-  effect: z.enum(PotionType),
+  effect: z.enum(PotionType).optional(),
   duration: Schema$NumberRange.optional(),
   amplifier: Schema$NumberRange.optional(),
   visible: z.boolean().optional(),
