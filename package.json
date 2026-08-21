@@ -10,51 +10,39 @@
     "generate-routes": "tsr generate",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run",
-    "lint": "eslint",
-    "format": "prettier --write . && eslint --fix",
-    "check": "prettier --check ."
+    "check": "biome check --write --unsafe",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@mui/icons-material": "^9.2.0",
-    "@mui/material": "^9.2.0",
+    "@mui/icons-material": "^9.3.1",
+    "@mui/material": "^9.3.1",
     "@tanstack/react-devtools": "latest",
-    "@tanstack/react-form": "^1.33.2",
-    "@tanstack/react-form-devtools": "^0.2.31",
-    "@tanstack/react-form-start": "^1.33.2",
+    "@tanstack/react-form": "^1.33.5",
+    "@tanstack/react-form-devtools": "^0.2.34",
+    "@tanstack/react-form-start": "^1.33.5",
     "@tanstack/react-router": "latest",
     "@tanstack/react-router-devtools": "latest",
-    "@tanstack/router-plugin": "^1.168.22",
+    "@tanstack/router-plugin": "^1.168.34",
     "match-sorter": "^8.3.0",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@eslint/js": "^10.0.1",
+    "@biomejs/biome": "2.5.9",
     "@tanstack/devtools-vite": "latest",
-    "@tanstack/eslint-config": "latest",
-    "@tanstack/router-cli": "^1.167.21",
+    "@tanstack/router-cli": "^1.167.32",
     "@tanstack/router-plugin": "latest",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^22.20.1",
-    "@types/react": "^19.2.17",
-    "@types/react-dom": "^19.2.3",
-    "@vitejs/plugin-react": "^6.0.3",
-    "eslint": "^9.39.5",
-    "jsdom": "^28.1.0",
-    "prettier": "^3.9.5",
-    "typescript": "^6.0.3",
-    "vite": "^8.1.5",
-    "vitest": "^4.1.10"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "lightningcss"
-    ]
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.0.5",
+    "jsdom": "^30.0.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1"
   }
 }

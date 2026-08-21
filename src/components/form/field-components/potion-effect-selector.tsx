@@ -1,37 +1,37 @@
-import { matchSorter, rankings } from 'match-sorter'
-import { AppFormContext } from '#/lib/form/form-contexts'
-import { PotionType } from '#/services/brewer/enums/potion-effect.enum'
-import { useCallback, useMemo } from 'react'
-import type { FC, ReactNode } from 'react'
-import Autocomplete from '@mui/material/Autocomplete'
-import TextField from '@mui/material/TextField'
-import type { FilterOptionsState } from '@mui/material/useAutocomplete'
+import { matchSorter, rankings } from "match-sorter";
+import { AppFormContext } from "#/lib/form/form-contexts";
+import { PotionType } from "#/services/enums/potion-effect.enum";
+import { useCallback, useMemo } from "react";
+import type { FC, ReactNode } from "react";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
+import type { FilterOptionsState } from "@mui/material/useAutocomplete";
 
-export const FieldComponent$PotionEffectSelector: FC<{
-  label?: ReactNode
+export const PotionEffectSelector: FC<{
+  label?: ReactNode;
 }> = (props) => {
-  const fieldContext = AppFormContext.useFieldContext<PotionType>()
+  const fieldContext = AppFormContext.useFieldContext<PotionType>();
   const options = useMemo(() => {
-    return Object.values(PotionType)
-  }, [])
+    return Object.values(PotionType);
+  }, []);
 
   const handleFilterOptions = useCallback(
     (opts: Array<PotionType>, state: FilterOptionsState<PotionType>) => {
       const tokens = state.inputValue
-        .split(' ')
+        .split(" ")
         .map((token) => token.trim().normalize())
-        .filter((token) => token.length > 0)
+        .filter((token) => token.length > 0);
       if (tokens.length === 0) {
-        return opts
+        return opts;
       }
       return tokens.reduceRight(
         (result, token) =>
           matchSorter(result, token, { threshold: rankings.CONTAINS }),
         opts,
-      )
+      );
     },
     [],
-  )
+  );
 
   return (
     <Autocomplete
@@ -45,5 +45,5 @@ export const FieldComponent$PotionEffectSelector: FC<{
         <TextField {...inputProps} label={props.label} />
       )}
     />
-  )
-}
+  );
+};
