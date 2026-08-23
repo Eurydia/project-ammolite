@@ -1,7 +1,7 @@
-import { AppFormHook } from "#/lib/form/form-hooks";
-import type { MobEffectPredicate } from "#/services/models/data_component_predicates/potion_contents_predicate";
 import Stack from "@mui/material/Stack";
 import type z from "zod";
+import { AppFormHook } from "#/lib/form/form-hooks";
+import type { MobEffectPredicate } from "#/services/models/data_component_predicates/potion_contents_predicate";
 
 export const FieldGroup$MobEffect = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof MobEffectPredicate>,

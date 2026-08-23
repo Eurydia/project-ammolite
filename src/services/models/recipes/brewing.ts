@@ -1,7 +1,7 @@
-import { MinecraftItem } from "#/services/enums/minecraft-item.enum";
 import z from "zod";
-import { DataComponents } from "../data_components";
+import { MinecraftItem } from "#/services/enums/minecraft-item.enum";
 import { PotionContentsPredicate } from "../data_component_predicates/potion_contents_predicate";
+import { DataComponents } from "../data_components";
 
 export const BrewingRecipe$OutputItem = z.object({
   item: z.enum(MinecraftItem),
@@ -11,7 +11,7 @@ export const BrewingRecipe$OutputItem = z.object({
 
 export const BrewingRecipe$InputItem = z.object({
   item: z.enum(MinecraftItem),
-  potionContentsPredicate: PotionContentsPredicate,
+  potionContentsPredicate: PotionContentsPredicate.optional(),
 });
 
 export const BrewingRecipe = z.object({

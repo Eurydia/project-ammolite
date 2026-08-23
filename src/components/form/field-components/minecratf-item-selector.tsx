@@ -1,10 +1,10 @@
-import { matchSorter, rankings } from "match-sorter";
-import { AppFormContext } from "#/lib/form/form-contexts";
-import { useCallback, useMemo } from "react";
-import type { FC, ReactNode } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import type { FilterOptionsState } from "@mui/material/useAutocomplete";
+import { matchSorter, rankings } from "match-sorter";
+import type { FC, ReactNode } from "react";
+import { useCallback, useMemo } from "react";
+import { AppFormContext } from "#/lib/form/form-contexts";
 import { MinecraftItem } from "#/services/enums/minecraft-item.enum";
 
 export const MinecraftItemSelector: FC<{
@@ -26,7 +26,9 @@ export const MinecraftItemSelector: FC<{
       }
       return tokens.reduceRight(
         (result, token) =>
-          matchSorter(result, token, { threshold: rankings.CONTAINS }),
+          matchSorter(result, token, {
+            threshold: rankings.CONTAINS,
+          }),
         opts,
       );
     },

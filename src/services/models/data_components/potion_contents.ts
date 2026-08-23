@@ -1,5 +1,5 @@
-import { PotionType } from "#/services/enums/potion-effect.enum";
 import z from "zod";
+import { PotionType } from "#/services/enums/potion-effect.enum";
 
 const PotionColor = z.object({
   red: z.number().int().min(0).max(255),

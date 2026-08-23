@@ -1,7 +1,7 @@
-import { AppFormContext } from "#/lib/form/form-contexts";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import type { FC, ReactNode } from "react";
+import { AppFormContext } from "#/lib/form/form-contexts";
 
 export const BooleanCheckbox: FC<{ label?: ReactNode }> = (props) => {
   const field = AppFormContext.useFieldContext<boolean>();

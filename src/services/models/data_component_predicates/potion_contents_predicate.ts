@@ -1,5 +1,5 @@
-import { PotionType } from "#/services/enums/potion-effect.enum";
 import z from "zod";
+import { PotionType } from "#/services/enums/potion-effect.enum";
 
 export const IntBoundPredicate = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("exact"), value: z.number().int() }),
@@ -20,7 +20,7 @@ export const MobEffectPredicate = z.object({
   visible: z.boolean(),
 });
 
-const PotionKindPredicate = z.discriminatedUnion("kind", [
+export const PotionKindPredicate = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("list"),
     value: z.array(z.enum(PotionType)),
@@ -28,18 +28,18 @@ const PotionKindPredicate = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("tag"), value: z.string() }),
 ]);
 
-const EffectsCountPredicate = z.object({
+export const EffectsCountPredicate = z.object({
   test: z.array(MobEffectPredicate),
   count: IntBoundPredicate,
 });
 
-const EffectsPredicate = z.object({
+export const EffectsPredicate = z.object({
   contains: MobEffectPredicate.array(),
   count: EffectsCountPredicate.array(),
   size: IntBoundPredicate,
 });
 
 export const PotionContentsPredicate = z.object({
-  potions: PotionKindPredicate,
-  effects: EffectsPredicate,
+  potions: PotionKindPredicate.optional(),
+  effects: EffectsPredicate.optional(),
 });

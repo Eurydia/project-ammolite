@@ -1,23 +1,14 @@
+import Stack from "@mui/material/Stack";
+import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
-import type { PotionContentsPredicate } from "#/services/models/data_component_predicates/potion_contents_predicate";
 import type {
   BrewingRecipe,
   BrewingRecipe$InputItem,
   BrewingRecipe$OutputItem,
 } from "#/services/models/recipes/brewing";
-import Stack from "@mui/material/Stack";
-import type z from "zod";
-
-const FG$PotionContentsPredicate = AppFormHook.withFieldGroup({
-  defaultValues: {} as z.input<typeof PotionContentsPredicate>,
-  render: ({ group }) => {
-    return (
-      <Stack>
-        <group.AppField name="potions"></group.AppField>
-      </Stack>
-    );
-  },
-});
+import { FG$PotionContentsPredicate } from "../data-component-predicates/potion-contents-predicate";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 
 const RecipeInput = AppFormHook.withFieldGroup({
   defaultValues: {} as z.infer<typeof BrewingRecipe$InputItem>,
@@ -27,6 +18,32 @@ const RecipeInput = AppFormHook.withFieldGroup({
         <group.AppField name="item">
           {(f) => <f.MinecraftItemSelector label={"Item"} />}
         </group.AppField>
+        <group.Subscribe
+          selector={({ values: { potionContentsPredicate } }) => {
+            return potionContentsPredicate;
+          }}
+        >
+          {(value) =>
+            value !== undefined ? (
+              <Card variant="outlined" sx={{ padding: 4 }}>
+                <FG$PotionContentsPredicate
+                  form={group}
+                  fields={"potionContentsPredicate"}
+                />
+              </Card>
+            ) : (
+              <Button
+                onClick={() =>
+                  group.setFieldValue("potionContentsPredicate", {
+                    potions: { kind: "unset" },
+                  })
+                }
+              >
+                Add predicate
+              </Button>
+            )
+          }
+        </group.Subscribe>
       </Stack>
     );
   },
@@ -48,14 +65,13 @@ const RecipeOutput = AppFormHook.withFieldGroup({
   },
 });
 
-export const FieldGroup$BrewingRecipe = AppFormHook.withFieldGroup({
+export const FieldGroup$BrewingRecipe = AppFormHook.withForm({
   defaultValues: {} as z.input<typeof BrewingRecipe>,
-  render: ({ group }) => {
+  render: ({ form }) => {
     return (
       <Stack>
-        <RecipeInput fields={"inputItem"} form={group} />
-        <RecipeInput fields={"reagentItem"} form={group} />
-        <RecipeOutput fields={"outputItem"} form={group} />
+        <RecipeInput fields={"inputItem"} form={form} />
+        <RecipeInput fields={"reagentItem"} form={form} />
       </Stack>
     );
   },
