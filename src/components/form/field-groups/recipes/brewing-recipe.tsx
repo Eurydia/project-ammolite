@@ -1,3 +1,5 @@
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
@@ -7,8 +9,6 @@ import type {
   BrewingRecipe$OutputItem,
 } from "#/services/models/recipes/brewing";
 import { FG$PotionContentsPredicate } from "../data-component-predicates/potion-contents-predicate";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
 
 const RecipeInput = AppFormHook.withFieldGroup({
   defaultValues: {} as z.infer<typeof BrewingRecipe$InputItem>,
@@ -34,9 +34,7 @@ const RecipeInput = AppFormHook.withFieldGroup({
             ) : (
               <Button
                 onClick={() =>
-                  group.setFieldValue("potionContentsPredicate", {
-                    potions: { kind: "unset" },
-                  })
+                  group.setFieldValue("potionContentsPredicate", {})
                 }
               >
                 Add predicate
@@ -49,7 +47,7 @@ const RecipeInput = AppFormHook.withFieldGroup({
   },
 });
 
-const RecipeOutput = AppFormHook.withFieldGroup({
+const _RecipeOutput = AppFormHook.withFieldGroup({
   defaultValues: {} as z.infer<typeof BrewingRecipe$OutputItem>,
   render: ({ group }) => {
     return (
@@ -58,7 +56,7 @@ const RecipeOutput = AppFormHook.withFieldGroup({
           {(f) => <f.MinecraftItemSelector label={"Item"} />}
         </group.AppField>
         <group.AppField name="count">
-          {(f) => <f.NumberField label={"Count"} />}
+          {(f) => <f.FC$TextField label={"Count"} />}
         </group.AppField>
       </Stack>
     );

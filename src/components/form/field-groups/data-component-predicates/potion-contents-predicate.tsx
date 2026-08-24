@@ -1,7 +1,9 @@
 import Autocomplete from "@mui/material/Autocomplete";
-import FormControl from "@mui/material/FormControl";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import FormLabel from "@mui/material/FormLabel";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import Stack from "@mui/material/Stack";
@@ -10,9 +12,12 @@ import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 import type {
+  EffectsCountPredicate,
+  EffectsPredicate,
   PotionContentsPredicate,
   PotionKindPredicate,
 } from "#/services/models/data_component_predicates/potion_contents_predicate";
+import { FG$IntBoundPredicate } from "./generics/int-bound";
 
 const FG$Kind = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof PotionKindPredicate>,
@@ -77,12 +82,136 @@ const FG$Kind = AppFormHook.withFieldGroup({
   },
 });
 
+const FG$Effects$Contains = AppFormHook.withFieldGroup({
+  defaultValues: {} as z.input<typeof PotionContentsPredicate>["effects"],
+  render: ({ group }) => {},
+});
+
+const FG$Effects = AppFormHook.withFieldGroup({
+  defaultValues: {} as z.input<typeof EffectsPredicate>,
+  render: ({ group }) => {
+    return (
+      <Stack spacing={3}>
+        <Card variant="outlined">
+          <group.Subscribe
+            selector={({ values: { contains } }) => {
+              return contains !== undefined;
+            }}
+          >
+            {(active) => (
+              <>
+                <CardActions>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue("contains", active ? undefined : [])
+                    }
+                  >
+                    {!active ? "Add" : "Clear"}
+                  </Button>
+                </CardActions>
+                {active && (
+                  <CardContent>
+                    <FG$IntBoundPredicate fields={"size"} form={group} />
+                  </CardContent>
+                )}
+              </>
+            )}
+          </group.Subscribe>
+        </Card>
+        <Card variant="outlined">
+          <group.Subscribe
+            selector={({ values: { size } }) => {
+              return size !== undefined;
+            }}
+          >
+            {(active) => (
+              <>
+                <CardActions>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "size",
+                        active ? undefined : { kind: "exact", value: "" },
+                      )
+                    }
+                  >
+                    {!active ? "Add" : "Clear"}
+                  </Button>
+                </CardActions>
+                {active && (
+                  <CardContent>
+                    <FG$IntBoundPredicate fields={"size"} form={group} />
+                  </CardContent>
+                )}
+              </>
+            )}
+          </group.Subscribe>
+        </Card>
+      </Stack>
+    );
+  },
+});
+
 export const FG$PotionContentsPredicate = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof PotionContentsPredicate>,
   render: ({ group }) => {
     return (
-      <Stack>
-        <FG$Kind fields={"potions"} form={group} />
+      <Stack spacing={3}>
+        <Card variant="outlined">
+          <group.Subscribe
+            selector={({ values: { potions } }) => {
+              return potions !== undefined;
+            }}
+          >
+            {(active) => (
+              <>
+                <CardActions>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "potions",
+                        active ? undefined : { kind: "tag", value: "" },
+                      )
+                    }
+                  >
+                    {!active ? "Add" : "Clear"}
+                  </Button>
+                </CardActions>
+                {active && (
+                  <CardContent>
+                    <FG$Kind fields={"potions"} form={group} />
+                  </CardContent>
+                )}
+              </>
+            )}
+          </group.Subscribe>
+        </Card>
+        <Card variant="outlined">
+          <group.Subscribe
+            selector={({ values: { effects } }) => {
+              return effects !== undefined;
+            }}
+          >
+            {(active) => (
+              <>
+                <CardActions>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue("effects", active ? undefined : {})
+                    }
+                  >
+                    {!active ? "Add" : "Clear"}
+                  </Button>
+                </CardActions>
+                {active && (
+                  <CardContent>
+                    <FG$Effects fields={"effects"} form={group} />
+                  </CardContent>
+                )}
+              </>
+            )}
+          </group.Subscribe>
+        </Card>
       </Stack>
     );
   },

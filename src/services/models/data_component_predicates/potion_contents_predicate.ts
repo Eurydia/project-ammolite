@@ -1,13 +1,23 @@
 import z from "zod";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 
+const OptionalIntString = z
+  .string()
+  .trim()
+  .normalize()
+  .transform((arg) => (arg.length === 0 ? undefined : Number.parseInt(arg, 10)))
+  .pipe(z.int().optional());
+
 export const IntBoundPredicate = z.discriminatedUnion("kind", [
-  z.object({ kind: z.literal("exact"), value: z.number().int() }),
+  z.object({
+    kind: z.literal("exact"),
+    value: OptionalIntString,
+  }),
   z.object({
     kind: z.literal("range"),
     value: z.object({
-      minValue: z.number().int(),
-      maxValue: z.number().int(),
+      minValue: OptionalIntString,
+      maxValue: OptionalIntString,
     }),
   }),
 ]);
@@ -34,9 +44,9 @@ export const EffectsCountPredicate = z.object({
 });
 
 export const EffectsPredicate = z.object({
-  contains: MobEffectPredicate.array(),
-  count: EffectsCountPredicate.array(),
-  size: IntBoundPredicate,
+  contains: MobEffectPredicate.array().optional(),
+  count: EffectsCountPredicate.array().optional(),
+  size: IntBoundPredicate.optional(),
 });
 
 export const PotionContentsPredicate = z.object({
