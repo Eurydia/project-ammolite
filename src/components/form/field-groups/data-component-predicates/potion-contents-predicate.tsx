@@ -14,6 +14,7 @@ import { PotionType } from "#/services/enums/potion-effect.enum";
 import type {
   EffectsCountPredicate,
   EffectsPredicate,
+  MobEffectPredicate,
   PotionContentsPredicate,
   PotionKindPredicate,
 } from "#/services/models/data_component_predicates/potion_contents_predicate";
@@ -82,9 +83,25 @@ const FG$Kind = AppFormHook.withFieldGroup({
   },
 });
 
-const FG$Effects$Contains = AppFormHook.withFieldGroup({
-  defaultValues: {} as z.input<typeof PotionContentsPredicate>["effects"],
-  render: ({ group }) => {},
+const FG$MobEffectPredicate = AppFormHook.withFieldGroup({
+  defaultValues: {} as z.input<typeof MobEffectPredicate>,
+  render: ({ group }) => {
+    return (
+      <Stack>
+        <group.AppField name="effect">
+          {(f) => <f.PotionEffectSelector />}
+        </group.AppField>
+        <FG$IntBoundPredicate fields={"duration"} form={group} />
+        <FG$IntBoundPredicate fields={"amplifier"} form={group} />
+        <group.AppField name="visible">
+          {(f) => <f.BooleanCheckbox />}
+        </group.AppField>
+        <group.AppField name="ambient">
+          {(f) => <f.BooleanCheckbox />}
+        </group.AppField>
+      </Stack>
+    );
+  },
 });
 
 const FG$Effects = AppFormHook.withFieldGroup({

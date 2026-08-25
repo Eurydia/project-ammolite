@@ -24,10 +24,10 @@ export const IntBoundPredicate = z.discriminatedUnion("kind", [
 
 export const MobEffectPredicate = z.object({
   effect: z.enum(PotionType),
-  amplifier: IntBoundPredicate,
-  duration: IntBoundPredicate,
-  ambient: z.boolean(),
-  visible: z.boolean(),
+  amplifier: IntBoundPredicate.optional(),
+  duration: IntBoundPredicate.optional(),
+  ambient: z.boolean().optional(),
+  visible: z.boolean().optional(),
 });
 
 export const PotionKindPredicate = z.discriminatedUnion("kind", [

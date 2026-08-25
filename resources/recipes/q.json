@@ -2,35 +2,10 @@
   "$schema": "./brewing.schema.json",
   "type": "minecraft:brewing",
   "input": {
-    "item": "minectatf:q",
+    "item": "minecraft:iron_ingot",
     "potion_contents": {
-      "potions": ["minecraft:absorption"],
-      "effects": {
-        "size": { "max": 3, "min": 2 },
-        "contains": [
-          {
-            "minecraft:absorption": {
-              "ambient": true,
-              "amplifier": { "max": 8 }
-            }
-          }
-        ],
-        "count": [
-          {
-            "count": 0,
-            "test": {
-              "minecraft:absorption": { "ambient": false },
-              "minecraft:bad_omen": {}
-            }
-          },
-          {
-            "count": 0,
-            "test": {
-              "minecraft:wither": {}
-            }
-          }
-        ]
-      }
+      "effects": { "contains": [] },
+      "potions": ["minecraft:absorption"]
     }
   }
 }
