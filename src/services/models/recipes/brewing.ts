@@ -11,7 +11,7 @@ export const BrewingRecipe$OutputItem = z.object({
 
 export const BrewingRecipe$InputItem = z.object({
   item: z.enum(MinecraftItem),
-  potionContentsPredicate: PotionContentsPredicate.optional(),
+  potionContents: PotionContentsPredicate.optional(),
 });
 
 export const BrewingRecipe = z.object({

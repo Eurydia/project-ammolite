@@ -1,36 +1,9 @@
 import z from "zod";
 import { PotionType } from "#/services/enums/potion-effect.enum";
+import { IntBoundPredicate } from "./generics/int-bound-predicate";
+import { MobEffectPredicate } from "./mob-effect-predicate";
 
-const OptionalIntString = z
-  .string()
-  .trim()
-  .normalize()
-  .transform((arg) => (arg.length === 0 ? undefined : Number.parseInt(arg, 10)))
-  .pipe(z.int().optional());
-
-export const IntBoundPredicate = z.discriminatedUnion("kind", [
-  z.object({
-    kind: z.literal("exact"),
-    value: OptionalIntString,
-  }),
-  z.object({
-    kind: z.literal("range"),
-    value: z.object({
-      minValue: OptionalIntString,
-      maxValue: OptionalIntString,
-    }),
-  }),
-]);
-
-export const MobEffectPredicate = z.object({
-  effect: z.enum(PotionType),
-  amplifier: IntBoundPredicate.optional(),
-  duration: IntBoundPredicate.optional(),
-  ambient: z.boolean().optional(),
-  visible: z.boolean().optional(),
-});
-
-export const PotionKindPredicate = z.discriminatedUnion("kind", [
+export const PotionContentsPredicate$Potions = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("list"),
     value: z.array(z.enum(PotionType)),
@@ -38,18 +11,26 @@ export const PotionKindPredicate = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("tag"), value: z.string() }),
 ]);
 
-export const EffectsCountPredicate = z.object({
-  test: z.array(MobEffectPredicate),
-  count: IntBoundPredicate,
+export const PotionContentsPredicate$Effects$Contains = z.object({
+  values: MobEffectPredicate.array(),
 });
 
-export const EffectsPredicate = z.object({
-  contains: MobEffectPredicate.array().optional(),
-  count: EffectsCountPredicate.array().optional(),
+export const PotionContentsPredicate$Effects$Count = z.object({
+  values: z
+    .object({
+      test: z.array(MobEffectPredicate),
+      count: IntBoundPredicate,
+    })
+    .array(),
+});
+
+export const PotionContentsPredicate$Effects = z.object({
+  contains: PotionContentsPredicate$Effects$Contains.optional(),
+  count: PotionContentsPredicate$Effects$Count.optional(),
   size: IntBoundPredicate.optional(),
 });
 
 export const PotionContentsPredicate = z.object({
-  potions: PotionKindPredicate.optional(),
-  effects: EffectsPredicate.optional(),
+  potions: PotionContentsPredicate$Potions.optional(),
+  effects: PotionContentsPredicate$Effects.optional(),
 });

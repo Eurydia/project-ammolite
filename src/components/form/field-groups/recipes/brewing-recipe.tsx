@@ -1,6 +1,8 @@
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 import Stack from "@mui/material/Stack";
+import Toolbar from "@mui/material/Toolbar";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type {
@@ -8,40 +10,46 @@ import type {
   BrewingRecipe$InputItem,
   BrewingRecipe$OutputItem,
 } from "#/services/models/recipes/brewing";
-import { FG$PotionContentsPredicate } from "../data-component-predicates/potion-contents-predicate";
+import { FieldGroup$PotionContentsPredicate } from "../data-component-predicates/potion-content-predicate/potion-contents-predicate";
 
 const RecipeInput = AppFormHook.withFieldGroup({
-  defaultValues: {} as z.infer<typeof BrewingRecipe$InputItem>,
+  defaultValues: {} as z.input<typeof BrewingRecipe$InputItem>,
   render: ({ group }) => {
     return (
       <Stack>
         <group.AppField name="item">
           {(f) => <f.MinecraftItemSelector label={"Item"} />}
         </group.AppField>
-        <group.Subscribe
-          selector={({ values: { potionContentsPredicate } }) => {
-            return potionContentsPredicate;
-          }}
-        >
-          {(value) =>
-            value !== undefined ? (
-              <Card variant="outlined" sx={{ padding: 4 }}>
-                <FG$PotionContentsPredicate
-                  form={group}
-                  fields={"potionContentsPredicate"}
-                />
-              </Card>
-            ) : (
-              <Button
-                onClick={() =>
-                  group.setFieldValue("potionContentsPredicate", {})
-                }
-              >
-                Add predicate
-              </Button>
-            )
-          }
-        </group.Subscribe>
+        <Card>
+          <group.Subscribe
+            selector={({ values }) => {
+              return values.potionContents !== undefined;
+            }}
+          >
+            {(active) => (
+              <CardContent>
+                <Toolbar>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "potionContents",
+                        active ? undefined : {},
+                      )
+                    }
+                  >
+                    {active ? "Clear" : "Add"}
+                  </Button>
+                </Toolbar>
+                {active && (
+                  <FieldGroup$PotionContentsPredicate
+                    form={group}
+                    fields={"potionContents"}
+                  />
+                )}
+              </CardContent>
+            )}
+          </group.Subscribe>
+        </Card>
       </Stack>
     );
   },
@@ -69,7 +77,6 @@ export const FieldGroup$BrewingRecipe = AppFormHook.withForm({
     return (
       <Stack>
         <RecipeInput fields={"inputItem"} form={form} />
-        <RecipeInput fields={"reagentItem"} form={form} />
       </Stack>
     );
   },
