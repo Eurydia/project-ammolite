@@ -1,8 +1,14 @@
 import z from "zod";
 import { MinecraftItem } from "#/services/enums/minecraft-item.enum";
 import { OptionalIntString } from "../data_component_predicates/generics/optional-int-string";
-import { PotionContentsPredicate } from "../data_component_predicates/potion_contents_predicate";
-import { PotionContents } from "../data_components/potion_contents";
+import {
+  PotionContentsPredicate,
+  PotionContentsPredicate$AsDataPackJSON,
+} from "../data_component_predicates/potion_contents_predicate";
+import {
+  PotionContents,
+  PotionContents$AsDataPackJSON,
+} from "../data_components/potion_contents";
 
 export const BrewingRecipe$OutputItem = z.object({
   item: z.enum(MinecraftItem),
@@ -16,7 +22,10 @@ const BrewingRecipe$OutputItem$ToDataPackJSON = (
   return {
     item: dt.item,
     count: dt.count,
-    components: undefined,
+    components:
+      dt.components === undefined
+        ? undefined
+        : [PotionContents$AsDataPackJSON(dt.components)],
   };
 };
 
@@ -30,7 +39,10 @@ const BrewingRecipe$InputItem$ToDataPackJSON = (
 ) => {
   return {
     item: dt.item,
-    potion_contents: undefined,
+    potion_contents:
+      dt.potionContents === undefined
+        ? undefined
+        : PotionContentsPredicate$AsDataPackJSON(dt.potionContents),
   };
 };
 

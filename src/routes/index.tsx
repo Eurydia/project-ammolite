@@ -37,6 +37,8 @@ function Home() {
         console.debug(
           JSON.stringify(
             BrewingRecipe$toDataPackJSON(BrewingRecipe.parse(values)),
+            null,
+            4,
           ),
         );
       },
