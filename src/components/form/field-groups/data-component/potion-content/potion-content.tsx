@@ -82,7 +82,7 @@ const _FieldGroup$PotionContents$CustomEffects = AppFormHook.withFieldGroup({
               <Button
                 onClick={() =>
                   f.pushValue({
-                    effect: PotionType.WATER,
+                    id: PotionType.WATER,
                     visible: false,
                     showParticles: false,
                     ambient: false,

@@ -14,12 +14,11 @@ export const PotionContents$CustomColor$AsDatapackJSON = (
 ) => {
   const red = dt.red * 256 * 256;
   const green = dt.green * 256;
-  const sum = red + green + dt.blue;
-  return `#${sum.toString().padStart(6, "0")}`;
+  return red + green + dt.blue;
 };
 
 export const PotionContents$CustomEffects$Effect = z.object({
-  effect: z.enum(PotionType),
+  id: z.enum(PotionType),
   duration: OptionalIntString,
   amplifier: OptionalIntString,
   visible: z.boolean().optional(),
@@ -32,7 +31,7 @@ export const PotionContents$CustomEffects$Effect$AsDatapackJSON = (
   dt: z.output<typeof PotionContents$CustomEffects$Effect>,
 ) => {
   return {
-    effect: dt.effect,
+    id: dt.id,
     amplifier: dt.amplifier,
     duration: dt.duration,
     show_particles: dt.showParticles,
