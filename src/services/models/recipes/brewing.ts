@@ -56,7 +56,7 @@ export const BrewingRecipe$toDataPackJSON = (
   data: z.output<typeof BrewingRecipe>,
 ) => {
   return {
-    id: "minecraft:brewing",
+    type: "minecraft:brewing",
     input: BrewingRecipe$InputItem$ToDataPackJSON(data.inputItem),
     reagent: BrewingRecipe$InputItem$ToDataPackJSON(data.reagentItem),
     output: BrewingRecipe$OutputItem$ToDataPackJSON(data.outputItem),
