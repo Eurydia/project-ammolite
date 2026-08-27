@@ -1,11 +1,11 @@
 import z from "zod";
-import { IntString } from "./int-string";
 import { OptionalIntString } from "./optional-int-string";
 
-export const IntBoundPredicate = z.discriminatedUnion("kind", [
+export const OptionalIntBoundPredicate = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("unset") }),
   z.object({
     kind: z.literal("exact"),
-    value: IntString,
+    value: OptionalIntString,
   }),
   z.object({
     kind: z.literal("range"),

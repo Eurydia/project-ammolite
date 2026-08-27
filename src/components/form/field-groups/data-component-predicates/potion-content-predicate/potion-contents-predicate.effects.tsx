@@ -6,8 +6,9 @@ import Stack from "@mui/material/Stack";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { PotionContentsPredicate$Effects } from "#/services/models/data_component_predicates/potion_contents_predicate";
-import { FieldGroup$IntBoundPredicate } from "../generics/int-bound";
+import { FieldGroup$OptionalIntBoundPredicate } from "../generics/optional-int-bound-predicate";
 import { _FieldGroup$PotionContentPredicate$Effects$Contains } from "./potion-contents-predicate.effects.contains";
+import { _FieldGroup$PotionContentPredicate$Effects$Count } from "./potion-contents-predicate.effects.count";
 
 export const _FieldGroup$PotionContentPredicate$Effects =
   AppFormHook.withFieldGroup({
@@ -49,8 +50,8 @@ export const _FieldGroup$PotionContentPredicate$Effects =
           </Card>
           <Card variant="outlined">
             <group.Subscribe
-              selector={({ values: { size } }) => {
-                return size !== undefined;
+              selector={({ values: { count } }) => {
+                return count !== undefined;
               }}
             >
               {(active) => (
@@ -59,8 +60,8 @@ export const _FieldGroup$PotionContentPredicate$Effects =
                     <Button
                       onClick={() =>
                         group.setFieldValue(
-                          "size",
-                          active ? undefined : { kind: "exact", value: "" },
+                          "count",
+                          active ? undefined : { values: [] },
                         )
                       }
                     >
@@ -69,8 +70,8 @@ export const _FieldGroup$PotionContentPredicate$Effects =
                   </CardActions>
                   {active && (
                     <CardContent>
-                      <FieldGroup$IntBoundPredicate
-                        fields={"size"}
+                      <_FieldGroup$PotionContentPredicate$Effects$Count
+                        fields={"count"}
                         form={group}
                       />
                     </CardContent>
@@ -78,6 +79,14 @@ export const _FieldGroup$PotionContentPredicate$Effects =
                 </>
               )}
             </group.Subscribe>
+          </Card>
+          <Card variant="outlined">
+            <CardContent>
+              <FieldGroup$OptionalIntBoundPredicate
+                fields={"size"}
+                form={group}
+              />
+            </CardContent>
           </Card>
         </Stack>
       );

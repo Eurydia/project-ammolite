@@ -16,21 +16,6 @@ export const _FieldGroup$PotionContentPredicate$Effects$Contains =
     render: ({ group }) => {
       return (
         <Paper>
-          <Toolbar>
-            <Button
-              onClick={() =>
-                group.pushFieldValue("values", {
-                  effect: PotionType.AWKWARD,
-                  ambient: "unset",
-                  visible: "unset",
-                  amplifier: { kind: "exact", value: "" },
-                  duration: { kind: "exact", value: "" },
-                })
-              }
-            >
-              Add
-            </Button>
-          </Toolbar>
           <Stack spacing={3}>
             <group.AppField name="values" mode="array">
               {(f) =>
@@ -49,6 +34,21 @@ export const _FieldGroup$PotionContentPredicate$Effects$Contains =
                 })
               }
             </group.AppField>
+            <Toolbar>
+              <Button
+                onClick={() =>
+                  group.pushFieldValue("values", {
+                    effect: PotionType.AWKWARD,
+                    ambient: "unset",
+                    visible: "unset",
+                    amplifier: { kind: "exact", value: "" },
+                    duration: { kind: "exact", value: "" },
+                  })
+                }
+              >
+                Add
+              </Button>
+            </Toolbar>
           </Stack>
         </Paper>
       );

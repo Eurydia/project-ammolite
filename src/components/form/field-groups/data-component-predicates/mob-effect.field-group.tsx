@@ -2,7 +2,7 @@ import Stack from "@mui/material/Stack";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { MobEffectPredicate } from "#/services/models/data_component_predicates/mob-effect-predicate";
-import { FieldGroup$IntBoundPredicate } from "./generics/int-bound";
+import { FieldGroup$OptionalIntBoundPredicate } from "./generics/optional-int-bound-predicate";
 
 export const FieldGroup$MobEffectPredicate = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof MobEffectPredicate>,
@@ -18,8 +18,14 @@ export const FieldGroup$MobEffectPredicate = AppFormHook.withFieldGroup({
         <group.AppField name="visible">
           {(f) => <f.FC$RadioGroup options={["yes", "no", "unset"]} />}
         </group.AppField>
-        <FieldGroup$IntBoundPredicate fields={"duration"} form={group} />
-        <FieldGroup$IntBoundPredicate fields={"amplifier"} form={group} />
+        <FieldGroup$OptionalIntBoundPredicate
+          fields={"duration"}
+          form={group}
+        />
+        <FieldGroup$OptionalIntBoundPredicate
+          fields={"amplifier"}
+          form={group}
+        />
       </Stack>
     );
   },

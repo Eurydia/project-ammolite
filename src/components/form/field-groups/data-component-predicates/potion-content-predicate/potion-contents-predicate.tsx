@@ -27,7 +27,7 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
                     onClick={() =>
                       group.setFieldValue(
                         "potions",
-                        active ? undefined : { kind: "list", value: [] },
+                        active ? undefined : { values: [] },
                       )
                     }
                   >
@@ -57,7 +57,10 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
                 <CardActions>
                   <Button
                     onClick={() =>
-                      group.setFieldValue("effects", active ? undefined : {})
+                      group.setFieldValue(
+                        "effects",
+                        active ? undefined : { size: { kind: "unset" } },
+                      )
                     }
                   >
                     {!active ? "Add" : "Clear"}

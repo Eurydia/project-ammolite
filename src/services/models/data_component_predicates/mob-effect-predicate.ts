@@ -1,12 +1,12 @@
 import z from "zod";
 import { PotionType } from "#/services/enums/potion-effect.enum";
-import { IntBoundPredicate } from "./generics/int-bound-predicate";
 import { OptionalBooleanPredicate } from "./generics/optional-boolean-predicate";
+import { OptionalIntBoundPredicate } from "./generics/optional-int-bound-predicate";
 
 export const MobEffectPredicate = z.object({
   effect: z.enum(PotionType),
-  amplifier: IntBoundPredicate,
-  duration: IntBoundPredicate,
+  amplifier: OptionalIntBoundPredicate,
+  duration: OptionalIntBoundPredicate,
   ambient: OptionalBooleanPredicate,
   visible: OptionalBooleanPredicate,
 });
