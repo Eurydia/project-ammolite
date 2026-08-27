@@ -25,7 +25,7 @@ const BrewingRecipe$OutputItem$ToDataPackJSON = (
     components:
       dt.components === undefined
         ? undefined
-        : [PotionContents$AsDataPackJSON(dt.components)],
+        : PotionContents$AsDataPackJSON(dt.components),
   };
 };
 

@@ -70,16 +70,17 @@ export const PotionContents$AsDataPackJSON = (
   dt: z.output<typeof PotionContents>,
 ) => {
   return {
-    id: "minecraft:potion_contents",
-    potion: dt.potion,
-    custom_name: dt.customName,
-    custom_color:
-      dt.customColor === undefined
-        ? undefined
-        : PotionContents$CustomColor$AsDatapackJSON(dt.customColor),
-    custom_effects:
-      dt.customEffects === undefined
-        ? undefined
-        : PotionContents$CustomEffects$AsDatapackJSON(dt.customEffects),
+    "minecraft:potion_contents": {
+      potion: dt.potion,
+      custom_name: dt.customName,
+      custom_color:
+        dt.customColor === undefined
+          ? undefined
+          : PotionContents$CustomColor$AsDatapackJSON(dt.customColor),
+      custom_effects:
+        dt.customEffects === undefined
+          ? undefined
+          : PotionContents$CustomEffects$AsDatapackJSON(dt.customEffects),
+    },
   };
 };
