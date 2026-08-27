@@ -24,7 +24,6 @@ export enum PotionType {
   STRONG_HEALING = "minecraft:strong_healing",
   HARMING = "minecraft:harming",
   STRONG_HARMING = "minecraft:strong_harming",
-  STRONG_POISON = "minecraft:strong_poison",
   LONG_POISON = "minecraft:long_poison",
   REGENERATION = "minecraft:regeneration",
   STRONG_REGENERATION = "minecraft:strong_regeneration",
