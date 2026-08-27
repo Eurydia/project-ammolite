@@ -37,7 +37,7 @@ export const _FieldGroup$PotionContents$CustomEffects$Effect =
     render: ({ group }) => {
       return (
         <Stack spacing={3}>
-          <group.AppField name="effect">
+          <group.AppField name="id">
             {(f) => <f.PotionEffectSelector />}
           </group.AppField>
           <group.AppField name="duration">
