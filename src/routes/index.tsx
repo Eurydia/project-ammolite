@@ -18,7 +18,7 @@ function Home() {
       inputItem: { item: MinecraftItem.ACACIA_BOAT },
       reagentItem: { item: MinecraftItem.ACACIA_BOAT },
       outputItem: {
-        item: MinecraftItem.BLAZE_POWDER,
+        id: MinecraftItem.BLAZE_POWDER,
         count: "",
         components: {
           id: "minecraft:potion_contents",

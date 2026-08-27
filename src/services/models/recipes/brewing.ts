@@ -11,7 +11,7 @@ import {
 } from "../data_components/potion_contents";
 
 export const BrewingRecipe$OutputItem = z.object({
-  item: z.enum(MinecraftItem),
+  id: z.enum(MinecraftItem),
   count: OptionalIntString,
   components: PotionContents,
 });
@@ -20,7 +20,7 @@ const BrewingRecipe$OutputItem$ToDataPackJSON = (
   dt: z.output<typeof BrewingRecipe$OutputItem>,
 ) => {
   return {
-    item: dt.item,
+    id: dt.id,
     count: dt.count,
     components:
       dt.components === undefined
