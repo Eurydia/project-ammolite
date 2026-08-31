@@ -236,7 +236,12 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
             },
           }}
         >
-          {(field) => <field.FC$RadioGroup options={CONSUME_EFFECT_TYPES} />}
+          {(field) => (
+            <FormControl>
+              <FormLabel>Consume effect type</FormLabel>
+              <field.FC$RadioGroup options={CONSUME_EFFECT_TYPES} />
+            </FormControl>
+          )}
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.type}>
           {(type) => {
