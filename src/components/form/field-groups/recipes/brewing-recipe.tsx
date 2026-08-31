@@ -81,9 +81,19 @@ export const FieldGroup$BrewingRecipe = AppFormHook.withForm({
   render: ({ form }) => {
     return (
       <Stack spacing={3}>
-        <_RecipeInput fields={"inputItem"} form={form} />
-        <_RecipeInput fields={"reagentItem"} form={form} />
-        <_RecipeOutput fields={"outputItem"} form={form} />
+        <Typography sx={{ fontWeight: 700 }}>BREWING RECIPE</Typography>
+        <Stack spacing={1}>
+          <Typography sx={{ fontWeight: 700 }}>INPUT</Typography>
+          <_RecipeInput fields="inputItem" form={form} />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography sx={{ fontWeight: 700 }}>REAGENT</Typography>
+          <_RecipeInput fields="reagentItem" form={form} />
+        </Stack>
+        <Stack spacing={1}>
+          <Typography sx={{ fontWeight: 700 }}>OUTPUT</Typography>
+          <_RecipeOutput fields="outputItem" form={form} />
+        </Stack>
       </Stack>
     );
   },
