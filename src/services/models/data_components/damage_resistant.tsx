@@ -1,4 +1,6 @@
 import Autocomplete from "@mui/material/Autocomplete";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -45,7 +47,12 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
           },
         }}
       >
-        {(field) => <field.FC$RadioGroup options={TYPES_KINDS} />}
+        {(field) => (
+          <FormControl>
+            <FormLabel>Damage type format</FormLabel>
+            <field.FC$RadioGroup options={TYPES_KINDS} />
+          </FormControl>
+        )}
       </group.AppField>
       <group.Subscribe selector={({ values }) => values.kind}>
         {(kind) => {
