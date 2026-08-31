@@ -1,6 +1,11 @@
+import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
@@ -8,15 +13,6 @@ import { OptionalBooleanPredicate } from "#/services/models/data_component_predi
 import { OptionalIntString } from "#/services/models/data_component_predicates/generics/optional-int-string";
 
 const TEXT_COMPONENT_KINDS = ["string", "list", "object"] as const;
-const TEXT_CONTENT_TYPES = [
-  "text",
-  "translatable",
-  "score",
-  "selector",
-  "keybind",
-  "nbt",
-  "object",
-] as const;
 
 const TEXT_COLORS = [
   "black",
@@ -94,81 +90,83 @@ const _FieldGroup$Object = AppFormHook.withFieldGroup({
     <Paper variant="outlined">
       <Stack spacing={3}>
         <Typography sx={{ fontWeight: 700 }}>CONTENT</Typography>
-        <group.AppField
-          name="type"
-          listeners={{
-            onChange: ({ value }) => {
-              switch (value) {
-                case "text":
-                  group.setFieldValue("text", "");
-                  break;
-              }
-            },
-          }}
-        >
-          {(field) => <field.FC$RadioGroup options={TEXT_CONTENT_TYPES} />}
+        <group.AppField name="text">
+          {(field) => <field.FC$TextField label="Text" />}
         </group.AppField>
-        <group.Subscribe selector={({ values }) => values.type}>
-          {(type) => {
-            switch (type) {
-              case "text":
-                return (
-                  <group.AppField name="text">
-                    {(field) => <field.FC$TextField label="Text" />}
-                  </group.AppField>
-                );
-            }
-          }}
-        </group.Subscribe>
         <Typography sx={{ fontWeight: 700 }}>FORMATTING</Typography>
         <group.AppField name="color">
-          {(field) => <field.FC$TextField label="Color" />}
+          {(field) => (
+            <Autocomplete
+              freeSolo
+              inputValue={field.state.value}
+              options={TEXT_COLORS}
+              onBlur={field.handleBlur}
+              onInputChange={(_, value) => field.handleChange(value)}
+              renderInput={(inputProps) => (
+                <TextField
+                  {...inputProps}
+                  error={field.state.meta.errors.length > 0}
+                  label="Color (optional)"
+                />
+              )}
+            />
+          )}
         </group.AppField>
         <group.AppField name="font">
-          {(field) => <field.FC$TextField label="Font" />}
+          {(field) => <field.FC$TextField label="Font (optional)" />}
         </group.AppField>
-        <group.AppField name="bold">
-          {(field) => (
-            <Stack direction="row" spacing={2}>
-              <Typography>Bold</Typography>
-              <field.FC$RadioGroup options={["yes", "no", "unset"]} />
-            </Stack>
-          )}
-        </group.AppField>
-        <group.AppField name="italic">
-          {(field) => (
-            <Stack direction="row" spacing={2}>
-              <Typography>Italic</Typography>
-              <field.FC$RadioGroup options={["yes", "no", "unset"]} />
-            </Stack>
-          )}
-        </group.AppField>
-        <group.AppField name="underlined">
-          {(field) => (
-            <Stack direction="row" spacing={2}>
-              <Typography>Underlined</Typography>
-              <field.FC$RadioGroup options={["yes", "no", "unset"]} />
-            </Stack>
-          )}
-        </group.AppField>
-        <group.AppField name="strikethrough">
-          {(field) => (
-            <Stack direction="row" spacing={2}>
-              <Typography>Strikethrough</Typography>
-              <field.FC$RadioGroup options={["yes", "no", "unset"]} />
-            </Stack>
-          )}
-        </group.AppField>
-        <group.AppField name="obfuscated">
-          {(field) => (
-            <Stack direction="row" spacing={2}>
-              <Typography>Obfuscated</Typography>
-              <field.FC$RadioGroup options={["yes", "no", "unset"]} />
-            </Stack>
-          )}
-        </group.AppField>
+        <Box
+          sx={{
+            display: "grid",
+            gap: 1,
+            gridTemplateColumns: { sm: "repeat(2, 1fr)", xs: "1fr" },
+          }}
+        >
+          <group.AppField name="bold">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Bold</FormLabel>
+                <field.FC$RadioGroup options={["yes", "no", "unset"]} />
+              </FormControl>
+            )}
+          </group.AppField>
+          <group.AppField name="italic">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Italic</FormLabel>
+                <field.FC$RadioGroup options={["yes", "no", "unset"]} />
+              </FormControl>
+            )}
+          </group.AppField>
+          <group.AppField name="underlined">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Underlined</FormLabel>
+                <field.FC$RadioGroup options={["yes", "no", "unset"]} />
+              </FormControl>
+            )}
+          </group.AppField>
+          <group.AppField name="strikethrough">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Strikethrough</FormLabel>
+                <field.FC$RadioGroup options={["yes", "no", "unset"]} />
+              </FormControl>
+            )}
+          </group.AppField>
+          <group.AppField name="obfuscated">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Obfuscated</FormLabel>
+                <field.FC$RadioGroup options={["yes", "no", "unset"]} />
+              </FormControl>
+            )}
+          </group.AppField>
+        </Box>
         <group.AppField name="shadowColor">
-          {(field) => <field.FC$TextField label="Shadow color (ARGB int)" />}
+          {(field) => (
+            <field.FC$TextField label="Shadow color (ARGB int, optional)" />
+          )}
         </group.AppField>
         <group.AppField name="extra" mode="array">
           {(field) => (
@@ -179,7 +177,7 @@ const _FieldGroup$Object = AppFormHook.withFieldGroup({
                     {(extra) => <extra.FC$TextField label="Extra text" />}
                   </group.AppField>
                   <Button onClick={() => field.removeValue(index)}>
-                    REMOVE
+                    REMOVE EXTRA
                   </Button>
                 </Stack>
               ))}
