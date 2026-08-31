@@ -1,15 +1,18 @@
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { RgbColorPicker } from "react-colorful";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 import type {
   PotionContents,
-  PotionContents$CustomColor,
   PotionContents$CustomEffects,
   PotionContents$CustomEffects$Effect,
 } from "#/services/models/data_components/potion_contents";
+import { PotionContents$CustomColor } from "#/services/models/data_components/potion_contents";
 
 export const _FieldGroup$PotionContents$CustomColor =
   AppFormHook.withFieldGroup({
@@ -17,15 +20,63 @@ export const _FieldGroup$PotionContents$CustomColor =
     render: ({ group }) => {
       return (
         <Stack spacing={3}>
-          <group.AppField name="red">
-            {(f) => <f.FC$TextField />}
-          </group.AppField>
-          <group.AppField name="green">
-            {(f) => <f.FC$TextField />}
-          </group.AppField>
-          <group.AppField name="blue">
-            {(f) => <f.FC$TextField />}
-          </group.AppField>
+          <Typography sx={{ fontWeight: 700 }}>CUSTOM COLOR</Typography>
+          <group.Subscribe selector={({ values }) => values}>
+            {({ red, green, blue }) => {
+              const result = PotionContents$CustomColor.safeParse({
+                red,
+                green,
+                blue,
+              });
+              const channels = result.success
+                ? [result.data.red, result.data.green, result.data.blue]
+                : undefined;
+              const pickerColor = channels
+                ? { b: channels[2], g: channels[1], r: channels[0] }
+                : { b: 0, g: 0, r: 0 };
+              const hex = channels
+                ? `#${channels
+                    .map((channel) => channel.toString(16).padStart(2, "0"))
+                    .join("")}`.toUpperCase()
+                : undefined;
+
+              return (
+                <Stack spacing={1}>
+                  <Box sx={{ display: "flex", justifyContent: "center" }}>
+                    <RgbColorPicker
+                      color={pickerColor}
+                      onChange={({ b, g, r }) => {
+                        group.setFieldValue("red", `${r}`);
+                        group.setFieldValue("green", `${g}`);
+                        group.setFieldValue("blue", `${b}`);
+                      }}
+                      style={{ maxWidth: 360, width: "100%" }}
+                    />
+                  </Box>
+                  <Typography align="center" variant="body2">
+                    {hex ?? "Enter RGB values from 0 to 255"}
+                  </Typography>
+                </Stack>
+              );
+            }}
+          </group.Subscribe>
+          <Box
+            sx={{
+              display: "grid",
+              gap: 2,
+              gridTemplateColumns: { sm: "repeat(3, 1fr)", xs: "1fr" },
+            }}
+          >
+            <group.AppField name="red">
+              {(field) => <field.FC$TextField label="Red (0–255)" />}
+            </group.AppField>
+            <group.AppField name="green">
+              {(field) => <field.FC$TextField label="Green (0–255)" />}
+            </group.AppField>
+            <group.AppField name="blue">
+              {(field) => <field.FC$TextField label="Blue (0–255)" />}
+            </group.AppField>
+          </Box>
         </Stack>
       );
     },
@@ -38,26 +89,36 @@ export const _FieldGroup$PotionContents$CustomEffects$Effect =
       return (
         <Stack spacing={3}>
           <group.AppField name="id">
-            {(f) => <f.PotionEffectSelector />}
+            {(field) => <field.PotionEffectSelector label="Effect ID" />}
           </group.AppField>
           <group.AppField name="duration">
-            {(f) => <f.FC$TextField label="duration" />}
+            {(field) => (
+              <field.FC$TextField label="Duration (ticks, optional)" />
+            )}
           </group.AppField>
           <group.AppField name="amplifier">
-            {(f) => <f.FC$TextField label="amplifier" />}
+            {(field) => <field.FC$TextField label="Amplifier (optional)" />}
           </group.AppField>
-          <group.AppField name="ambient">
-            {(f) => <f.BooleanCheckbox label="ambient?" />}
-          </group.AppField>
-          <group.AppField name="visible">
-            {(f) => <f.BooleanCheckbox label="visible?" />}
-          </group.AppField>
-          <group.AppField name="showIcon">
-            {(f) => <f.BooleanCheckbox label="show icon?" />}
-          </group.AppField>
-          <group.AppField name="showParticles">
-            {(f) => <f.BooleanCheckbox label="show particles?" />}
-          </group.AppField>
+          <Box
+            sx={{
+              display: "grid",
+              gap: 1,
+              gridTemplateColumns: { sm: "repeat(2, 1fr)", xs: "1fr" },
+            }}
+          >
+            <group.AppField name="ambient">
+              {(field) => <field.BooleanCheckbox label="Ambient" />}
+            </group.AppField>
+            <group.AppField name="visible">
+              {(field) => <field.BooleanCheckbox label="Visible" />}
+            </group.AppField>
+            <group.AppField name="showIcon">
+              {(field) => <field.BooleanCheckbox label="Show icon" />}
+            </group.AppField>
+            <group.AppField name="showParticles">
+              {(field) => <field.BooleanCheckbox label="Show particles" />}
+            </group.AppField>
+          </Box>
         </Stack>
       );
     },
@@ -70,31 +131,36 @@ const _FieldGroup$PotionContents$CustomEffects = AppFormHook.withFieldGroup({
       <Stack spacing={3}>
         <group.AppField name="values" mode="array">
           {(f) => (
-            <>
+            <Stack spacing={2}>
               {f.state.value.map((_, i) => (
                 <Paper key={i}>
-                  <_FieldGroup$PotionContents$CustomEffects$Effect
-                    form={group}
-                    fields={`values[${i}]`}
-                  />
+                  <Stack spacing={2}>
+                    <_FieldGroup$PotionContents$CustomEffects$Effect
+                      form={group}
+                      fields={`values[${i}]`}
+                    />
+                    <Button onClick={() => f.removeValue(i)}>
+                      REMOVE EFFECT
+                    </Button>
+                  </Stack>
                 </Paper>
               ))}
               <Button
                 onClick={() =>
                   f.pushValue({
-                    id: PotionType.WATER,
+                    id: PotionType.REGENERATION,
                     visible: false,
-                    showParticles: false,
                     ambient: false,
                     amplifier: "",
                     duration: "",
-                    showIcon: false,
+                    showParticles: true,
+                    showIcon: true,
                   })
                 }
               >
-                ADD
+                ADD EFFECT
               </Button>
-            </>
+            </Stack>
           )}
         </group.AppField>
       </Stack>
@@ -108,12 +174,13 @@ export const FieldGroup$PotionContents = AppFormHook.withFieldGroup({
     return (
       <Paper>
         <Stack spacing={3}>
+          <Typography sx={{ fontWeight: 700 }}>POTION CONTENTS</Typography>
           <group.AppField name="potion">
-            {(f) => <f.PotionEffectSelector />}
+            {(field) => <field.PotionEffectSelector label="Potion" />}
           </group.AppField>
 
           <group.AppField name="customName">
-            {(f) => <f.FC$TextField />}
+            {(field) => <field.FC$TextField label="Custom name (optional)" />}
           </group.AppField>
           <group.Subscribe
             selector={({ values: { customColor } }) => {
@@ -131,9 +198,7 @@ export const FieldGroup$PotionContents = AppFormHook.withFieldGroup({
                       )
                     }
                   >
-                    {active
-                      ? "Remove"
-                      : "Add custom potion effect particle color"}
+                    {active ? "REMOVE CUSTOM COLOR" : "ADD CUSTOM COLOR"}
                   </Button>
                   {active && (
                     <_FieldGroup$PotionContents$CustomColor
@@ -161,7 +226,7 @@ export const FieldGroup$PotionContents = AppFormHook.withFieldGroup({
                       )
                     }
                   >
-                    {active ? "Remove" : "Add custom potion effect"}
+                    {active ? "REMOVE CUSTOM EFFECTS" : "ADD CUSTOM EFFECTS"}
                   </Button>
                   {active && (
                     <_FieldGroup$PotionContents$CustomEffects

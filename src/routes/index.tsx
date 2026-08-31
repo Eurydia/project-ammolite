@@ -1,7 +1,9 @@
 import Container from "@mui/material/Container";
+import Stack from "@mui/material/Stack";
 import { createFileRoute } from "@tanstack/react-router";
 import type z from "zod";
 import { FieldGroup$BrewingRecipe } from "#/components/form/field-groups/recipes/brewing-recipe";
+import { JsonDisplay } from "#/components/json-display";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { MinecraftItem } from "#/services/enums/minecraft-item.enum";
 import { PotionType } from "#/services/enums/potion-effect.enum";
@@ -28,26 +30,30 @@ function Home() {
       },
     } as z.input<typeof BrewingRecipe>,
     validators: { onChange: BrewingRecipe },
-    listeners: {
-      onChange: ({
-        formApi: {
-          state: { values },
-        },
-      }) => {
-        console.debug(
-          JSON.stringify(
-            BrewingRecipe$toDataPackJSON(BrewingRecipe.parse(values)),
-            null,
-            4,
-          ),
-        );
-      },
-    },
   });
 
   return (
     <Container>
-      <FieldGroup$BrewingRecipe form={form} />
+      <Stack spacing={3}>
+        <FieldGroup$BrewingRecipe form={form} />
+        <form.Subscribe selector={({ values }) => values}>
+          {(values) => {
+            const result = BrewingRecipe.safeParse(values);
+
+            return (
+              <JsonDisplay
+                emptyMessage="Complete the recipe to display its JSON."
+                title="RECIPE JSON"
+                value={
+                  result.success
+                    ? BrewingRecipe$toDataPackJSON(result.data)
+                    : undefined
+                }
+              />
+            );
+          }}
+        </form.Subscribe>
+      </Stack>
     </Container>
   );
 }
