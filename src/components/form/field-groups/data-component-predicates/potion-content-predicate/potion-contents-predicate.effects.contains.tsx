@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
@@ -15,42 +15,41 @@ export const _FieldGroup$PotionContentPredicate$Effects$Contains =
     >,
     render: ({ group }) => {
       return (
-        <Paper>
-          <Stack spacing={3}>
-            <group.AppField name="values" mode="array">
-              {(f) =>
-                f.state.value.map((_, i) => {
-                  return (
-                    <Paper key={i}>
-                      <Toolbar>
-                        <Button onClick={() => f.removeValue(i)}>REMOVE</Button>
-                      </Toolbar>
+        <Stack spacing={3}>
+          <Typography sx={{ fontWeight: 700 }}>CONTAINS</Typography>
+          <group.AppField name="values" mode="array">
+            {(field) => (
+              <Stack spacing={2}>
+                {field.state.value.map((_, index) => (
+                  <Paper key={index} variant="outlined">
+                    <Stack spacing={2}>
                       <FieldGroup$MobEffectPredicate
-                        fields={`values[${i}]`}
+                        fields={`values[${index}]`}
                         form={group}
                       />
-                    </Paper>
-                  );
-                })
-              }
-            </group.AppField>
-            <Toolbar>
-              <Button
-                onClick={() =>
-                  group.pushFieldValue("values", {
-                    effect: PotionType.AWKWARD,
-                    ambient: "unset",
-                    visible: "unset",
-                    amplifier: { kind: "exact", value: "" },
-                    duration: { kind: "exact", value: "" },
-                  })
-                }
-              >
-                Add
-              </Button>
-            </Toolbar>
-          </Stack>
-        </Paper>
+                      <Button onClick={() => field.removeValue(index)}>
+                        REMOVE EFFECT
+                      </Button>
+                    </Stack>
+                  </Paper>
+                ))}
+                <Button
+                  onClick={() =>
+                    field.pushValue({
+                      effect: PotionType.REGENERATION,
+                      amplifier: { kind: "unset" },
+                      duration: { kind: "unset" },
+                      ambient: "unset",
+                      visible: "unset",
+                    })
+                  }
+                >
+                  ADD EFFECT
+                </Button>
+              </Stack>
+            )}
+          </group.AppField>
+        </Stack>
       );
     },
   });
