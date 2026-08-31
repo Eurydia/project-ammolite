@@ -1,3 +1,4 @@
+import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
@@ -7,7 +8,7 @@ export const FieldGroup$OptionalIntBoundPredicate = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof OptionalIntBoundPredicate>,
   render: ({ group }) => {
     return (
-      <Stack>
+      <Stack spacing={3}>
         <group.AppField
           name="kind"
           listeners={{
@@ -26,27 +27,31 @@ export const FieldGroup$OptionalIntBoundPredicate = AppFormHook.withFieldGroup({
             },
           }}
         >
-          {(f) => <f.FC$RadioGroup options={["exact", "range", "unset"]} />}
+          {(field) => (
+            <field.FC$RadioGroup options={["exact", "range", "unset"]} />
+          )}
         </group.AppField>
-        <group.Subscribe
-          selector={({ values: { kind } }) => {
-            return kind;
-          }}
-        >
+        <group.Subscribe selector={({ values }) => values.kind}>
           {(kind) =>
             kind === "unset" ? null : kind === "exact" ? (
               <group.AppField name="value">
-                {(f) => <f.FC$TextField />}
+                {(field) => <field.FC$TextField label="Exact value" />}
               </group.AppField>
             ) : (
-              <>
+              <Box
+                sx={{
+                  display: "grid",
+                  gap: 2,
+                  gridTemplateColumns: { sm: "repeat(2, 1fr)", xs: "1fr" },
+                }}
+              >
                 <group.AppField name="value.minValue">
-                  {(f) => <f.FC$TextField />}
+                  {(field) => <field.FC$TextField label="Minimum" />}
                 </group.AppField>
                 <group.AppField name="value.maxValue">
-                  {(f) => <f.FC$TextField />}
+                  {(field) => <field.FC$TextField label="Maximum" />}
                 </group.AppField>
-              </>
+              </Box>
             )
           }
         </group.Subscribe>
