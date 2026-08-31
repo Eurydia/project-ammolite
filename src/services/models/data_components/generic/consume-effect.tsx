@@ -1,4 +1,6 @@
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -92,7 +94,12 @@ const _FieldGroup$EffectIds = AppFormHook.withFieldGroup({
           },
         }}
       >
-        {(field) => <field.FC$RadioGroup options={EFFECT_ID_KINDS} />}
+        {(field) => (
+          <FormControl>
+            <FormLabel>Effect ID format</FormLabel>
+            <field.FC$RadioGroup options={EFFECT_ID_KINDS} />
+          </FormControl>
+        )}
       </group.AppField>
       <group.Subscribe selector={({ values }) => values.kind}>
         {(kind) => {
