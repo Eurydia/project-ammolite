@@ -220,7 +220,12 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
           },
         }}
       >
-        {(field) => <field.FC$RadioGroup options={TEXT_COMPONENT_KINDS} />}
+        {(field) => (
+          <FormControl>
+            <FormLabel>Text component format</FormLabel>
+            <field.FC$RadioGroup options={TEXT_COMPONENT_KINDS} />
+          </FormControl>
+        )}
       </group.AppField>
       <group.Subscribe selector={({ values }) => values.kind}>
         {(kind) => {
@@ -246,19 +251,40 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                             ) : (
                               <_FieldGroup$Object
                                 form={group}
-                                fields={"value"}
+                                fields={{
+                                  type: `values[${index}].type`,
+                                  text: `values[${index}].text`,
+                                  color: `values[${index}].color`,
+                                  font: `values[${index}].font`,
+                                  bold: `values[${index}].bold`,
+                                  italic: `values[${index}].italic`,
+                                  underlined: `values[${index}].underlined`,
+                                  strikethrough: `values[${index}].strikethrough`,
+                                  obfuscated: `values[${index}].obfuscated`,
+                                  shadowColor: `values[${index}].shadowColor`,
+                                  extra: `values[${index}].extra`,
+                                }}
                               />
                             )}
                             <Button
                               disabled={field.state.value.length === 1}
                               onClick={() => field.removeValue(index)}
                             >
-                              REMOVE
+                              REMOVE ENTRY
                             </Button>
                           </Stack>
                         </Paper>
                       ))}
-                      <Stack direction="row" spacing={2}>
+                      <Box
+                        sx={{
+                          display: "grid",
+                          gap: 2,
+                          gridTemplateColumns: {
+                            sm: "repeat(2, 1fr)",
+                            xs: "1fr",
+                          },
+                        }}
+                      >
                         <Button onClick={() => field.pushValue("")}>
                           ADD TEXT
                         </Button>
@@ -281,7 +307,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                         >
                           ADD OBJECT
                         </Button>
-                      </Stack>
+                      </Box>
                     </Stack>
                   )}
                 </group.AppField>
