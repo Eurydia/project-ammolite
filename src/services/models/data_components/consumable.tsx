@@ -148,7 +148,12 @@ export const Consumable = {
             {(field) => <field.FC$TextField label="Consume seconds" />}
           </group.AppField>
           <group.AppField name="animation">
-            {(field) => <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />}
+            {(field) => (
+              <FormControl>
+                <FormLabel>Animation</FormLabel>
+                <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />
+              </FormControl>
+            )}
           </group.AppField>
           <Typography sx={{ fontWeight: 700 }}>SOUND</Typography>
           <_FieldGroup$Sound form={group} fields="sound" />
