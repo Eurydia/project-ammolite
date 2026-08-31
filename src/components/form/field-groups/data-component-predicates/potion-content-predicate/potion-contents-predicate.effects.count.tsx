@@ -1,7 +1,9 @@
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
@@ -14,75 +16,83 @@ export const _FieldGroup$PotionContentPredicate$Effects$Count =
     defaultValues: {} as z.input<typeof PotionContentsPredicate$Effects$Count>,
     render: ({ group }) => {
       return (
-        <Paper>
-          <Stack spacing={3}>
-            <group.AppField name="values" mode="array">
-              {(f) =>
-                f.state.value.map((_, i) => {
-                  return (
-                    <Paper key={i}>
-                      <Toolbar>
-                        <Button onClick={() => f.removeValue(i)}>REMOVE</Button>
-                      </Toolbar>
-                      <group.AppField name={`values[${i}].test`} mode="array">
-                        {(subf) => (
-                          <>
-                            {subf.state.value.map((_, subfI) => (
-                              <Paper key={`${i}-${subfI}`}>
-                                <Toolbar>
+        <Stack spacing={3}>
+          <Typography sx={{ fontWeight: 700 }}>COUNT</Typography>
+          <group.AppField name="values" mode="array">
+            {(field) => (
+              <Stack spacing={2}>
+                {field.state.value.map((_, index) => (
+                  <Paper key={index} variant="outlined">
+                    <Stack spacing={3}>
+                      <Typography sx={{ fontWeight: 700 }}>
+                        COUNT RULE {index + 1}
+                      </Typography>
+                      <group.AppField
+                        name={`values[${index}].test`}
+                        mode="array"
+                      >
+                        {(testField) => (
+                          <Stack spacing={2}>
+                            {testField.state.value.map((_, testIndex) => (
+                              <Paper key={testIndex} variant="outlined">
+                                <Stack spacing={2}>
+                                  <FieldGroup$MobEffectPredicate
+                                    form={group}
+                                    fields={`values[${index}].test[${testIndex}]`}
+                                  />
                                   <Button
-                                    onClick={() => subf.removeValue(subfI)}
+                                    onClick={() =>
+                                      testField.removeValue(testIndex)
+                                    }
                                   >
-                                    remove
+                                    REMOVE EFFECT
                                   </Button>
-                                </Toolbar>
-                                <FieldGroup$MobEffectPredicate
-                                  form={group}
-                                  fields={`values[${i}].test[${subfI}]`}
-                                />
+                                </Stack>
                               </Paper>
                             ))}
-                            <Toolbar>
-                              <Button
-                                onClick={() =>
-                                  subf.pushValue({
-                                    effect: PotionType.AWKWARD,
-                                    ambient: "unset",
-                                    visible: "unset",
-                                    amplifier: { kind: "unset" },
-                                    duration: { kind: "unset" },
-                                  })
-                                }
-                              >
-                                ADD
-                              </Button>
-                            </Toolbar>
-                          </>
+                            <Button
+                              onClick={() =>
+                                testField.pushValue({
+                                  effect: PotionType.REGENERATION,
+                                  amplifier: { kind: "unset" },
+                                  duration: { kind: "unset" },
+                                  ambient: "unset",
+                                  visible: "unset",
+                                })
+                              }
+                            >
+                              ADD EFFECT
+                            </Button>
+                          </Stack>
                         )}
                       </group.AppField>
-                      <FieldGroup$IntBoundPredicate
-                        form={group}
-                        fields={`values[${i}].count`}
-                      />
-                    </Paper>
-                  );
-                })
-              }
-            </group.AppField>
-            <Toolbar>
-              <Button
-                onClick={() =>
-                  group.pushFieldValue("values", {
-                    count: { kind: "exact", value: "" },
-                    test: [],
-                  })
-                }
-              >
-                Add
-              </Button>
-            </Toolbar>
-          </Stack>
-        </Paper>
+                      <FormControl>
+                        <FormLabel>Matching effect count</FormLabel>
+                        <FieldGroup$IntBoundPredicate
+                          form={group}
+                          fields={`values[${index}].count`}
+                        />
+                      </FormControl>
+                      <Button onClick={() => field.removeValue(index)}>
+                        REMOVE COUNT RULE
+                      </Button>
+                    </Stack>
+                  </Paper>
+                ))}
+                <Button
+                  onClick={() =>
+                    field.pushValue({
+                      count: { kind: "exact", value: "" },
+                      test: [],
+                    })
+                  }
+                >
+                  ADD COUNT RULE
+                </Button>
+              </Stack>
+            )}
+          </group.AppField>
+        </Stack>
       );
     },
   });
