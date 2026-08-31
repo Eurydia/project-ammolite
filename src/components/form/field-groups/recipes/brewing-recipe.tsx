@@ -1,9 +1,7 @@
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type {
@@ -20,39 +18,38 @@ const _RecipeInput = AppFormHook.withFieldGroup({
     return (
       <Paper>
         <Stack spacing={3}>
+          <Typography sx={{ fontWeight: 700 }}>RECIPE INGREDIENT</Typography>
           <group.AppField name="item">
-            {(f) => <f.MinecraftItemSelector label={"Item"} />}
+            {(field) => <field.MinecraftItemSelector label="Item" />}
           </group.AppField>
-          <Card>
-            <group.Subscribe
-              selector={({ values }) => {
-                return values.potionContents !== undefined;
-              }}
-            >
-              {(active) => (
-                <CardContent>
-                  <Toolbar>
-                    <Button
-                      onClick={() =>
-                        group.setFieldValue(
-                          "potionContents",
-                          active ? undefined : {},
-                        )
-                      }
-                    >
-                      {active ? "Clear" : "Add"}
-                    </Button>
-                  </Toolbar>
+          <group.Subscribe
+            selector={({ values }) => values.potionContents !== undefined}
+          >
+            {(active) => (
+              <Paper variant="outlined">
+                <Stack spacing={2}>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "potionContents",
+                        active ? undefined : {},
+                      )
+                    }
+                  >
+                    {active
+                      ? "REMOVE POTION CONTENTS PREDICATE"
+                      : "ADD POTION CONTENTS PREDICATE"}
+                  </Button>
                   {active && (
                     <FieldGroup$PotionContentsPredicate
                       form={group}
-                      fields={"potionContents"}
+                      fields="potionContents"
                     />
                   )}
-                </CardContent>
-              )}
-            </group.Subscribe>
-          </Card>
+                </Stack>
+              </Paper>
+            )}
+          </group.Subscribe>
         </Stack>
       </Paper>
     );
