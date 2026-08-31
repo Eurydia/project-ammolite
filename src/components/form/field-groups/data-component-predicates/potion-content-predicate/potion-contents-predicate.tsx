@@ -1,8 +1,7 @@
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { PotionContentsPredicate } from "#/services/models/data_component_predicates/potion_contents_predicate";
@@ -14,70 +13,61 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
   render: ({ group }) => {
     return (
       <Stack spacing={3}>
-        <Card variant="outlined">
-          <group.Subscribe
-            selector={({ values }) => {
-              return values.potions !== undefined;
-            }}
-          >
-            {(active) => (
-              <>
-                <CardActions>
-                  <Button
-                    onClick={() =>
-                      group.setFieldValue(
-                        "potions",
-                        active ? undefined : { values: [] },
-                      )
-                    }
-                  >
-                    {!active ? "Add" : "Clear"}
-                  </Button>
-                </CardActions>
+        <Typography sx={{ fontWeight: 700 }}>
+          POTION CONTENTS PREDICATE
+        </Typography>
+        <group.Subscribe
+          selector={({ values }) => values.potions !== undefined}
+        >
+          {(active) => (
+            <Paper variant="outlined">
+              <Stack spacing={2}>
+                <Button
+                  onClick={() =>
+                    group.setFieldValue(
+                      "potions",
+                      active ? undefined : { values: [] },
+                    )
+                  }
+                >
+                  {active ? "REMOVE POTIONS" : "ADD POTIONS"}
+                </Button>
                 {active && (
-                  <CardContent>
-                    <_FieldGroup$PotionContentPredicate$Potions
-                      fields={"potions"}
-                      form={group}
-                    />
-                  </CardContent>
+                  <_FieldGroup$PotionContentPredicate$Potions
+                    fields="potions"
+                    form={group}
+                  />
                 )}
-              </>
-            )}
-          </group.Subscribe>
-        </Card>
-        <Card variant="outlined">
-          <group.Subscribe
-            selector={({ values }) => {
-              return values.effects !== undefined;
-            }}
-          >
-            {(active) => (
-              <>
-                <CardActions>
-                  <Button
-                    onClick={() =>
-                      group.setFieldValue(
-                        "effects",
-                        active ? undefined : { size: { kind: "unset" } },
-                      )
-                    }
-                  >
-                    {!active ? "Add" : "Clear"}
-                  </Button>
-                </CardActions>
+              </Stack>
+            </Paper>
+          )}
+        </group.Subscribe>
+        <group.Subscribe
+          selector={({ values }) => values.effects !== undefined}
+        >
+          {(active) => (
+            <Paper variant="outlined">
+              <Stack spacing={2}>
+                <Button
+                  onClick={() =>
+                    group.setFieldValue(
+                      "effects",
+                      active ? undefined : { size: { kind: "unset" } },
+                    )
+                  }
+                >
+                  {active ? "REMOVE EFFECTS" : "ADD EFFECTS"}
+                </Button>
                 {active && (
-                  <CardContent>
-                    <_FieldGroup$PotionContentPredicate$Effects
-                      fields={"effects"}
-                      form={group}
-                    />
-                  </CardContent>
+                  <_FieldGroup$PotionContentPredicate$Effects
+                    fields="effects"
+                    form={group}
+                  />
                 )}
-              </>
-            )}
-          </group.Subscribe>
-        </Card>
+              </Stack>
+            </Paper>
+          )}
+        </group.Subscribe>
       </Stack>
     );
   },
