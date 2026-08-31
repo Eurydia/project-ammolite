@@ -18,15 +18,17 @@ export const PotionDurationScale = {
   toDataPackJSON: (dt: z.output<typeof schema>) => {
     return { "minecraft:potion_duration_scale": dt.value };
   },
-  fieldGroup: AppFormHook.withFieldGroup({
+  fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => {
       return (
         <Paper>
           <Stack spacing={3}>
-            <Typography>Component: potion_duration_scale</Typography>
+            <Typography sx={{ fontWeight: 700 }}>
+              POTION DURATION SCALE
+            </Typography>
             <group.AppField name="value">
-              {(f) => <f.FC$TextField label={"value (float)"} />}
+              {(field) => <field.FC$TextField label="Scale" />}
             </group.AppField>
           </Stack>
         </Paper>
