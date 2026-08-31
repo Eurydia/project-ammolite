@@ -1,4 +1,6 @@
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
@@ -76,7 +78,12 @@ const _FieldGroup$Sound = AppFormHook.withFieldGroup({
           },
         }}
       >
-        {(field) => <field.FC$RadioGroup options={SOUND_KINDS} />}
+        {(field) => (
+          <FormControl>
+            <FormLabel>Sound format</FormLabel>
+            <field.FC$RadioGroup options={SOUND_KINDS} />
+          </FormControl>
+        )}
       </group.AppField>
       <group.Subscribe selector={({ values }) => values.kind}>
         {(kind) => {
