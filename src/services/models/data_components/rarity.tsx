@@ -1,9 +1,13 @@
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { ItemRarity } from "#/services/enums/item-rarity";
+
+const RARITY_OPTIONS = Object.values(ItemRarity);
 
 const schema = z.object({
   value: z.enum(ItemRarity),
@@ -24,7 +28,12 @@ export const Rarity = {
           <Stack spacing={3}>
             <Typography sx={{ fontWeight: 700 }}>RARITY</Typography>
             <group.AppField name="value">
-              {(f) => <f.FC$RadioGroup options={Object.values(ItemRarity)} />}
+              {(field) => (
+                <FormControl>
+                  <FormLabel>Rarity</FormLabel>
+                  <field.FC$RadioGroup options={RARITY_OPTIONS} />
+                </FormControl>
+              )}
             </group.AppField>
           </Stack>
         </Paper>
