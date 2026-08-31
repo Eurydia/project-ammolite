@@ -62,13 +62,14 @@ const _RecipeOutput = AppFormHook.withFieldGroup({
     return (
       <Paper>
         <Stack spacing={3}>
-          <group.AppField name="item">
-            {(f) => <f.MinecraftItemSelector label={"Item"} />}
+          <Typography sx={{ fontWeight: 700 }}>RECIPE OUTPUT</Typography>
+          <group.AppField name="id">
+            {(field) => <field.MinecraftItemSelector label="Item" />}
           </group.AppField>
           <group.AppField name="count">
-            {(f) => <f.FC$TextField label={"Count"} />}
+            {(field) => <field.FC$TextField label="Count (optional)" />}
           </group.AppField>
-          <FieldGroup$PotionContents form={group} fields={"components"} />
+          <FieldGroup$PotionContents form={group} fields="components" />
         </Stack>
       </Paper>
     );
