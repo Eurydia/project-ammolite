@@ -1,8 +1,9 @@
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import type z from "zod";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { PotionContentsPredicate$Effects } from "#/services/models/data_component_predicates/potion_contents_predicate";
@@ -16,78 +17,68 @@ export const _FieldGroup$PotionContentPredicate$Effects =
     render: ({ group }) => {
       return (
         <Stack spacing={3}>
-          <Card variant="outlined">
-            <group.Subscribe
-              selector={({ values: { contains } }) => {
-                return contains !== undefined;
-              }}
-            >
-              {(active) => (
-                <>
-                  <CardActions>
-                    <Button
-                      onClick={() =>
-                        group.setFieldValue(
-                          "contains",
-                          active ? undefined : { values: [] },
-                        )
-                      }
-                    >
-                      {!active ? "Add" : "Clear"}
-                    </Button>
-                  </CardActions>
+          <Typography sx={{ fontWeight: 700 }}>EFFECTS</Typography>
+          <group.Subscribe
+            selector={({ values }) => values.contains !== undefined}
+          >
+            {(active) => (
+              <Paper variant="outlined">
+                <Stack spacing={2}>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "contains",
+                        active ? undefined : { values: [] },
+                      )
+                    }
+                  >
+                    {active ? "REMOVE CONTAINS" : "ADD CONTAINS"}
+                  </Button>
                   {active && (
-                    <CardContent>
-                      <_FieldGroup$PotionContentPredicate$Effects$Contains
-                        fields={"contains"}
-                        form={group}
-                      />
-                    </CardContent>
+                    <_FieldGroup$PotionContentPredicate$Effects$Contains
+                      fields="contains"
+                      form={group}
+                    />
                   )}
-                </>
-              )}
-            </group.Subscribe>
-          </Card>
-          <Card variant="outlined">
-            <group.Subscribe
-              selector={({ values: { count } }) => {
-                return count !== undefined;
-              }}
-            >
-              {(active) => (
-                <>
-                  <CardActions>
-                    <Button
-                      onClick={() =>
-                        group.setFieldValue(
-                          "count",
-                          active ? undefined : { values: [] },
-                        )
-                      }
-                    >
-                      {!active ? "Add" : "Clear"}
-                    </Button>
-                  </CardActions>
+                </Stack>
+              </Paper>
+            )}
+          </group.Subscribe>
+          <group.Subscribe
+            selector={({ values }) => values.count !== undefined}
+          >
+            {(active) => (
+              <Paper variant="outlined">
+                <Stack spacing={2}>
+                  <Button
+                    onClick={() =>
+                      group.setFieldValue(
+                        "count",
+                        active ? undefined : { values: [] },
+                      )
+                    }
+                  >
+                    {active ? "REMOVE COUNT" : "ADD COUNT"}
+                  </Button>
                   {active && (
-                    <CardContent>
-                      <_FieldGroup$PotionContentPredicate$Effects$Count
-                        fields={"count"}
-                        form={group}
-                      />
-                    </CardContent>
+                    <_FieldGroup$PotionContentPredicate$Effects$Count
+                      fields="count"
+                      form={group}
+                    />
                   )}
-                </>
-              )}
-            </group.Subscribe>
-          </Card>
-          <Card variant="outlined">
-            <CardContent>
+                </Stack>
+              </Paper>
+            )}
+          </group.Subscribe>
+          <Paper variant="outlined">
+            <FormControl>
+              <FormLabel>Effect list size</FormLabel>
               <FieldGroup$OptionalIntBoundPredicate
-                fields={"size"}
+                fields="size"
                 form={group}
               />
-            </CardContent>
-          </Card>
+            </FormControl>
+          </Paper>
         </Stack>
       );
     },
