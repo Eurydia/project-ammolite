@@ -161,7 +161,12 @@ const _FieldGroup$Sound = AppFormHook.withFieldGroup({
           },
         }}
       >
-        {(field) => <field.FC$RadioGroup options={SOUND_KINDS} />}
+        {(field) => (
+          <FormControl>
+            <FormLabel>Sound format</FormLabel>
+            <field.FC$RadioGroup options={SOUND_KINDS} />
+          </FormControl>
+        )}
       </group.AppField>
       <group.Subscribe selector={({ values }) => values.kind}>
         {(kind) => {
