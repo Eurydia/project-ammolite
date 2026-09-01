@@ -1,10 +1,9 @@
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import type z from "zod";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { PotionContentsPredicate$Effects } from "#/services/models/data_component_predicates/potion_contents_predicate";
 import { FieldGroup$OptionalIntBoundPredicate } from "../generics/optional-int-bound-predicate";
@@ -16,13 +15,12 @@ export const _FieldGroup$PotionContentPredicate$Effects =
     defaultValues: {} as z.input<typeof PotionContentsPredicate$Effects>,
     render: ({ group }) => {
       return (
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>EFFECTS</Typography>
+        <FieldGroupSection title="Effects">
           <group.Subscribe
             selector={({ values }) => values.contains !== undefined}
           >
             {(active) => (
-              <Paper variant="outlined">
+              <FieldGroupSection>
                 <Stack spacing={2}>
                   <Button
                     onClick={() =>
@@ -41,14 +39,14 @@ export const _FieldGroup$PotionContentPredicate$Effects =
                     />
                   )}
                 </Stack>
-              </Paper>
+              </FieldGroupSection>
             )}
           </group.Subscribe>
           <group.Subscribe
             selector={({ values }) => values.count !== undefined}
           >
             {(active) => (
-              <Paper variant="outlined">
+              <FieldGroupSection>
                 <Stack spacing={2}>
                   <Button
                     onClick={() =>
@@ -67,19 +65,19 @@ export const _FieldGroup$PotionContentPredicate$Effects =
                     />
                   )}
                 </Stack>
-              </Paper>
+              </FieldGroupSection>
             )}
           </group.Subscribe>
-          <Paper variant="outlined">
+          <FieldGroupSection title="Effect list size">
             <FormControl>
-              <FormLabel>Effect list size</FormLabel>
+              <FormLabel>Size rule</FormLabel>
               <FieldGroup$OptionalIntBoundPredicate
                 fields="size"
                 form={group}
               />
             </FormControl>
-          </Paper>
-        </Stack>
+          </FieldGroupSection>
+        </FieldGroupSection>
       );
     },
   });

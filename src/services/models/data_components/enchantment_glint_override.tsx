@@ -1,7 +1,5 @@
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 
 const schema = z.object({
@@ -18,18 +16,11 @@ export const EnchantmentGlintOverride = {
   fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
-      <Paper>
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>
-            ENCHANTMENT GLINT OVERRIDE
-          </Typography>
-          <group.AppField name="value">
-            {(field) => (
-              <field.BooleanCheckbox label="Show enchantment glint" />
-            )}
-          </group.AppField>
-        </Stack>
-      </Paper>
+      <FieldGroupPanel title="Enchantment glint override">
+        <group.AppField name="value">
+          {(field) => <field.BooleanCheckbox label="Show enchantment glint" />}
+        </group.AppField>
+      </FieldGroupPanel>
     ),
   }),
 } as const;

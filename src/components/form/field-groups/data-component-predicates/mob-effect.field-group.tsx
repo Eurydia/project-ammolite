@@ -1,8 +1,7 @@
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import type z from "zod";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { MobEffectPredicate } from "#/services/models/data_component_predicates/mob-effect-predicate";
 import { FieldGroup$OptionalIntBoundPredicate } from "./generics/optional-int-bound-predicate";
@@ -11,8 +10,7 @@ export const FieldGroup$MobEffectPredicate = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof MobEffectPredicate>,
   render: ({ group }) => {
     return (
-      <Stack spacing={3}>
-        <Typography sx={{ fontWeight: 700 }}>MOB EFFECT PREDICATE</Typography>
+      <FieldGroupSection title="Mob effect predicate">
         <group.AppField name="effect">
           {(field) => <field.PotionEffectSelector label="Effect" />}
         </group.AppField>
@@ -46,7 +44,7 @@ export const FieldGroup$MobEffectPredicate = AppFormHook.withFieldGroup({
             form={group}
           />
         </FormControl>
-      </Stack>
+      </FieldGroupSection>
     );
   },
 });

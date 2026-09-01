@@ -1,8 +1,10 @@
 import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import type z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 import type { PotionContentsPredicate$Potions } from "#/services/models/data_component_predicates/potion_contents_predicate";
@@ -14,27 +16,51 @@ export const _FieldGroup$PotionContentPredicate$Potions =
     defaultValues: {} as z.input<typeof PotionContentsPredicate$Potions>,
     render: ({ group }) => {
       return (
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>POTIONS</Typography>
+        <FieldGroupSection title="Potions">
           <group.AppField name="values" mode="array">
             {(field) => (
-              <Autocomplete
-                multiple
-                options={POTION_OPTIONS}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(_, value) => field.handleChange(value)}
-                renderInput={(inputProps) => (
-                  <TextField
-                    {...inputProps}
-                    error={field.state.meta.errors.length > 0}
-                    label="Potions"
-                  />
-                )}
-              />
+              <Stack spacing={2}>
+                <SortableList
+                  items={field.state.value}
+                  onMove={(fromIndex, toIndex) =>
+                    field.moveValue(fromIndex, toIndex)
+                  }
+                  renderItem={(_, index) => (
+                    <Stack direction="row" spacing={2}>
+                      <group.AppField name={`values[${index}]`}>
+                        {(entry) => (
+                          <Autocomplete
+                            options={POTION_OPTIONS}
+                            value={entry.state.value}
+                            onBlur={entry.handleBlur}
+                            onChange={(_, value) => {
+                              if (value !== null) {
+                                entry.handleChange(value);
+                              }
+                            }}
+                            renderInput={(inputProps) => (
+                              <TextField
+                                {...inputProps}
+                                error={entry.state.meta.errors.length > 0}
+                                label="Potion"
+                              />
+                            )}
+                          />
+                        )}
+                      </group.AppField>
+                      <Button onClick={() => field.removeValue(index)}>
+                        REMOVE
+                      </Button>
+                    </Stack>
+                  )}
+                />
+                <Button onClick={() => field.pushValue(PotionType.AWKWARD)}>
+                  ADD POTION
+                </Button>
+              </Stack>
             )}
           </group.AppField>
-        </Stack>
+        </FieldGroupSection>
       );
     },
   });

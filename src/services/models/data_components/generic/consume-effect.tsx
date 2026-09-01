@@ -1,10 +1,10 @@
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { _FieldGroup$PotionContents$CustomEffects$Effect } from "#/components/form/field-groups/data-component/potion-content/potion-content";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
@@ -115,21 +115,27 @@ const _FieldGroup$EffectIds = AppFormHook.withFieldGroup({
                 <group.AppField name="values" mode="array">
                   {(field) => (
                     <Stack spacing={2}>
-                      {field.state.value.map((_, index) => (
-                        <Stack direction="row" spacing={2} key={index}>
-                          <group.AppField name={`values[${index}]`}>
-                            {(effectId) => (
-                              <effectId.FC$TextField label="Effect ID" />
-                            )}
-                          </group.AppField>
-                          <Button
-                            disabled={field.state.value.length === 1}
-                            onClick={() => field.removeValue(index)}
-                          >
-                            REMOVE
-                          </Button>
-                        </Stack>
-                      ))}
+                      <SortableList
+                        items={field.state.value}
+                        onMove={(fromIndex, toIndex) =>
+                          field.moveValue(fromIndex, toIndex)
+                        }
+                        renderItem={(_, index) => (
+                          <Stack direction="row" spacing={2}>
+                            <group.AppField name={`values[${index}]`}>
+                              {(effectId) => (
+                                <effectId.FC$TextField label="Effect ID" />
+                              )}
+                            </group.AppField>
+                            <Button
+                              disabled={field.state.value.length === 1}
+                              onClick={() => field.removeValue(index)}
+                            >
+                              REMOVE
+                            </Button>
+                          </Stack>
+                        )}
+                      />
                       <Button onClick={() => field.pushValue("")}>
                         ADD EFFECT ID
                       </Button>
@@ -202,58 +208,61 @@ const _FieldGroup$Sound = AppFormHook.withFieldGroup({
 const fieldGroupComponent = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof schema>,
   render: ({ group }) => (
-    <Paper variant="outlined">
-      <Stack spacing={3}>
-        <Typography sx={{ fontWeight: 700 }}>CONSUME EFFECT</Typography>
-        <group.AppField
-          name="type"
-          listeners={{
-            onChange: ({ value }) => {
-              switch (value) {
-                case ConsumeEffectType.APPLY_EFFECTS:
-                  group.setFieldValue("effectInstances", []);
-                  group.setFieldValue("probability", "");
-                  break;
-                case ConsumeEffectType.REMOVE_EFFECTS:
-                  group.setFieldValue("effectIds", {
-                    kind: "single",
-                    value: "",
-                  });
-                  break;
-                case ConsumeEffectType.CLEAR_ALL_EFFECTS:
-                  break;
-                case ConsumeEffectType.TELEPORT_RANDOMLY:
-                  group.setFieldValue("diameter", "");
-                  group.setFieldValue("directionalParticles", true);
-                  break;
-                case ConsumeEffectType.PLAY_SOUND:
-                  group.setFieldValue("sound", {
-                    kind: "reference",
-                    value: "",
-                  });
-                  break;
-              }
-            },
-          }}
-        >
-          {(field) => (
-            <FormControl>
-              <FormLabel>Consume effect type</FormLabel>
-              <field.FC$RadioGroup options={CONSUME_EFFECT_TYPES} />
-            </FormControl>
-          )}
-        </group.AppField>
-        <group.Subscribe selector={({ values }) => values.type}>
-          {(type) => {
-            switch (type) {
+    <FieldGroupSection title="Consume effect">
+      <group.AppField
+        name="type"
+        listeners={{
+          onChange: ({ value }) => {
+            switch (value) {
               case ConsumeEffectType.APPLY_EFFECTS:
-                return (
-                  <Stack spacing={3}>
-                    <group.AppField name="effectInstances" mode="array">
-                      {(field) => (
-                        <Stack spacing={2}>
-                          {field.state.value.map((_, index) => (
-                            <Paper variant="outlined" key={index}>
+                group.setFieldValue("effectInstances", []);
+                group.setFieldValue("probability", "");
+                break;
+              case ConsumeEffectType.REMOVE_EFFECTS:
+                group.setFieldValue("effectIds", {
+                  kind: "single",
+                  value: "",
+                });
+                break;
+              case ConsumeEffectType.CLEAR_ALL_EFFECTS:
+                break;
+              case ConsumeEffectType.TELEPORT_RANDOMLY:
+                group.setFieldValue("diameter", "");
+                group.setFieldValue("directionalParticles", true);
+                break;
+              case ConsumeEffectType.PLAY_SOUND:
+                group.setFieldValue("sound", {
+                  kind: "reference",
+                  value: "",
+                });
+                break;
+            }
+          },
+        }}
+      >
+        {(field) => (
+          <FormControl>
+            <FormLabel>Consume effect type</FormLabel>
+            <field.FC$RadioGroup options={CONSUME_EFFECT_TYPES} />
+          </FormControl>
+        )}
+      </group.AppField>
+      <group.Subscribe selector={({ values }) => values.type}>
+        {(type) => {
+          switch (type) {
+            case ConsumeEffectType.APPLY_EFFECTS:
+              return (
+                <Stack spacing={3}>
+                  <group.AppField name="effectInstances" mode="array">
+                    {(field) => (
+                      <Stack spacing={2}>
+                        <SortableList
+                          items={field.state.value}
+                          onMove={(fromIndex, toIndex) =>
+                            field.moveValue(fromIndex, toIndex)
+                          }
+                          renderItem={(_, index) => (
+                            <FieldGroupSection title={`Effect ${index + 1}`}>
                               <Stack spacing={2}>
                                 <_FieldGroup$PotionContents$CustomEffects$Effect
                                   form={group}
@@ -265,61 +274,59 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                                   REMOVE EFFECT
                                 </Button>
                               </Stack>
-                            </Paper>
-                          ))}
-                          <Button
-                            onClick={() =>
-                              field.pushValue({
-                                id: PotionType.REGENERATION,
-                                amplifier: "",
-                                duration: "",
-                                ambient: false,
-                                visible: false,
-                                showParticles: true,
-                                showIcon: true,
-                              })
-                            }
-                          >
-                            ADD EFFECT
-                          </Button>
-                        </Stack>
-                      )}
-                    </group.AppField>
-                    <group.AppField name="probability">
-                      {(field) => (
-                        <field.FC$TextField label="Probability (optional, 0–1)" />
-                      )}
-                    </group.AppField>
-                  </Stack>
-                );
-              case ConsumeEffectType.REMOVE_EFFECTS:
-                return (
-                  <_FieldGroup$EffectIds form={group} fields="effectIds" />
-                );
-              case ConsumeEffectType.CLEAR_ALL_EFFECTS:
-                return null;
-              case ConsumeEffectType.TELEPORT_RANDOMLY:
-                return (
-                  <Stack spacing={3}>
-                    <group.AppField name="diameter">
-                      {(field) => (
-                        <field.FC$TextField label="Diameter (optional)" />
-                      )}
-                    </group.AppField>
-                    <group.AppField name="directionalParticles">
-                      {(field) => (
-                        <field.BooleanCheckbox label="Directional particles" />
-                      )}
-                    </group.AppField>
-                  </Stack>
-                );
-              case ConsumeEffectType.PLAY_SOUND:
-                return <_FieldGroup$Sound form={group} fields="sound" />;
-            }
-          }}
-        </group.Subscribe>
-      </Stack>
-    </Paper>
+                            </FieldGroupSection>
+                          )}
+                        />
+                        <Button
+                          onClick={() =>
+                            field.pushValue({
+                              id: PotionType.REGENERATION,
+                              amplifier: "",
+                              duration: "",
+                              ambient: false,
+                              visible: false,
+                              showParticles: true,
+                              showIcon: true,
+                            })
+                          }
+                        >
+                          ADD EFFECT
+                        </Button>
+                      </Stack>
+                    )}
+                  </group.AppField>
+                  <group.AppField name="probability">
+                    {(field) => (
+                      <field.FC$TextField label="Probability (optional, 0–1)" />
+                    )}
+                  </group.AppField>
+                </Stack>
+              );
+            case ConsumeEffectType.REMOVE_EFFECTS:
+              return <_FieldGroup$EffectIds form={group} fields="effectIds" />;
+            case ConsumeEffectType.CLEAR_ALL_EFFECTS:
+              return null;
+            case ConsumeEffectType.TELEPORT_RANDOMLY:
+              return (
+                <Stack spacing={3}>
+                  <group.AppField name="diameter">
+                    {(field) => (
+                      <field.FC$TextField label="Diameter (optional)" />
+                    )}
+                  </group.AppField>
+                  <group.AppField name="directionalParticles">
+                    {(field) => (
+                      <field.BooleanCheckbox label="Directional particles" />
+                    )}
+                  </group.AppField>
+                </Stack>
+              );
+            case ConsumeEffectType.PLAY_SOUND:
+              return <_FieldGroup$Sound form={group} fields="sound" />;
+          }
+        }}
+      </group.Subscribe>
+    </FieldGroupSection>
   ),
 });
 

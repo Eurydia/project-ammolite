@@ -1,8 +1,11 @@
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import {
+  FieldGroupPanel,
+  FieldGroupSection,
+} from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { TextComponent } from "./generic/text-component";
 
@@ -20,14 +23,17 @@ export const Lore = {
   fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
-      <Paper>
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>LORE</Typography>
-          <group.AppField name="lines" mode="array">
-            {(field) => (
-              <Stack spacing={2}>
-                {field.state.value.map((_, index) => (
-                  <Paper variant="outlined" key={index}>
+      <FieldGroupPanel title="Lore">
+        <group.AppField name="lines" mode="array">
+          {(field) => (
+            <Stack spacing={2}>
+              <SortableList
+                items={field.state.value}
+                onMove={(fromIndex, toIndex) =>
+                  field.moveValue(fromIndex, toIndex)
+                }
+                renderItem={(_, index) => (
+                  <FieldGroupSection title={`Line ${index + 1}`}>
                     <Stack spacing={2}>
                       <TextComponent.fieldGroupComponent
                         form={group}
@@ -37,19 +43,19 @@ export const Lore = {
                         REMOVE LINE
                       </Button>
                     </Stack>
-                  </Paper>
-                ))}
-                <Button
-                  disabled={field.state.value.length >= 256}
-                  onClick={() => field.pushValue({ kind: "string", value: "" })}
-                >
-                  ADD LINE
-                </Button>
-              </Stack>
-            )}
-          </group.AppField>
-        </Stack>
-      </Paper>
+                  </FieldGroupSection>
+                )}
+              />
+              <Button
+                disabled={field.state.value.length >= 256}
+                onClick={() => field.pushValue({ kind: "string", value: "" })}
+              >
+                ADD LINE
+              </Button>
+            </Stack>
+          )}
+        </group.AppField>
+      </FieldGroupPanel>
     ),
   }),
 } as const;

@@ -1,11 +1,12 @@
 import Autocomplete from "@mui/material/Autocomplete";
+import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { DamageType } from "#/services/enums/damage-type";
 
@@ -82,25 +83,50 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
               return (
                 <group.AppField name="values" mode="array">
                   {(field) => (
-                    <Autocomplete
-                      freeSolo
-                      multiple
-                      options={DAMAGE_TYPE_OPTIONS}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(_, value) => {
-                        if (value.length > 0) {
-                          field.handleChange(value);
+                    <Stack spacing={2}>
+                      <SortableList
+                        items={field.state.value}
+                        onMove={(fromIndex, toIndex) =>
+                          field.moveValue(fromIndex, toIndex)
                         }
-                      }}
-                      renderInput={(inputProps) => (
-                        <TextField
-                          {...inputProps}
-                          error={field.state.meta.errors.length > 0}
-                          label="Damage type IDs"
-                        />
-                      )}
-                    />
+                        renderItem={(_, index) => (
+                          <Stack direction="row" spacing={2}>
+                            <group.AppField name={`values[${index}]`}>
+                              {(entry) => (
+                                <Autocomplete
+                                  freeSolo
+                                  inputValue={entry.state.value}
+                                  options={DAMAGE_TYPE_OPTIONS}
+                                  onBlur={entry.handleBlur}
+                                  onChange={(_, value) =>
+                                    entry.handleChange(value ?? "")
+                                  }
+                                  onInputChange={(_, value) =>
+                                    entry.handleChange(value)
+                                  }
+                                  renderInput={(inputProps) => (
+                                    <TextField
+                                      {...inputProps}
+                                      error={entry.state.meta.errors.length > 0}
+                                      label="Damage type ID or tag"
+                                    />
+                                  )}
+                                />
+                              )}
+                            </group.AppField>
+                            <Button
+                              disabled={field.state.value.length === 1}
+                              onClick={() => field.removeValue(index)}
+                            >
+                              REMOVE
+                            </Button>
+                          </Stack>
+                        )}
+                      />
+                      <Button onClick={() => field.pushValue("")}>
+                        ADD DAMAGE TYPE
+                      </Button>
+                    </Stack>
                   )}
                 </group.AppField>
               );
@@ -124,12 +150,9 @@ export const DamageResistant = {
   fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
-      <Paper>
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>DAMAGE RESISTANT</Typography>
-          <_FieldGroup$Types form={group} fields="types" />
-        </Stack>
-      </Paper>
+      <FieldGroupPanel title="Damage resistant">
+        <_FieldGroup$Types form={group} fields="types" />
+      </FieldGroupPanel>
     ),
   }),
 } as const;

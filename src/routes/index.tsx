@@ -23,9 +23,17 @@ function Home() {
         id: MinecraftItem.BLAZE_POWDER,
         count: "",
         components: {
-          id: "minecraft:potion_contents",
-          potion: PotionType.AWKWARD,
-          customName: "",
+          selectedType: "minecraft:potion_contents",
+          values: [
+            {
+              type: "minecraft:potion_contents",
+              value: {
+                id: "minecraft:potion_contents",
+                potion: PotionType.AWKWARD,
+                customName: "",
+              },
+            },
+          ],
         },
       },
     } as z.input<typeof BrewingRecipe>,
@@ -33,7 +41,7 @@ function Home() {
   });
 
   return (
-    <Container>
+    <Container sx={{ py: 3 }}>
       <Stack spacing={3}>
         <FieldGroup$BrewingRecipe form={form} />
         <form.Subscribe selector={({ values }) => values}>

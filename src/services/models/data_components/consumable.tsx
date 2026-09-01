@@ -1,10 +1,13 @@
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import {
+  FieldGroupPanel,
+  FieldGroupSection,
+} from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { ConsumeEffect, ConsumeEffectType } from "./generic/consume-effect";
 
@@ -141,42 +144,45 @@ export const Consumable = {
   fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
-      <Paper>
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>CONSUMABLE</Typography>
-          <group.AppField name="consumeSeconds">
-            {(field) => <field.FC$TextField label="Consume seconds" />}
-          </group.AppField>
-          <group.AppField name="animation">
-            {(field) => (
-              <FormControl>
-                <FormLabel>Animation</FormLabel>
-                <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />
-              </FormControl>
-            )}
-          </group.AppField>
-          <Typography sx={{ fontWeight: 700 }}>SOUND</Typography>
+      <FieldGroupPanel title="Consumable">
+        <group.AppField name="consumeSeconds">
+          {(field) => <field.FC$TextField label="Consume seconds" />}
+        </group.AppField>
+        <group.AppField name="animation">
+          {(field) => (
+            <FormControl>
+              <FormLabel>Animation</FormLabel>
+              <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />
+            </FormControl>
+          )}
+        </group.AppField>
+        <FieldGroupSection title="Sound">
           <_FieldGroup$Sound form={group} fields="sound" />
-          <group.AppField name="hasConsumeParticles">
-            {(field) => (
-              <field.BooleanCheckbox label="Show consume particles" />
-            )}
-          </group.AppField>
-          <Typography sx={{ fontWeight: 700 }}>ON CONSUME EFFECTS</Typography>
+        </FieldGroupSection>
+        <group.AppField name="hasConsumeParticles">
+          {(field) => <field.BooleanCheckbox label="Show consume particles" />}
+        </group.AppField>
+        <FieldGroupSection title="On consume effects">
           <group.AppField name="onConsumeEffects" mode="array">
             {(field) => (
               <Stack spacing={2}>
-                {field.state.value.map((_, index) => (
-                  <Stack spacing={2} key={index}>
-                    <ConsumeEffect.fieldGroupComponent
-                      form={group}
-                      fields={`onConsumeEffects[${index}]`}
-                    />
-                    <Button onClick={() => field.removeValue(index)}>
-                      REMOVE CONSUME EFFECT
-                    </Button>
-                  </Stack>
-                ))}
+                <SortableList
+                  items={field.state.value}
+                  onMove={(fromIndex, toIndex) =>
+                    field.moveValue(fromIndex, toIndex)
+                  }
+                  renderItem={(_, index) => (
+                    <Stack spacing={2}>
+                      <ConsumeEffect.fieldGroupComponent
+                        form={group}
+                        fields={`onConsumeEffects[${index}]`}
+                      />
+                      <Button onClick={() => field.removeValue(index)}>
+                        REMOVE CONSUME EFFECT
+                      </Button>
+                    </Stack>
+                  )}
+                />
                 <Button
                   onClick={() =>
                     field.pushValue({
@@ -189,8 +195,8 @@ export const Consumable = {
               </Stack>
             )}
           </group.AppField>
-        </Stack>
-      </Paper>
+        </FieldGroupSection>
+      </FieldGroupPanel>
     ),
   }),
 } as const;

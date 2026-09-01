@@ -1,9 +1,7 @@
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { ItemRarity } from "#/services/enums/item-rarity";
 
@@ -24,19 +22,16 @@ export const Rarity = {
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => {
       return (
-        <Paper>
-          <Stack spacing={3}>
-            <Typography sx={{ fontWeight: 700 }}>RARITY</Typography>
-            <group.AppField name="value">
-              {(field) => (
-                <FormControl>
-                  <FormLabel>Rarity</FormLabel>
-                  <field.FC$RadioGroup options={RARITY_OPTIONS} />
-                </FormControl>
-              )}
-            </group.AppField>
-          </Stack>
-        </Paper>
+        <FieldGroupPanel title="Rarity">
+          <group.AppField name="value">
+            {(field) => (
+              <FormControl>
+                <FormLabel>Rarity</FormLabel>
+                <field.FC$RadioGroup options={RARITY_OPTIONS} />
+              </FormControl>
+            )}
+          </group.AppField>
+        </FieldGroupPanel>
       );
     },
   }),

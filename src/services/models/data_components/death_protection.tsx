@@ -1,8 +1,8 @@
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { ConsumeEffect, ConsumeEffectType } from "./generic/consume-effect";
 
@@ -27,14 +27,17 @@ export const DeathProtection = {
   fieldGroupComponent: AppFormHook.withFieldGroup({
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
-      <Paper>
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>DEATH PROTECTION</Typography>
-          <group.AppField name="deathEffects" mode="array">
-            {(field) => (
-              <Stack spacing={2}>
-                {field.state.value.map((_, index) => (
-                  <Stack spacing={2} key={index}>
+      <FieldGroupPanel title="Death protection">
+        <group.AppField name="deathEffects" mode="array">
+          {(field) => (
+            <Stack spacing={2}>
+              <SortableList
+                items={field.state.value}
+                onMove={(fromIndex, toIndex) =>
+                  field.moveValue(fromIndex, toIndex)
+                }
+                renderItem={(_, index) => (
+                  <Stack spacing={2}>
                     <ConsumeEffect.fieldGroupComponent
                       form={group}
                       fields={`deathEffects[${index}]`}
@@ -43,21 +46,21 @@ export const DeathProtection = {
                       REMOVE CONSUME EFFECT
                     </Button>
                   </Stack>
-                ))}
-                <Button
-                  onClick={() =>
-                    field.pushValue({
-                      type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
-                    })
-                  }
-                >
-                  ADD CONSUME EFFECT
-                </Button>
-              </Stack>
-            )}
-          </group.AppField>
-        </Stack>
-      </Paper>
+                )}
+              />
+              <Button
+                onClick={() =>
+                  field.pushValue({
+                    type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
+                  })
+                }
+              >
+                ADD CONSUME EFFECT
+              </Button>
+            </Stack>
+          )}
+        </group.AppField>
+      </FieldGroupPanel>
     ),
   }),
 } as const;

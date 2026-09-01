@@ -1,7 +1,5 @@
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 
 const schema = z.object({
@@ -22,16 +20,11 @@ export const PotionDurationScale = {
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => {
       return (
-        <Paper>
-          <Stack spacing={3}>
-            <Typography sx={{ fontWeight: 700 }}>
-              POTION DURATION SCALE
-            </Typography>
-            <group.AppField name="value">
-              {(field) => <field.FC$TextField label="Scale" />}
-            </group.AppField>
-          </Stack>
-        </Paper>
+        <FieldGroupPanel title="Potion duration scale">
+          <group.AppField name="value">
+            {(field) => <field.FC$TextField label="Scale" />}
+          </group.AppField>
+        </FieldGroupPanel>
       );
     },
   }),

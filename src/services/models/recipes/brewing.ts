@@ -5,15 +5,12 @@ import {
   PotionContentsPredicate,
   PotionContentsPredicate$AsDataPackJSON,
 } from "../data_component_predicates/potion_contents_predicate";
-import {
-  PotionContents,
-  PotionContents$AsDataPackJSON,
-} from "../data_components/potion_contents";
+import { DataComponents } from "../data_components";
 
 export const BrewingRecipe$OutputItem = z.object({
   id: z.enum(MinecraftItem),
   count: OptionalIntString,
-  components: PotionContents,
+  components: DataComponents.schema,
 });
 
 const BrewingRecipe$OutputItem$ToDataPackJSON = (
@@ -22,10 +19,7 @@ const BrewingRecipe$OutputItem$ToDataPackJSON = (
   return {
     id: dt.id,
     count: dt.count,
-    components:
-      dt.components === undefined
-        ? undefined
-        : PotionContents$AsDataPackJSON(dt.components),
+    components: DataComponents.toDataPackJSON(dt.components),
   };
 };
 

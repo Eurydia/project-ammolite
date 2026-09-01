@@ -1,8 +1,7 @@
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import type z from "zod";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import type { PotionContentsPredicate } from "#/services/models/data_component_predicates/potion_contents_predicate";
 import { _FieldGroup$PotionContentPredicate$Effects } from "./potion-contents-predicate.effects";
@@ -12,15 +11,12 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof PotionContentsPredicate>,
   render: ({ group }) => {
     return (
-      <Stack spacing={3}>
-        <Typography sx={{ fontWeight: 700 }}>
-          POTION CONTENTS PREDICATE
-        </Typography>
+      <FieldGroupSection title="Potion contents predicate">
         <group.Subscribe
           selector={({ values }) => values.potions !== undefined}
         >
           {(active) => (
-            <Paper variant="outlined">
+            <FieldGroupSection>
               <Stack spacing={2}>
                 <Button
                   onClick={() =>
@@ -39,14 +35,14 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
                   />
                 )}
               </Stack>
-            </Paper>
+            </FieldGroupSection>
           )}
         </group.Subscribe>
         <group.Subscribe
           selector={({ values }) => values.effects !== undefined}
         >
           {(active) => (
-            <Paper variant="outlined">
+            <FieldGroupSection>
               <Stack spacing={2}>
                 <Button
                   onClick={() =>
@@ -65,10 +61,10 @@ export const FieldGroup$PotionContentsPredicate = AppFormHook.withFieldGroup({
                   />
                 )}
               </Stack>
-            </Paper>
+            </FieldGroupSection>
           )}
         </group.Subscribe>
-      </Stack>
+      </FieldGroupSection>
     );
   },
 });

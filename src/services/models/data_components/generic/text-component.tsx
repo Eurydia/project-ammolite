@@ -3,11 +3,11 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
 import z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { OptionalBooleanPredicate } from "#/services/models/data_component_predicates/generics/optional-boolean-predicate";
 import { OptionalIntString } from "#/services/models/data_component_predicates/generics/optional-int-string";
@@ -87,13 +87,13 @@ const schema = z.discriminatedUnion("kind", [
 const _FieldGroup$Object = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof _schema$Object>,
   render: ({ group }) => (
-    <Paper variant="outlined">
-      <Stack spacing={3}>
-        <Typography sx={{ fontWeight: 700 }}>CONTENT</Typography>
+    <Stack spacing={2}>
+      <FieldGroupSection title="Content">
         <group.AppField name="text">
           {(field) => <field.FC$TextField label="Text" />}
         </group.AppField>
-        <Typography sx={{ fontWeight: 700 }}>FORMATTING</Typography>
+      </FieldGroupSection>
+      <FieldGroupSection title="Formatting">
         <group.AppField name="color">
           {(field) => (
             <Autocomplete
@@ -171,22 +171,28 @@ const _FieldGroup$Object = AppFormHook.withFieldGroup({
         <group.AppField name="extra" mode="array">
           {(field) => (
             <Stack spacing={2}>
-              {field.state.value.map((_, index) => (
-                <Stack direction="row" spacing={2} key={index}>
-                  <group.AppField name={`extra[${index}]`}>
-                    {(extra) => <extra.FC$TextField label="Extra text" />}
-                  </group.AppField>
-                  <Button onClick={() => field.removeValue(index)}>
-                    REMOVE EXTRA
-                  </Button>
-                </Stack>
-              ))}
+              <SortableList
+                items={field.state.value}
+                onMove={(fromIndex, toIndex) =>
+                  field.moveValue(fromIndex, toIndex)
+                }
+                renderItem={(_, index) => (
+                  <Stack direction="row" spacing={2}>
+                    <group.AppField name={`extra[${index}]`}>
+                      {(extra) => <extra.FC$TextField label="Extra text" />}
+                    </group.AppField>
+                    <Button onClick={() => field.removeValue(index)}>
+                      REMOVE EXTRA
+                    </Button>
+                  </Stack>
+                )}
+              />
               <Button onClick={() => field.pushValue("")}>ADD EXTRA</Button>
             </Stack>
           )}
         </group.AppField>
-      </Stack>
-    </Paper>
+      </FieldGroupSection>
+    </Stack>
   ),
 });
 
@@ -241,40 +247,48 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                 <group.AppField name="values" mode="array">
                   {(field) => (
                     <Stack spacing={2}>
-                      {field.state.value.map((value, index) => (
-                        <Paper variant="outlined" key={index}>
-                          <Stack spacing={2}>
-                            {typeof value === "string" ? (
-                              <group.AppField name={`values[${index}]`}>
-                                {(entry) => <entry.FC$TextField label="Text" />}
-                              </group.AppField>
-                            ) : (
-                              <_FieldGroup$Object
-                                form={group}
-                                fields={{
-                                  type: `values[${index}].type`,
-                                  text: `values[${index}].text`,
-                                  color: `values[${index}].color`,
-                                  font: `values[${index}].font`,
-                                  bold: `values[${index}].bold`,
-                                  italic: `values[${index}].italic`,
-                                  underlined: `values[${index}].underlined`,
-                                  strikethrough: `values[${index}].strikethrough`,
-                                  obfuscated: `values[${index}].obfuscated`,
-                                  shadowColor: `values[${index}].shadowColor`,
-                                  extra: `values[${index}].extra`,
-                                }}
-                              />
-                            )}
-                            <Button
-                              disabled={field.state.value.length === 1}
-                              onClick={() => field.removeValue(index)}
-                            >
-                              REMOVE ENTRY
-                            </Button>
-                          </Stack>
-                        </Paper>
-                      ))}
+                      <SortableList
+                        items={field.state.value}
+                        onMove={(fromIndex, toIndex) =>
+                          field.moveValue(fromIndex, toIndex)
+                        }
+                        renderItem={(value, index) => (
+                          <FieldGroupSection title={`Entry ${index + 1}`}>
+                            <Stack spacing={2}>
+                              {typeof value === "string" ? (
+                                <group.AppField name={`values[${index}]`}>
+                                  {(entry) => (
+                                    <entry.FC$TextField label="Text" />
+                                  )}
+                                </group.AppField>
+                              ) : (
+                                <_FieldGroup$Object
+                                  form={group}
+                                  fields={{
+                                    type: `values[${index}].type`,
+                                    text: `values[${index}].text`,
+                                    color: `values[${index}].color`,
+                                    font: `values[${index}].font`,
+                                    bold: `values[${index}].bold`,
+                                    italic: `values[${index}].italic`,
+                                    underlined: `values[${index}].underlined`,
+                                    strikethrough: `values[${index}].strikethrough`,
+                                    obfuscated: `values[${index}].obfuscated`,
+                                    shadowColor: `values[${index}].shadowColor`,
+                                    extra: `values[${index}].extra`,
+                                  }}
+                                />
+                              )}
+                              <Button
+                                disabled={field.state.value.length === 1}
+                                onClick={() => field.removeValue(index)}
+                              >
+                                REMOVE ENTRY
+                              </Button>
+                            </Stack>
+                          </FieldGroupSection>
+                        )}
+                      />
                       <Box
                         sx={{
                           display: "grid",

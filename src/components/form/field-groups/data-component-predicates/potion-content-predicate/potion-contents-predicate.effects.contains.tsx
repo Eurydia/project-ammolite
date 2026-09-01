@@ -1,8 +1,8 @@
 import Button from "@mui/material/Button";
-import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import type z from "zod";
+import { SortableList } from "#/components/form/field-components/sortable-list";
+import { FieldGroupSection } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 import type { PotionContentsPredicate$Effects$Contains } from "#/services/models/data_component_predicates/potion_contents_predicate";
@@ -15,24 +15,29 @@ export const _FieldGroup$PotionContentPredicate$Effects$Contains =
     >,
     render: ({ group }) => {
       return (
-        <Stack spacing={3}>
-          <Typography sx={{ fontWeight: 700 }}>CONTAINS</Typography>
+        <FieldGroupSection title="Contains">
           <group.AppField name="values" mode="array">
             {(field) => (
               <Stack spacing={2}>
-                {field.state.value.map((_, index) => (
-                  <Paper key={index} variant="outlined">
-                    <Stack spacing={2}>
-                      <FieldGroup$MobEffectPredicate
-                        fields={`values[${index}]`}
-                        form={group}
-                      />
-                      <Button onClick={() => field.removeValue(index)}>
-                        REMOVE EFFECT
-                      </Button>
-                    </Stack>
-                  </Paper>
-                ))}
+                <SortableList
+                  items={field.state.value}
+                  onMove={(fromIndex, toIndex) =>
+                    field.moveValue(fromIndex, toIndex)
+                  }
+                  renderItem={(_, index) => (
+                    <FieldGroupSection title={`Effect ${index + 1}`}>
+                      <Stack spacing={2}>
+                        <FieldGroup$MobEffectPredicate
+                          fields={`values[${index}]`}
+                          form={group}
+                        />
+                        <Button onClick={() => field.removeValue(index)}>
+                          REMOVE EFFECT
+                        </Button>
+                      </Stack>
+                    </FieldGroupSection>
+                  )}
+                />
                 <Button
                   onClick={() =>
                     field.pushValue({
@@ -49,7 +54,7 @@ export const _FieldGroup$PotionContentPredicate$Effects$Contains =
               </Stack>
             )}
           </group.AppField>
-        </Stack>
+        </FieldGroupSection>
       );
     },
   });
