@@ -1,10 +1,14 @@
 import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import z from "zod";
 import { SortableList } from "#/components/form/field-components/sortable-list";
-import { FieldGroupSection } from "#/components/form/field-group-layout";
+import {
+  FieldGroupPanel,
+  FieldGroupSection,
+} from "#/components/form/field-group-layout";
 import { FieldGroup$PotionContents } from "#/components/form/field-groups/data-component/potion-content/potion-content";
 import { AppFormHook } from "#/lib/form/form-hooks";
 import { ItemRarity } from "#/services/enums/item-rarity";
@@ -90,6 +94,7 @@ const _createDefaultEntry = (
       return {
         type,
         value: {
+          mode: "normal",
           id: "minecraft:potion_contents",
           potion: PotionType.AWKWARD,
           customName: "",
@@ -99,25 +104,35 @@ const _createDefaultEntry = (
     case "minecraft:item_name":
       return {
         type,
-        value: { value: { kind: "string", value: "" } },
+        value: {
+          mode: "normal",
+          value: { kind: "string", value: "" },
+        },
       };
     case "minecraft:lore":
-      return { type, value: { lines: [] } };
+      return { type, value: { mode: "normal", lines: [] } };
     case "minecraft:rarity":
-      return { type, value: { value: ItemRarity.COMMON } };
+      return {
+        type,
+        value: { mode: "normal", value: ItemRarity.COMMON },
+      };
     case "minecraft:enchantment_glint_override":
-      return { type, value: { value: false } };
+      return { type, value: { mode: "normal", value: false } };
     case "minecraft:potion_duration_scale":
-      return { type, value: { value: "" } };
+      return { type, value: { mode: "normal", value: "" } };
     case "minecraft:damage_resistant":
       return {
         type,
-        value: { types: { kind: "single", value: "" } },
+        value: {
+          mode: "normal",
+          types: { kind: "single", value: "" },
+        },
       };
     case "minecraft:consumable":
       return {
         type,
         value: {
+          mode: "normal",
           consumeSeconds: "",
           animation: "drink",
           sound: { kind: "reference", value: "" },
@@ -126,7 +141,7 @@ const _createDefaultEntry = (
         },
       };
     case "minecraft:death_protection":
-      return { type, value: { deathEffects: [] } };
+      return { type, value: { mode: "normal", deathEffects: [] } };
   }
 };
 
@@ -207,7 +222,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
     };
 
     return (
-      <FieldGroupSection title="Data components">
+      <FieldGroupPanel title="Data components">
         <group.Subscribe selector={({ values }) => values}>
           {({ selectedType, values }) => {
             const usedTypes = new Set(values.map((entry) => entry.type));
@@ -220,8 +235,20 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
 
             return (
               <Stack spacing={2}>
-                <FieldGroupSection title="Add component">
-                  <group.AppField name="selectedType">
+                <FieldGroupSection title="Choose component type">
+                  <group.AppField
+                    name="selectedType"
+                    listeners={{
+                      onChange: ({ value }) => {
+                        if (availableTypes.includes(value)) {
+                          group.setFieldValue("values", [
+                            ...values,
+                            _createDefaultEntry(value),
+                          ]);
+                        }
+                      },
+                    }}
+                  >
                     {(field) => (
                       <Autocomplete
                         options={availableTypes}
@@ -237,47 +264,43 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                       />
                     )}
                   </group.AppField>
-                  <group.AppField name="values" mode="array">
-                    {(field) => (
-                      <Button
-                        disabled={activeSelection === null}
-                        onClick={() => {
-                          if (activeSelection !== null) {
-                            field.pushValue(
-                              _createDefaultEntry(activeSelection),
-                            );
-                          }
-                        }}
-                      >
-                        ADD DATA COMPONENT
-                      </Button>
-                    )}
-                  </group.AppField>
+                  <Box
+                    component="section"
+                    sx={{
+                      borderColor: "divider",
+                      borderLeft: 1,
+                      pl: 2,
+                    }}
+                  >
+                    <FieldGroupSection title="Component items">
+                      <group.AppField name="values" mode="array">
+                        {(field) => (
+                          <SortableList
+                            items={field.state.value}
+                            onMove={(fromIndex, toIndex) =>
+                              field.moveValue(fromIndex, toIndex)
+                            }
+                            renderItem={(entry, index) => (
+                              <Stack spacing={2}>
+                                {renderEntry(entry, index)}
+                                <Button
+                                  onClick={() => field.removeValue(index)}
+                                >
+                                  REMOVE DATA COMPONENT
+                                </Button>
+                              </Stack>
+                            )}
+                          />
+                        )}
+                      </group.AppField>
+                    </FieldGroupSection>
+                  </Box>
                 </FieldGroupSection>
-                <group.AppField name="values" mode="array">
-                  {(field) => (
-                    <SortableList
-                      getItemId={(entry) => entry.type}
-                      items={field.state.value}
-                      onMove={(fromIndex, toIndex) =>
-                        field.moveValue(fromIndex, toIndex)
-                      }
-                      renderItem={(entry, index) => (
-                        <Stack spacing={2}>
-                          {renderEntry(entry, index)}
-                          <Button onClick={() => field.removeValue(index)}>
-                            REMOVE DATA COMPONENT
-                          </Button>
-                        </Stack>
-                      )}
-                    />
-                  )}
-                </group.AppField>
               </Stack>
             );
           }}
         </group.Subscribe>
-      </FieldGroupSection>
+      </FieldGroupPanel>
     );
   },
 });

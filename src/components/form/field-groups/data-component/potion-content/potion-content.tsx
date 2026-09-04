@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import { RgbColorPicker } from "react-colorful";
 import type z from "zod";
+import { DataComponentModeField } from "#/components/form/field-components/data-component-mode";
 import { SortableList } from "#/components/form/field-components/sortable-list";
 import {
   FieldGroupPanel,
@@ -180,68 +181,91 @@ export const FieldGroup$PotionContents = AppFormHook.withFieldGroup({
   render: ({ group }) => {
     return (
       <FieldGroupPanel title="Potion contents">
-        <group.AppField name="potion">
-          {(field) => <field.PotionEffectSelector label="Potion" />}
+        <group.AppField name="mode">
+          {() => <DataComponentModeField />}
         </group.AppField>
+        <group.Subscribe selector={({ values }) => values.mode}>
+          {(mode) =>
+            mode === "normal" ? (
+              <Stack spacing={2}>
+                <group.AppField name="potion">
+                  {(field) => <field.PotionEffectSelector label="Potion" />}
+                </group.AppField>
 
-        <group.AppField name="customName">
-          {(field) => <field.FC$TextField label="Custom name (optional)" />}
-        </group.AppField>
-        <group.Subscribe
-          selector={({ values: { customColor } }) => {
-            return customColor !== undefined;
-          }}
-        >
-          {(active) => (
-            <FieldGroupSection>
-              <Stack spacing={2}>
-                <Button
-                  onClick={() =>
-                    group.setFieldValue(
-                      "customColor",
-                      active ? undefined : { blue: "", green: "", red: "" },
-                    )
-                  }
+                <group.AppField name="customName">
+                  {(field) => (
+                    <field.FC$TextField label="Custom name (optional)" />
+                  )}
+                </group.AppField>
+                <group.Subscribe
+                  selector={({ values }) => {
+                    return (
+                      "customColor" in values &&
+                      values.customColor !== undefined
+                    );
+                  }}
                 >
-                  {active ? "REMOVE CUSTOM COLOR" : "ADD CUSTOM COLOR"}
-                </Button>
-                {active && (
-                  <_FieldGroup$PotionContents$CustomColor
-                    form={group}
-                    fields={"customColor"}
-                  />
-                )}
-              </Stack>
-            </FieldGroupSection>
-          )}
-        </group.Subscribe>
-        <group.Subscribe
-          selector={({ values: { customEffects } }) => {
-            return customEffects !== undefined;
-          }}
-        >
-          {(active) => (
-            <FieldGroupSection>
-              <Stack spacing={2}>
-                <Button
-                  onClick={() =>
-                    group.setFieldValue(
-                      "customEffects",
-                      active ? undefined : { values: [] },
-                    )
-                  }
+                  {(active) => (
+                    <FieldGroupSection>
+                      <Stack spacing={2}>
+                        <Button
+                          onClick={() =>
+                            group.setFieldValue(
+                              "customColor",
+                              active
+                                ? undefined
+                                : { blue: "", green: "", red: "" },
+                            )
+                          }
+                        >
+                          {active ? "REMOVE CUSTOM COLOR" : "ADD CUSTOM COLOR"}
+                        </Button>
+                        {active && (
+                          <_FieldGroup$PotionContents$CustomColor
+                            form={group}
+                            fields={"customColor"}
+                          />
+                        )}
+                      </Stack>
+                    </FieldGroupSection>
+                  )}
+                </group.Subscribe>
+                <group.Subscribe
+                  selector={({ values }) => {
+                    return (
+                      "customEffects" in values &&
+                      values.customEffects !== undefined
+                    );
+                  }}
                 >
-                  {active ? "REMOVE CUSTOM EFFECTS" : "ADD CUSTOM EFFECTS"}
-                </Button>
-                {active && (
-                  <_FieldGroup$PotionContents$CustomEffects
-                    form={group}
-                    fields={"customEffects"}
-                  />
-                )}
+                  {(active) => (
+                    <FieldGroupSection>
+                      <Stack spacing={2}>
+                        <Button
+                          onClick={() =>
+                            group.setFieldValue(
+                              "customEffects",
+                              active ? undefined : { values: [] },
+                            )
+                          }
+                        >
+                          {active
+                            ? "REMOVE CUSTOM EFFECTS"
+                            : "ADD CUSTOM EFFECTS"}
+                        </Button>
+                        {active && (
+                          <_FieldGroup$PotionContents$CustomEffects
+                            form={group}
+                            fields={"customEffects"}
+                          />
+                        )}
+                      </Stack>
+                    </FieldGroupSection>
+                  )}
+                </group.Subscribe>
               </Stack>
-            </FieldGroupSection>
-          )}
+            ) : null
+          }
         </group.Subscribe>
       </FieldGroupPanel>
     );

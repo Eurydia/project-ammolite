@@ -5,6 +5,7 @@ import FormLabel from "@mui/material/FormLabel";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import z from "zod";
+import { DataComponentModeField } from "#/components/form/field-components/data-component-mode";
 import { SortableList } from "#/components/form/field-components/sortable-list";
 import { FieldGroupPanel } from "#/components/form/field-group-layout";
 import { AppFormHook } from "#/lib/form/form-hooks";
@@ -28,9 +29,10 @@ const _schema$Types = z.discriminatedUnion("kind", [
   }),
 ]);
 
-const schema = z.object({
-  types: _schema$Types,
-});
+const schema = z.discriminatedUnion("mode", [
+  z.object({ mode: z.literal("normal"), types: _schema$Types }),
+  z.object({ mode: z.literal("negated") }),
+]);
 
 const _FieldGroup$Types = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof _schema$Types>,
@@ -140,6 +142,10 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
 export const DamageResistant = {
   schema,
   toDataPackJSON: (data: z.output<typeof schema>) => {
+    if (data.mode === "negated") {
+      return { "!minecraft:damage_resistant": {} };
+    }
+
     return {
       "minecraft:damage_resistant": {
         types:
@@ -151,7 +157,16 @@ export const DamageResistant = {
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
       <FieldGroupPanel title="Damage resistant">
-        <_FieldGroup$Types form={group} fields="types" />
+        <group.AppField name="mode">
+          {() => <DataComponentModeField />}
+        </group.AppField>
+        <group.Subscribe selector={({ values }) => values.mode}>
+          {(mode) =>
+            mode === "normal" ? (
+              <_FieldGroup$Types form={group} fields="types" />
+            ) : null
+          }
+        </group.Subscribe>
       </FieldGroupPanel>
     ),
   }),

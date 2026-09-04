@@ -2,6 +2,7 @@ import z from "zod";
 import { PotionType } from "#/services/enums/potion-effect.enum";
 import { IntString } from "../data_component_predicates/generics/int-string";
 import { OptionalIntString } from "../data_component_predicates/generics/optional-int-string";
+import { DATA_COMPONENT_MODE_OPTIONS } from "./data-component-mode";
 
 export const PotionContents$CustomColor = z.object({
   red: IntString.pipe(z.int().min(0).max(255)),
@@ -53,21 +54,29 @@ export const PotionContents$CustomEffects$AsDatapackJSON = (
   );
 };
 
-export const PotionContents = z.object({
-  id: z.literal("minecraft:potion_contents"),
-  potion: z.enum(PotionType),
-  customName: z
-    .string()
-    .normalize()
-    .transform((arg) => arg || undefined)
-    .pipe(z.string().optional()),
-  customColor: PotionContents$CustomColor.optional(),
-  customEffects: PotionContents$CustomEffects.optional(),
-});
+export const PotionContents = z.discriminatedUnion("mode", [
+  z.object({
+    mode: z.literal(DATA_COMPONENT_MODE_OPTIONS[0]),
+    id: z.literal("minecraft:potion_contents"),
+    potion: z.enum(PotionType),
+    customName: z
+      .string()
+      .normalize()
+      .transform((arg) => arg || undefined)
+      .pipe(z.string().optional()),
+    customColor: PotionContents$CustomColor.optional(),
+    customEffects: PotionContents$CustomEffects.optional(),
+  }),
+  z.object({ mode: z.literal(DATA_COMPONENT_MODE_OPTIONS[1]) }),
+]);
 
 export const PotionContents$AsDataPackJSON = (
   dt: z.output<typeof PotionContents>,
 ) => {
+  if (dt.mode === "negated") {
+    return { "!minecraft:potion_contents": {} };
+  }
+
   return {
     "minecraft:potion_contents": {
       potion: dt.potion,

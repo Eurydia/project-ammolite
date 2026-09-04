@@ -3,6 +3,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Stack from "@mui/material/Stack";
 import z from "zod";
+import { DataComponentModeField } from "#/components/form/field-components/data-component-mode";
 import { SortableList } from "#/components/form/field-components/sortable-list";
 import {
   FieldGroupPanel,
@@ -56,13 +57,17 @@ const _schema$Sound = z.discriminatedUnion("kind", [
   }),
 ]);
 
-const schema = z.object({
-  consumeSeconds: _schema$FloatString,
-  animation: z.enum(CONSUME_ANIMATIONS),
-  sound: _schema$Sound,
-  hasConsumeParticles: z.boolean(),
-  onConsumeEffects: ConsumeEffect.schema.array(),
-});
+const schema = z.discriminatedUnion("mode", [
+  z.object({
+    mode: z.literal("normal"),
+    consumeSeconds: _schema$FloatString,
+    animation: z.enum(CONSUME_ANIMATIONS),
+    sound: _schema$Sound,
+    hasConsumeParticles: z.boolean(),
+    onConsumeEffects: ConsumeEffect.schema.array(),
+  }),
+  z.object({ mode: z.literal("negated") }),
+]);
 
 const _FieldGroup$Sound = AppFormHook.withFieldGroup({
   defaultValues: {} as z.input<typeof _schema$Sound>,
@@ -122,6 +127,10 @@ const _FieldGroup$Sound = AppFormHook.withFieldGroup({
 export const Consumable = {
   schema,
   toDataPackJSON: (data: z.output<typeof schema>) => {
+    if (data.mode === "negated") {
+      return { "!minecraft:consumable": {} };
+    }
+
     return {
       "minecraft:consumable": {
         consume_seconds: data.consumeSeconds,
@@ -145,57 +154,70 @@ export const Consumable = {
     defaultValues: {} as z.input<typeof schema>,
     render: ({ group }) => (
       <FieldGroupPanel title="Consumable">
-        <group.AppField name="consumeSeconds">
-          {(field) => <field.FC$TextField label="Consume seconds" />}
+        <group.AppField name="mode">
+          {() => <DataComponentModeField />}
         </group.AppField>
-        <group.AppField name="animation">
-          {(field) => (
-            <FormControl>
-              <FormLabel>Animation</FormLabel>
-              <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />
-            </FormControl>
-          )}
-        </group.AppField>
-        <FieldGroupSection title="Sound">
-          <_FieldGroup$Sound form={group} fields="sound" />
-        </FieldGroupSection>
-        <group.AppField name="hasConsumeParticles">
-          {(field) => <field.BooleanCheckbox label="Show consume particles" />}
-        </group.AppField>
-        <FieldGroupSection title="On consume effects">
-          <group.AppField name="onConsumeEffects" mode="array">
-            {(field) => (
+        <group.Subscribe selector={({ values }) => values.mode}>
+          {(mode) =>
+            mode === "normal" ? (
               <Stack spacing={2}>
-                <SortableList
-                  items={field.state.value}
-                  onMove={(fromIndex, toIndex) =>
-                    field.moveValue(fromIndex, toIndex)
-                  }
-                  renderItem={(_, index) => (
-                    <Stack spacing={2}>
-                      <ConsumeEffect.fieldGroupComponent
-                        form={group}
-                        fields={`onConsumeEffects[${index}]`}
-                      />
-                      <Button onClick={() => field.removeValue(index)}>
-                        REMOVE CONSUME EFFECT
-                      </Button>
-                    </Stack>
+                <group.AppField name="consumeSeconds">
+                  {(field) => <field.FC$TextField label="Consume seconds" />}
+                </group.AppField>
+                <group.AppField name="animation">
+                  {(field) => (
+                    <FormControl>
+                      <FormLabel>Animation</FormLabel>
+                      <field.FC$RadioGroup options={CONSUME_ANIMATIONS} />
+                    </FormControl>
                   )}
-                />
-                <Button
-                  onClick={() =>
-                    field.pushValue({
-                      type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
-                    })
-                  }
-                >
-                  ADD CONSUME EFFECT
-                </Button>
+                </group.AppField>
+                <FieldGroupSection title="Sound">
+                  <_FieldGroup$Sound form={group} fields="sound" />
+                </FieldGroupSection>
+                <group.AppField name="hasConsumeParticles">
+                  {(field) => (
+                    <field.BooleanCheckbox label="Show consume particles" />
+                  )}
+                </group.AppField>
+                <FieldGroupSection title="On consume effects">
+                  <group.AppField name="onConsumeEffects" mode="array">
+                    {(field) => (
+                      <Stack spacing={2}>
+                        <SortableList
+                          items={field.state.value}
+                          onMove={(fromIndex, toIndex) =>
+                            field.moveValue(fromIndex, toIndex)
+                          }
+                          renderItem={(_, index) => (
+                            <Stack spacing={2}>
+                              <ConsumeEffect.fieldGroupComponent
+                                form={group}
+                                fields={`onConsumeEffects[${index}]`}
+                              />
+                              <Button onClick={() => field.removeValue(index)}>
+                                REMOVE CONSUME EFFECT
+                              </Button>
+                            </Stack>
+                          )}
+                        />
+                        <Button
+                          onClick={() =>
+                            field.pushValue({
+                              type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
+                            })
+                          }
+                        >
+                          ADD CONSUME EFFECT
+                        </Button>
+                      </Stack>
+                    )}
+                  </group.AppField>
+                </FieldGroupSection>
               </Stack>
-            )}
-          </group.AppField>
-        </FieldGroupSection>
+            ) : null
+          }
+        </group.Subscribe>
       </FieldGroupPanel>
     ),
   }),
