@@ -1,9 +1,10 @@
 import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { PotionContents as InputPredicate } from "#/models/predicates/potion-contents.ts";
+import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { hashString } from "../../utility/hashing.ts";
 
 class RecipeInput {
-  private item: MinecraftItem | string;
+  private item: string;
   private potionContents?: InputPredicate;
 
   private constructor(item: string) {
@@ -25,18 +26,65 @@ class RecipeInput {
   }
 }
 
+class RecipeOutput {
+  private item: string;
+  private count: number = 1;
+  private components?: DataComponent[];
+
+  private constructor(item: string | MinecraftItem) {
+    this.item = item;
+  }
+
+  public static new(item: string | MinecraftItem) {
+    return new this(item);
+  }
+
+  public withAmount(value: number) {
+    this.count = value;
+    return this;
+  }
+
+  public withComponent(comp: DataComponent) {
+    if (this.components === undefined) {
+      this.components = [];
+    }
+    this.components.push(comp);
+  }
+
+  public asJsonObject() {
+    return {
+      id: this.item,
+      count: this.count,
+      components: this.components?.reduce((prev, curr) => {
+        const { component, ...rest } = curr.asJsonObject();
+        return Object.assign(prev, { [component]: rest });
+      }, {}),
+    };
+  }
+}
+
 export class BrewingRecipe {
   private recipeNameOverride?: string;
   private inputItem: RecipeInput;
   private reagentItem: RecipeInput;
+  private outputItem: RecipeOutput;
 
-  private constructor(inputItem: string, reagentItem: string) {
+  private constructor(
+    inputItem: string,
+    reagentItem: string,
+    outputItem: string,
+  ) {
     this.inputItem = RecipeInput.new(inputItem);
     this.reagentItem = RecipeInput.new(reagentItem);
+    this.outputItem = RecipeOutput.new(outputItem);
   }
 
-  public static new(inputItem: string, reagentItem: string) {
-    return new this(inputItem, reagentItem);
+  public static new(
+    inputItem: string,
+    reagentItem: string,
+    outputItem: string,
+  ) {
+    return new this(inputItem, reagentItem, outputItem);
   }
 
   public whereInputPredicate(pred: InputPredicate) {
@@ -49,6 +97,16 @@ export class BrewingRecipe {
     return this;
   }
 
+  public withOutputAmount(amount: number) {
+    this.outputItem.withAmount(amount);
+    return this;
+  }
+
+  public withOutputComponent(component: DataComponent) {
+    this.outputItem.withComponent(component);
+    return this;
+  }
+
   public withRecipeName(name: string) {
     this.recipeNameOverride = name;
     return this;
@@ -58,6 +116,7 @@ export class BrewingRecipe {
     return {
       input: this.inputItem.asJsonObject(),
       reagent: this.reagentItem.asJsonObject(),
+      output: this.outputItem.asJsonObject(),
     };
   }
 

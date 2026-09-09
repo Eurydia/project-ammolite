@@ -12,6 +12,7 @@ pack.addBrewingRecipe(
   BrewingRecipe.new(
     MinecraftItem.NETHER_WART_BLOCK,
     MinecraftItem.POTENT_SULFUR,
+    MinecraftItem.POTION,
   )
     .withRecipeName("HI")
     .whereInputPredicate(
@@ -19,7 +20,8 @@ pack.addBrewingRecipe(
         MobEffect.FIRE_RESISTANCE,
         MobEffect.INVISIBILITY,
       ),
-    ),
+    )
+    .withOutputAmount(2),
 );
 
 PackBuilder.buildDataPack(pack);
