@@ -12,3 +12,5 @@ dist-ssr
 __unconfig*
 
 *.gen.ts
+/services
+/src/services

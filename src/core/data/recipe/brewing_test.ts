@@ -1,4 +1,4 @@
-import { BrewingRecipe } from "../../../services/models/recipes/brewing.ts";
+import { BrewingRecipe } from "./brewing.ts";
 
 Deno.test("can create brewing recipe", () => {
   new BrewingRecipe();
