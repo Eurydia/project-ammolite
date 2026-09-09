@@ -1,9 +1,6 @@
+import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { BrewingRecipe } from "./brewing.ts";
 
 Deno.test("can create brewing recipe", () => {
-  new BrewingRecipe();
-});
-
-Deno.test("can create brewing recipe", () => {
-  new BrewingRecipe();
+  BrewingRecipe.new(MinecraftItem.ACACIA_BOAT, MinecraftItem.BLAZE_POWDER);
 });

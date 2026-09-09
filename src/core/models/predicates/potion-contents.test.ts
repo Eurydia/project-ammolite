@@ -48,3 +48,40 @@ Deno.test("can pass effects.contains as range to effects builder", () => {
     }),
   );
 });
+
+Deno.test("can pass effects.count as range to effects builder", () => {
+  const pred = PotionContents.new();
+  const eff = {
+    count: [
+      {
+        count: 1,
+        test: [
+          MobEffectPredicate.new(MobEffect.FIRE_RESISTANCE).whereDuration(2),
+        ],
+      },
+      {
+        count: 1,
+        test: [
+          MobEffectPredicate.new(MobEffect.REGENERATION)
+            .whereDuration(2)
+            .whereAmbient(true),
+        ],
+      },
+    ],
+  };
+  pred.whereEffects(eff);
+  assertEquals(
+    pred.toJSON(),
+    JSON.stringify({
+      effects: {
+        count: [
+          { count: 1, test: { "minecraft:fire_resistance": { duration: 2 } } },
+          {
+            count: 1,
+            test: { "minecraft:regeneration": { duration: 2, ambient: true } },
+          },
+        ],
+      },
+    }),
+  );
+});

@@ -39,20 +39,20 @@ export class MobEffectPredicate {
 
   public asJSONObject() {
     return {
-      [this.effect]: {
-        amplifier: this.amplifier,
-        duration: this.duration,
-        visible: this.visible,
-        ambient: this.ambient,
-      },
+      effect: this.effect,
+      amplifier: this.amplifier,
+      duration: this.duration,
+      visible: this.visible,
+      ambient: this.ambient,
     };
   }
 }
 
-type Effects = {
+export class Effects {
   contains?: Array<MobEffectPredicate>;
+  count?: Array<{ count: NumberBound; test: Array<MobEffectPredicate> }>;
   size?: NumberBound;
-};
+}
 
 export class PotionContents {
   private potions?: MobEffect[];
@@ -64,26 +64,42 @@ export class PotionContents {
     return new this();
   }
 
-  public toJSON() {
-    return JSON.stringify({
+  public asJsonObject() {
+    return {
       potions: this.potions,
       effects:
         this.effects === undefined
           ? undefined
           : {
-              contains: this.effects.contains?.map((mobEff) =>
-                mobEff.asJSONObject(),
-              ),
+              contains: this.effects.contains?.map((mobEff) => {
+                const { effect, ...rest } = mobEff.asJSONObject();
+                return {
+                  [effect]: rest,
+                };
+              }),
               size: this.effects.size,
+              count: this.effects.count?.map(({ count, test }) => ({
+                count,
+                test: test.reduce((prev, curr) => {
+                  const { effect, ...rest } = curr.asJSONObject();
+                  return Object.assign(prev, { [effect]: rest });
+                }, {}),
+              })),
             },
-    });
+    };
+  }
+
+  public toJSON() {
+    return JSON.stringify(this.asJsonObject());
   }
 
   public wherePotions(...potions: MobEffect[]) {
     this.potions = [...potions];
+    return this;
   }
 
   public whereEffects(effects: Effects) {
     this.effects = effects;
+    return this;
   }
 }

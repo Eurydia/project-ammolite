@@ -14,3 +14,4 @@ __unconfig*
 *.gen.ts
 /services
 /src/services
+OUTPUT/

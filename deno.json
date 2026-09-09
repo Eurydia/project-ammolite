@@ -4,6 +4,8 @@
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
-    "#/enum/": "./src/core/enums/"
+    "#/enum/": "./src/core/enums/",
+    "#/models/": "./src/core/models/",
+    "hashery": "npm:hashery@^3.0.1"
   }
 }
