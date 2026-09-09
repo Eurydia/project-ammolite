@@ -28,14 +28,15 @@ export const EnchantmentGlintOverride = {
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.mode}>
           {(mode) =>
-            mode === "normal" ? (
-              <group.AppField name="value">
-                {(field) => (
-                  <field.BooleanCheckbox label="Show enchantment glint" />
-                )}
-              </group.AppField>
-            ) : null
-          }
+            mode === "normal"
+              ? (
+                <group.AppField name="value">
+                  {(field) => (
+                    <field.BooleanCheckbox label="Show enchantment glint" />
+                  )}
+                </group.AppField>
+              )
+              : null}
         </group.Subscribe>
       </FieldGroupPanel>
     ),

@@ -59,14 +59,12 @@ const PotionContentsPredicate$Effects$AsDataPackJSON = (
   dt: z.output<typeof PotionContentsPredicate$Effects>,
 ) => {
   return {
-    contains:
-      dt.contains === undefined
-        ? undefined
-        : PotionContentsPredicate$Effects$Contains$AsDataPackJSON(dt.contains),
-    count:
-      dt.count === undefined
-        ? undefined
-        : PotionContentsPredicate$Effects$Count$AsDataPackJSON(dt.count),
+    contains: dt.contains === undefined
+      ? undefined
+      : PotionContentsPredicate$Effects$Contains$AsDataPackJSON(dt.contains),
+    count: dt.count === undefined
+      ? undefined
+      : PotionContentsPredicate$Effects$Count$AsDataPackJSON(dt.count),
     size: dt.size,
   };
 };
@@ -80,13 +78,11 @@ export const PotionContentsPredicate$AsDataPackJSON = (
   dt: z.output<typeof PotionContentsPredicate>,
 ) => {
   return {
-    potions:
-      dt.potions === undefined
-        ? undefined
-        : PotionContentsPredicate$Potions$AsDataPackJSON(dt.potions),
-    effects:
-      dt.effects === undefined
-        ? undefined
-        : PotionContentsPredicate$Effects$AsDataPackJSON(dt.effects),
+    potions: dt.potions === undefined
+      ? undefined
+      : PotionContentsPredicate$Potions$AsDataPackJSON(dt.potions),
+    effects: dt.effects === undefined
+      ? undefined
+      : PotionContentsPredicate$Effects$AsDataPackJSON(dt.effects),
   };
 };

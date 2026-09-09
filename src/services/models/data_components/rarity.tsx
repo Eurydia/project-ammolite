@@ -34,17 +34,18 @@ export const Rarity = {
           </group.AppField>
           <group.Subscribe selector={({ values }) => values.mode}>
             {(mode) =>
-              mode === "normal" ? (
-                <group.AppField name="value">
-                  {(field) => (
-                    <FormControl>
-                      <FormLabel>Rarity</FormLabel>
-                      <field.FC$RadioGroup options={RARITY_OPTIONS} />
-                    </FormControl>
-                  )}
-                </group.AppField>
-              ) : null
-            }
+              mode === "normal"
+                ? (
+                  <group.AppField name="value">
+                    {(field) => (
+                      <FormControl>
+                        <FormLabel>Rarity</FormLabel>
+                        <field.FC$RadioGroup options={RARITY_OPTIONS} />
+                      </FormControl>
+                    )}
+                  </group.AppField>
+                )
+                : null}
           </group.Subscribe>
         </FieldGroupPanel>
       );

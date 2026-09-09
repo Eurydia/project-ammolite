@@ -35,12 +35,13 @@ export const PotionDurationScale = {
           </group.AppField>
           <group.Subscribe selector={({ values }) => values.mode}>
             {(mode) =>
-              mode === "normal" ? (
-                <group.AppField name="value">
-                  {(field) => <field.FC$TextField label="Scale" />}
-                </group.AppField>
-              ) : null
-            }
+              mode === "normal"
+                ? (
+                  <group.AppField name="value">
+                    {(field) => <field.FC$TextField label="Scale" />}
+                  </group.AppField>
+                )
+                : null}
           </group.Subscribe>
         </FieldGroupPanel>
       );

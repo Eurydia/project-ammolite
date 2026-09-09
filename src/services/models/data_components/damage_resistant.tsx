@@ -89,8 +89,7 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
                       <SortableList
                         items={field.state.value}
                         onMove={(fromIndex, toIndex) =>
-                          field.moveValue(fromIndex, toIndex)
-                        }
+                          field.moveValue(fromIndex, toIndex)}
                         renderItem={(_, index) => (
                           <Stack direction="row" spacing={2}>
                             <group.AppField name={`values[${index}]`}>
@@ -101,11 +100,9 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
                                   options={DAMAGE_TYPE_OPTIONS}
                                   onBlur={entry.handleBlur}
                                   onChange={(_, value) =>
-                                    entry.handleChange(value ?? "")
-                                  }
+                                    entry.handleChange(value ?? "")}
                                   onInputChange={(_, value) =>
-                                    entry.handleChange(value)
-                                  }
+                                    entry.handleChange(value)}
                                   renderInput={(inputProps) => (
                                     <TextField
                                       {...inputProps}
@@ -118,7 +115,8 @@ const _FieldGroup$Types = AppFormHook.withFieldGroup({
                             </group.AppField>
                             <Button
                               disabled={field.state.value.length === 1}
-                              onClick={() => field.removeValue(index)}
+                              onClick={() =>
+                                field.removeValue(index)}
                             >
                               REMOVE
                             </Button>
@@ -148,8 +146,9 @@ export const DamageResistant = {
 
     return {
       "minecraft:damage_resistant": {
-        types:
-          data.types.kind === "list" ? data.types.values : data.types.value,
+        types: data.types.kind === "list"
+          ? data.types.values
+          : data.types.value,
       },
     };
   },
@@ -162,10 +161,9 @@ export const DamageResistant = {
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.mode}>
           {(mode) =>
-            mode === "normal" ? (
-              <_FieldGroup$Types form={group} fields="types" />
-            ) : null
-          }
+            mode === "normal"
+              ? <_FieldGroup$Types form={group} fields="types" />
+              : null}
         </group.Subscribe>
       </FieldGroupPanel>
     ),

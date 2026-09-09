@@ -29,10 +29,14 @@ export const ItemName = {
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.mode}>
           {(mode) =>
-            mode === "normal" ? (
-              <TextComponent.fieldGroupComponent form={group} fields="value" />
-            ) : null
-          }
+            mode === "normal"
+              ? (
+                <TextComponent.fieldGroupComponent
+                  form={group}
+                  fields="value"
+                />
+              )
+              : null}
         </group.Subscribe>
       </FieldGroupPanel>
     ),

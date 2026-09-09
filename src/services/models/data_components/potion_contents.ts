@@ -50,7 +50,7 @@ export const PotionContents$CustomEffects$AsDatapackJSON = (
   dt: z.output<typeof PotionContents$CustomEffects>,
 ) => {
   return dt.values.map((value) =>
-    PotionContents$CustomEffects$Effect$AsDatapackJSON(value),
+    PotionContents$CustomEffects$Effect$AsDatapackJSON(value)
   );
 };
 
@@ -81,14 +81,12 @@ export const PotionContents$AsDataPackJSON = (
     "minecraft:potion_contents": {
       potion: dt.potion,
       custom_name: dt.customName,
-      custom_color:
-        dt.customColor === undefined
-          ? undefined
-          : PotionContents$CustomColor$AsDatapackJSON(dt.customColor),
-      custom_effects:
-        dt.customEffects === undefined
-          ? undefined
-          : PotionContents$CustomEffects$AsDatapackJSON(dt.customEffects),
+      custom_color: dt.customColor === undefined
+        ? undefined
+        : PotionContents$CustomColor$AsDatapackJSON(dt.customColor),
+      custom_effects: dt.customEffects === undefined
+        ? undefined
+        : PotionContents$CustomEffects$AsDatapackJSON(dt.customEffects),
     },
   };
 };

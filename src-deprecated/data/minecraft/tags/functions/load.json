@@ -1,6 +1,6 @@
 {
-    "replace": false,
-    "values": [
-        "eurydia:lasting_potion/reset"
-    ]
+  "replace": false,
+  "values": [
+    "eurydia:lasting_potion/reset"
+  ]
 }

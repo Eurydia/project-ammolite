@@ -174,8 +174,7 @@ const _FieldGroup$Object = AppFormHook.withFieldGroup({
               <SortableList
                 items={field.state.value}
                 onMove={(fromIndex, toIndex) =>
-                  field.moveValue(fromIndex, toIndex)
-                }
+                  field.moveValue(fromIndex, toIndex)}
                 renderItem={(_, index) => (
                   <Stack direction="row" spacing={2}>
                     <group.AppField name={`extra[${index}]`}>
@@ -250,35 +249,38 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                       <SortableList
                         items={field.state.value}
                         onMove={(fromIndex, toIndex) =>
-                          field.moveValue(fromIndex, toIndex)
-                        }
+                          field.moveValue(fromIndex, toIndex)}
                         renderItem={(value, index) => (
                           <FieldGroupSection title={`Entry ${index + 1}`}>
                             <Stack spacing={2}>
-                              {typeof value === "string" ? (
-                                <group.AppField name={`values[${index}]`}>
-                                  {(entry) => (
-                                    <entry.FC$TextField label="Text" />
-                                  )}
-                                </group.AppField>
-                              ) : (
-                                <_FieldGroup$Object
-                                  form={group}
-                                  fields={{
-                                    type: `values[${index}].type`,
-                                    text: `values[${index}].text`,
-                                    color: `values[${index}].color`,
-                                    font: `values[${index}].font`,
-                                    bold: `values[${index}].bold`,
-                                    italic: `values[${index}].italic`,
-                                    underlined: `values[${index}].underlined`,
-                                    strikethrough: `values[${index}].strikethrough`,
-                                    obfuscated: `values[${index}].obfuscated`,
-                                    shadowColor: `values[${index}].shadowColor`,
-                                    extra: `values[${index}].extra`,
-                                  }}
-                                />
-                              )}
+                              {typeof value === "string"
+                                ? (
+                                  <group.AppField name={`values[${index}]`}>
+                                    {(entry) => (
+                                      <entry.FC$TextField label="Text" />
+                                    )}
+                                  </group.AppField>
+                                )
+                                : (
+                                  <_FieldGroup$Object
+                                    form={group}
+                                    fields={{
+                                      type: `values[${index}].type`,
+                                      text: `values[${index}].text`,
+                                      color: `values[${index}].color`,
+                                      font: `values[${index}].font`,
+                                      bold: `values[${index}].bold`,
+                                      italic: `values[${index}].italic`,
+                                      underlined: `values[${index}].underlined`,
+                                      strikethrough:
+                                        `values[${index}].strikethrough`,
+                                      obfuscated: `values[${index}].obfuscated`,
+                                      shadowColor:
+                                        `values[${index}].shadowColor`,
+                                      extra: `values[${index}].extra`,
+                                    }}
+                                  />
+                                )}
                               <Button
                                 disabled={field.state.value.length === 1}
                                 onClick={() => field.removeValue(index)}
@@ -316,8 +318,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                               obfuscated: "unset",
                               shadowColor: "",
                               strikethrough: "unset",
-                            })
-                          }
+                            })}
                         >
                           ADD OBJECT
                         </Button>

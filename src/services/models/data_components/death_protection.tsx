@@ -23,14 +23,11 @@ export const DeathProtection = {
     }
 
     return {
-      "minecraft:death_protection":
-        data.deathEffects.length === 0
-          ? {}
-          : {
-              death_effects: data.deathEffects.map(
-                ConsumeEffect.toDataPackJSON,
-              ),
-            },
+      "minecraft:death_protection": data.deathEffects.length === 0 ? {} : {
+        death_effects: data.deathEffects.map(
+          ConsumeEffect.toDataPackJSON,
+        ),
+      },
     };
   },
   fieldGroupComponent: AppFormHook.withFieldGroup({
@@ -42,41 +39,40 @@ export const DeathProtection = {
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.mode}>
           {(mode) =>
-            mode === "normal" ? (
-              <group.AppField name="deathEffects" mode="array">
-                {(field) => (
-                  <Stack spacing={2}>
-                    <SortableList
-                      items={field.state.value}
-                      onMove={(fromIndex, toIndex) =>
-                        field.moveValue(fromIndex, toIndex)
-                      }
-                      renderItem={(_, index) => (
-                        <Stack spacing={2}>
-                          <ConsumeEffect.fieldGroupComponent
-                            form={group}
-                            fields={`deathEffects[${index}]`}
-                          />
-                          <Button onClick={() => field.removeValue(index)}>
-                            REMOVE CONSUME EFFECT
-                          </Button>
-                        </Stack>
-                      )}
-                    />
-                    <Button
-                      onClick={() =>
-                        field.pushValue({
-                          type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
-                        })
-                      }
-                    >
-                      ADD CONSUME EFFECT
-                    </Button>
-                  </Stack>
-                )}
-              </group.AppField>
-            ) : null
-          }
+            mode === "normal"
+              ? (
+                <group.AppField name="deathEffects" mode="array">
+                  {(field) => (
+                    <Stack spacing={2}>
+                      <SortableList
+                        items={field.state.value}
+                        onMove={(fromIndex, toIndex) =>
+                          field.moveValue(fromIndex, toIndex)}
+                        renderItem={(_, index) => (
+                          <Stack spacing={2}>
+                            <ConsumeEffect.fieldGroupComponent
+                              form={group}
+                              fields={`deathEffects[${index}]`}
+                            />
+                            <Button onClick={() => field.removeValue(index)}>
+                              REMOVE CONSUME EFFECT
+                            </Button>
+                          </Stack>
+                        )}
+                      />
+                      <Button
+                        onClick={() =>
+                          field.pushValue({
+                            type: ConsumeEffectType.CLEAR_ALL_EFFECTS,
+                          })}
+                      >
+                        ADD CONSUME EFFECT
+                      </Button>
+                    </Stack>
+                  )}
+                </group.AppField>
+              )
+              : null}
         </group.Subscribe>
       </FieldGroupPanel>
     ),

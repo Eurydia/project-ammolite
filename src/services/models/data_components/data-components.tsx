@@ -223,9 +223,14 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
 
     return (
       <FieldGroupPanel title="Data components">
-        <group.Subscribe selector={({ values }) => values}>
+        <group.Subscribe
+          selector={({ values }) =>
+            values}
+        >
           {({ selectedType, values }) => {
-            const usedTypes = new Set(values.map((entry) => entry.type));
+            const usedTypes = new Set(values.map((entry) =>
+              entry.type
+            ));
             const availableTypes = DATA_COMPONENT_TYPES.filter(
               (type) => !usedTypes.has(type),
             );
@@ -278,8 +283,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                           <SortableList
                             items={field.state.value}
                             onMove={(fromIndex, toIndex) =>
-                              field.moveValue(fromIndex, toIndex)
-                            }
+                              field.moveValue(fromIndex, toIndex)}
                             renderItem={(entry, index) => (
                               <Stack spacing={2}>
                                 {renderEntry(entry, index)}

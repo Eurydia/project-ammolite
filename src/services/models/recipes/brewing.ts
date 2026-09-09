@@ -33,10 +33,9 @@ const BrewingRecipe$InputItem$ToDataPackJSON = (
 ) => {
   return {
     item: dt.item,
-    potion_contents:
-      dt.potionContents === undefined
-        ? undefined
-        : PotionContentsPredicate$AsDataPackJSON(dt.potionContents),
+    potion_contents: dt.potionContents === undefined
+      ? undefined
+      : PotionContentsPredicate$AsDataPackJSON(dt.potionContents),
   };
 };
 

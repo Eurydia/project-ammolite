@@ -118,8 +118,7 @@ const _FieldGroup$EffectIds = AppFormHook.withFieldGroup({
                       <SortableList
                         items={field.state.value}
                         onMove={(fromIndex, toIndex) =>
-                          field.moveValue(fromIndex, toIndex)
-                        }
+                          field.moveValue(fromIndex, toIndex)}
                         renderItem={(_, index) => (
                           <Stack direction="row" spacing={2}>
                             <group.AppField name={`values[${index}]`}>
@@ -129,7 +128,8 @@ const _FieldGroup$EffectIds = AppFormHook.withFieldGroup({
                             </group.AppField>
                             <Button
                               disabled={field.state.value.length === 1}
-                              onClick={() => field.removeValue(index)}
+                              onClick={() =>
+                                field.removeValue(index)}
                             >
                               REMOVE
                             </Button>
@@ -259,8 +259,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                         <SortableList
                           items={field.state.value}
                           onMove={(fromIndex, toIndex) =>
-                            field.moveValue(fromIndex, toIndex)
-                          }
+                            field.moveValue(fromIndex, toIndex)}
                           renderItem={(_, index) => (
                             <FieldGroupSection title={`Effect ${index + 1}`}>
                               <Stack spacing={2}>
@@ -269,7 +268,8 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                                   fields={`effectInstances[${index}]`}
                                 />
                                 <Button
-                                  onClick={() => field.removeValue(index)}
+                                  onClick={() =>
+                                    field.removeValue(index)}
                                 >
                                   REMOVE EFFECT
                                 </Button>
@@ -287,8 +287,7 @@ const fieldGroupComponent = AppFormHook.withFieldGroup({
                               visible: false,
                               showParticles: true,
                               showIcon: true,
-                            })
-                          }
+                            })}
                         >
                           ADD EFFECT
                         </Button>
@@ -345,10 +344,9 @@ export const ConsumeEffect = {
       case ConsumeEffectType.REMOVE_EFFECTS:
         return {
           type: data.type,
-          effects:
-            data.effectIds.kind === "list"
-              ? data.effectIds.values
-              : data.effectIds.value,
+          effects: data.effectIds.kind === "list"
+            ? data.effectIds.values
+            : data.effectIds.value,
         };
       case ConsumeEffectType.CLEAR_ALL_EFFECTS:
         return { type: data.type };
@@ -361,13 +359,10 @@ export const ConsumeEffect = {
       case ConsumeEffectType.PLAY_SOUND:
         return {
           type: data.type,
-          sound:
-            data.sound.kind === "reference"
-              ? data.sound.value
-              : {
-                  sound_id: data.sound.soundId,
-                  range: data.sound.range,
-                },
+          sound: data.sound.kind === "reference" ? data.sound.value : {
+            sound_id: data.sound.soundId,
+            range: data.sound.range,
+          },
         };
     }
   },

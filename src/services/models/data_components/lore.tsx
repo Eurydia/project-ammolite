@@ -38,42 +38,44 @@ export const Lore = {
         </group.AppField>
         <group.Subscribe selector={({ values }) => values.mode}>
           {(mode) =>
-            mode === "normal" ? (
-              <group.AppField name="lines" mode="array">
-                {(field) => (
-                  <Stack spacing={2}>
-                    <SortableList
-                      items={field.state.value}
-                      onMove={(fromIndex, toIndex) =>
-                        field.moveValue(fromIndex, toIndex)
-                      }
-                      renderItem={(_, index) => (
-                        <FieldGroupSection title={`Line ${index + 1}`}>
-                          <Stack spacing={2}>
-                            <TextComponent.fieldGroupComponent
-                              form={group}
-                              fields={`lines[${index}]`}
-                            />
-                            <Button onClick={() => field.removeValue(index)}>
-                              REMOVE LINE
-                            </Button>
-                          </Stack>
-                        </FieldGroupSection>
-                      )}
-                    />
-                    <Button
-                      disabled={field.state.value.length >= 256}
-                      onClick={() =>
-                        field.pushValue({ kind: "string", value: "" })
-                      }
-                    >
-                      ADD LINE
-                    </Button>
-                  </Stack>
-                )}
-              </group.AppField>
-            ) : null
-          }
+            mode === "normal"
+              ? (
+                <group.AppField name="lines" mode="array">
+                  {(field) => (
+                    <Stack spacing={2}>
+                      <SortableList
+                        items={field.state.value}
+                        onMove={(fromIndex, toIndex) =>
+                          field.moveValue(fromIndex, toIndex)}
+                        renderItem={(_, index) => (
+                          <FieldGroupSection title={`Line ${index + 1}`}>
+                            <Stack spacing={2}>
+                              <TextComponent.fieldGroupComponent
+                                form={group}
+                                fields={`lines[${index}]`}
+                              />
+                              <Button
+                                onClick={() =>
+                                  field.removeValue(index)}
+                              >
+                                REMOVE LINE
+                              </Button>
+                            </Stack>
+                          </FieldGroupSection>
+                        )}
+                      />
+                      <Button
+                        disabled={field.state.value.length >= 256}
+                        onClick={() =>
+                          field.pushValue({ kind: "string", value: "" })}
+                      >
+                        ADD LINE
+                      </Button>
+                    </Stack>
+                  )}
+                </group.AppField>
+              )
+              : null}
         </group.Subscribe>
       </FieldGroupPanel>
     ),
