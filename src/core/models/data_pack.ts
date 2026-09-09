@@ -1,4 +1,5 @@
 import { BrewingRecipe } from "../data/recipe/brewing.ts";
+import { validateIdentifier } from "../utility/validator.ts";
 
 export class MissingNamespaceError extends Error {}
 export class IllegalNamespaceName extends Error {}
@@ -20,7 +21,7 @@ export class DataPack {
   }
 
   public addNamespace(name: string) {
-    if (!/^[a-z0-9_-]+$/.test(name)) {
+    if (!validateIdentifier(name)) {
       throw new IllegalNamespaceName();
     }
     this.namespaceRecipeRegistry.set(name, []);

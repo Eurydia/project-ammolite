@@ -10,22 +10,20 @@ import {
 } from "#/models/data-components/potion-contents.ts";
 
 const pack = new DataPack("TEST");
-pack.addNamespace("EURYDIA_POTIONS");
+pack.addNamespace("eurydia_potions");
 pack.addBrewingRecipe(
-  "EURYDIA_POTIONS",
+  "eurydia_potions",
   BrewingRecipe.new(
     MinecraftItem.NETHER_WART_BLOCK,
     MinecraftItem.POTENT_SULFUR,
     MinecraftItem.POTION,
   )
-    .withRecipeName("HI")
     .whereInputPredicate(
       PotionContentsPredicate.new().wherePotions(
         MobEffects.FIRE_RESISTANCE,
         MobEffects.INVISIBILITY,
       ),
     )
-    .withOutputAmount(1)
     .withOutputComponents(
       PotionContents.new(MobEffects.LONG_SLOWNESS)
         .withHexColor("#339bcf")

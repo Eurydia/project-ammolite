@@ -2,7 +2,8 @@ import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { PotionContentsPredicate as InputPredicate } from "#/models/predicates/potion-contents.ts";
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { hashString } from "../../utility/hashing.ts";
-import { Recipe } from "./recipe.ts";
+import { IllegalRecipeNameError, Recipe } from "./recipe.ts";
+import { validateIdentifier } from "../../utility/validator.ts";
 
 class RecipeInput {
   private item: string;
@@ -29,7 +30,6 @@ class RecipeInput {
 
 class RecipeOutput {
   private item: string;
-  private count: number = 1;
   private components?: DataComponent[];
 
   private constructor(item: string | MinecraftItem) {
@@ -40,11 +40,6 @@ class RecipeOutput {
     return new this(item);
   }
 
-  public withAmount(value: number) {
-    this.count = value;
-    return this;
-  }
-
   public withComponents(...comp: Array<DataComponent>) {
     this.components = [...comp];
   }
@@ -52,7 +47,6 @@ class RecipeOutput {
   public asJsonObject() {
     return {
       id: this.item,
-      count: this.count,
       components: this.components?.reduce((prev, curr) => {
         const { component, ...rest } = curr.asJsonObject();
         return Object.assign(prev, { [component]: rest });
@@ -95,17 +89,15 @@ export class BrewingRecipe implements Recipe {
     return this;
   }
 
-  public withOutputAmount(amount: number) {
-    this.outputItem.withAmount(amount);
-    return this;
-  }
-
   public withOutputComponents(...comps: Array<DataComponent>) {
     this.outputItem.withComponents(...comps);
     return this;
   }
 
   public withRecipeName(name: string) {
+    if (!validateIdentifier(name)) {
+      throw new IllegalRecipeNameError();
+    }
     this.recipeNameOverride = name;
     return this;
   }
