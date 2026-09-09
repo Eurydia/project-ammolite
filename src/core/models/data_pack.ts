@@ -1,17 +1,18 @@
 import { BrewingRecipe } from "../data/recipe/brewing.ts";
 
 export class MissingNamespaceError extends Error {}
+export class IllegalNamespaceName extends Error {}
 
 export class DataPack {
   private name: string;
-  private desc?: string;
+  private desc: string;
 
   private readonly namespaceRecipeRegistry: Map<string, Array<BrewingRecipe>> =
     new Map();
 
   constructor(name: string, desc?: string) {
     this.name = name;
-    this.desc = desc;
+    this.desc = desc ?? "";
   }
 
   public getDesc() {
@@ -19,6 +20,9 @@ export class DataPack {
   }
 
   public addNamespace(name: string) {
+    if (!/^[a-z0-9_-]+$/.test(name)) {
+      throw new IllegalNamespaceName();
+    }
     this.namespaceRecipeRegistry.set(name, []);
   }
 

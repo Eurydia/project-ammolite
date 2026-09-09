@@ -7,7 +7,11 @@ export class PackBuilder {
     Deno.writeTextFileSync(
       `${root}/pack.mcmeta`,
       JSON.stringify({
-        pack: { max_format: 110, description: dataPack.getDesc() },
+        pack: {
+          max_format: 110,
+          min_format: 110,
+          description: dataPack.getDesc(),
+        },
       }),
     );
 

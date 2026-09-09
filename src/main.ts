@@ -25,7 +25,7 @@ pack.addBrewingRecipe(
         MobEffects.INVISIBILITY,
       ),
     )
-    .withOutputAmount(2)
+    .withOutputAmount(1)
     .withOutputComponents(
       PotionContents.new(MobEffects.LONG_SLOWNESS)
         .withHexColor("#339bcf")
