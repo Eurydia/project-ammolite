@@ -10,9 +10,7 @@ import {
 } from "#/models/data-components/potion-contents.ts";
 
 const pack = new DataPack("TEST");
-pack.addNamespace("eurydia_potions");
 pack.addBrewingRecipe(
-  "eurydia_potions",
   BrewingRecipe.new(
     MinecraftItem.NETHER_WART_BLOCK,
     MinecraftItem.POTENT_SULFUR,

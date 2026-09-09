@@ -15,15 +15,13 @@ export class PackBuilder {
       }),
     );
 
-    dataPack.listNamespaces().forEach((entry) => {
-      const nsPath = `${root}/data/${entry.namespace}/recipe/brewing`;
-      Deno.mkdirSync(nsPath, { recursive: true });
-      entry.recipes.forEach((recipe) => {
-        Deno.writeTextFileSync(
-          `${nsPath}/${recipe.getRecipeName()}.json`,
-          JSON.stringify(recipe.asJsonObject()),
-        );
-      });
+    const nsPath = `${root}/data/0/recipe/brewing`;
+    Deno.mkdirSync(nsPath, { recursive: true });
+    dataPack.getRecipes().forEach((recipe, i) => {
+      Deno.writeTextFileSync(
+        `${nsPath}/${i}.json`,
+        JSON.stringify(recipe.asJsonObject()),
+      );
     });
   }
 }

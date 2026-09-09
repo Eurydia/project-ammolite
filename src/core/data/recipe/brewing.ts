@@ -1,9 +1,7 @@
 import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { PotionContentsPredicate as InputPredicate } from "#/models/predicates/potion-contents.ts";
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
-import { hashString } from "../../utility/hashing.ts";
-import { IllegalRecipeNameError, Recipe } from "./recipe.ts";
-import { validateIdentifier } from "../../utility/validator.ts";
+import { Recipe } from "./recipe.ts";
 
 class RecipeInput {
   private item: string;
@@ -56,7 +54,6 @@ class RecipeOutput {
 }
 
 export class BrewingRecipe implements Recipe {
-  private recipeNameOverride?: string;
   private inputItem: RecipeInput;
   private reagentItem: RecipeInput;
   private outputItem: RecipeOutput;
@@ -94,14 +91,6 @@ export class BrewingRecipe implements Recipe {
     return this;
   }
 
-  public withRecipeName(name: string) {
-    if (!validateIdentifier(name)) {
-      throw new IllegalRecipeNameError();
-    }
-    this.recipeNameOverride = name;
-    return this;
-  }
-
   public asJsonObject() {
     return {
       type: "minecraft:brewing",
@@ -109,11 +98,5 @@ export class BrewingRecipe implements Recipe {
       reagent: this.reagentItem.asJsonObject(),
       output: this.outputItem.asJsonObject(),
     };
-  }
-
-  public getRecipeName() {
-    return this.recipeNameOverride === undefined
-      ? hashString(JSON.stringify(this.asJsonObject()))
-      : this.recipeNameOverride;
   }
 }

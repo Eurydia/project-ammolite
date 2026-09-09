@@ -1,5 +1,4 @@
 import { BrewingRecipe } from "../data/recipe/brewing.ts";
-import { validateIdentifier } from "../utility/validator.ts";
 
 export class MissingNamespaceError extends Error {}
 export class IllegalNamespaceName extends Error {}
@@ -8,8 +7,7 @@ export class DataPack {
   private name: string;
   private desc: string;
 
-  private readonly namespaceRecipeRegistry: Map<string, Array<BrewingRecipe>> =
-    new Map();
+  private readonly recipes: Array<BrewingRecipe> = [];
 
   constructor(name: string, desc?: string) {
     this.name = name;
@@ -20,31 +18,12 @@ export class DataPack {
     return this.desc;
   }
 
-  public addNamespace(name: string) {
-    if (!validateIdentifier(name)) {
-      throw new IllegalNamespaceName();
-    }
-    this.namespaceRecipeRegistry.set(name, []);
+  public getRecipes() {
+    return [...this.recipes];
   }
 
-  public listNamespaces() {
-    return [
-      ...this.namespaceRecipeRegistry
-        .entries()
-        .map(([namespaceIden, recipes]) => ({
-          namespace: namespaceIden,
-          recipes,
-        })),
-    ];
-  }
-
-  public addBrewingRecipe(namespace: string, recipe: BrewingRecipe) {
-    const recipes = this.namespaceRecipeRegistry.get(namespace);
-    if (recipes === undefined) {
-      throw new MissingNamespaceError();
-    }
-    recipes.push(recipe);
-    return recipes.length;
+  public addBrewingRecipe(recipe: BrewingRecipe) {
+    this.recipes.push(recipe);
   }
   public getName() {
     return this.name;
