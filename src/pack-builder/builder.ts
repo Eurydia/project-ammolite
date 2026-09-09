@@ -12,7 +12,7 @@ export class PackBuilder {
     );
 
     dataPack.listNamespaces().forEach((entry) => {
-      const nsPath = `${root}/${entry.namespace}`;
+      const nsPath = `${root}/data/${entry.namespace}/recipe/brewing`;
       Deno.mkdirSync(nsPath, { recursive: true });
       entry.recipes.forEach((recipe) => {
         Deno.writeTextFileSync(

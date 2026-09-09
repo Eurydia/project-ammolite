@@ -2,8 +2,12 @@ import { BrewingRecipe } from "./core/data/recipe/brewing.ts";
 import { DataPack } from "#/models/data_pack.ts";
 import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { PackBuilder } from "./pack-builder/builder.ts";
-import { PotionContents } from "#/models/predicates/potion-contents.ts";
-import { MobEffect } from "#/enum/mob-effects.ts";
+import { PotionContentsPredicate } from "#/models/predicates/potion-contents.ts";
+import { MobEffects } from "#/enum/mob-effects.ts";
+import {
+  MobEffect,
+  PotionContents,
+} from "#/models/data-components/potion-contents.ts";
 
 const pack = new DataPack("TEST");
 pack.addNamespace("EURYDIA_POTIONS");
@@ -16,12 +20,19 @@ pack.addBrewingRecipe(
   )
     .withRecipeName("HI")
     .whereInputPredicate(
-      PotionContents.new().wherePotions(
-        MobEffect.FIRE_RESISTANCE,
-        MobEffect.INVISIBILITY,
+      PotionContentsPredicate.new().wherePotions(
+        MobEffects.FIRE_RESISTANCE,
+        MobEffects.INVISIBILITY,
       ),
     )
-    .withOutputAmount(2),
+    .withOutputAmount(2)
+    .withOutputComponents(
+      PotionContents.new(MobEffects.LONG_SLOWNESS)
+        .withHexColor("#339bcf")
+        .withEffects(
+          MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
+        ),
+    ),
 );
 
 PackBuilder.buildDataPack(pack);

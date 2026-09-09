@@ -1,19 +1,19 @@
-import { MobEffect } from "#/enum/mob-effects.ts";
+import { MobEffects } from "#/enum/mob-effects.ts";
 
 type NumberBound = number | { max?: number; min?: number };
 
 export class MobEffectPredicate {
-  private effect: string | MobEffect;
+  private effect: string | MobEffects;
   private amplifier?: NumberBound;
   private duration?: NumberBound;
   private ambient?: boolean;
   private visible?: boolean;
 
-  private constructor(effect: string | MobEffect) {
+  private constructor(effect: string | MobEffects) {
     this.effect = effect;
   }
 
-  public static new(effect: string | MobEffect) {
+  public static new(effect: string | MobEffects) {
     return new this(effect);
   }
 
@@ -54,8 +54,8 @@ export class Effects {
   size?: NumberBound;
 }
 
-export class PotionContents {
-  private potions?: MobEffect[];
+export class PotionContentsPredicate {
+  private potions?: MobEffects[];
   private effects?: Effects;
 
   private constructor() {}
@@ -93,7 +93,7 @@ export class PotionContents {
     return JSON.stringify(this.asJsonObject());
   }
 
-  public wherePotions(...potions: MobEffect[]) {
+  public wherePotions(...potions: MobEffects[]) {
     this.potions = [...potions];
     return this;
   }

@@ -1,7 +1,8 @@
 import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
-import { PotionContents as InputPredicate } from "#/models/predicates/potion-contents.ts";
+import { PotionContentsPredicate as InputPredicate } from "#/models/predicates/potion-contents.ts";
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { hashString } from "../../utility/hashing.ts";
+import { Recipe } from "./recipe.ts";
 
 class RecipeInput {
   private item: string;
@@ -44,11 +45,8 @@ class RecipeOutput {
     return this;
   }
 
-  public withComponent(comp: DataComponent) {
-    if (this.components === undefined) {
-      this.components = [];
-    }
-    this.components.push(comp);
+  public withComponents(...comp: Array<DataComponent>) {
+    this.components = [...comp];
   }
 
   public asJsonObject() {
@@ -63,7 +61,7 @@ class RecipeOutput {
   }
 }
 
-export class BrewingRecipe {
+export class BrewingRecipe implements Recipe {
   private recipeNameOverride?: string;
   private inputItem: RecipeInput;
   private reagentItem: RecipeInput;
@@ -102,8 +100,8 @@ export class BrewingRecipe {
     return this;
   }
 
-  public withOutputComponent(component: DataComponent) {
-    this.outputItem.withComponent(component);
+  public withOutputComponents(...comps: Array<DataComponent>) {
+    this.outputItem.withComponents(...comps);
     return this;
   }
 
@@ -114,6 +112,7 @@ export class BrewingRecipe {
 
   public asJsonObject() {
     return {
+      type: "minecraft:brewing",
       input: this.inputItem.asJsonObject(),
       reagent: this.reagentItem.asJsonObject(),
       output: this.outputItem.asJsonObject(),

@@ -6,6 +6,7 @@
     "@std/assert": "jsr:@std/assert@1",
     "#/enum/": "./src/core/enums/",
     "#/models/": "./src/core/models/",
+    "adm-zip": "npm:adm-zip@^0.6.0",
     "hashery": "npm:hashery@^3.0.1"
   }
 }

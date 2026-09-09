@@ -1,4 +1,4 @@
-export enum MobEffect {
+export enum MobEffects {
   WATER = "minecraft:water",
   MUNDANE = "minecraft:mundane",
   THICK = "minecraft:thick",
