@@ -1,6 +1,16 @@
 import { DataPack } from "#/models/data_pack.ts";
 
 export class PackBuilder {
+  private zip?: boolean;
+  private constructor() {}
+  public static new() {
+    return new this();
+  }
+  public buildZip() {
+    this.zip = true;
+    return this;
+  }
+
   public static buildDataPack(dataPack: DataPack) {
     const root = `./OUTPUT/${dataPack.getName()}`;
     Deno.mkdirSync(root, { recursive: true });

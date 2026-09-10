@@ -46,8 +46,8 @@ class RecipeOutput {
     return {
       id: this.item,
       components: this.components?.reduce((prev, curr) => {
-        const { component, ...rest } = curr.asJsonObject();
-        return Object.assign(prev, { [component]: rest });
+        const [id, value] = curr.asJsonObject();
+        return Object.assign(prev, { [id]: value });
       }, {}),
     };
   }

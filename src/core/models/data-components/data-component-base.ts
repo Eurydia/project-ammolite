@@ -1,3 +1,3 @@
 export interface DataComponent {
-  asJsonObject(): { component: string };
+  asJsonObject(): [string, object | string | number | undefined | boolean];
 }

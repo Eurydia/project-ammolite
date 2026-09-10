@@ -4,10 +4,13 @@ import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
 import { PackBuilder } from "./pack-builder/builder.ts";
 import { PotionContentsPredicate } from "#/models/predicates/potion-contents.ts";
 import { MobEffects } from "#/enum/mob-effects.ts";
+import { PotionContents } from "#/models/data-components/potion-contents.ts";
+import { Rarity } from "#/models/data-components/rarity.ts";
 import {
-  MobEffect,
-  PotionContents,
-} from "#/models/data-components/potion-contents.ts";
+  ConsumeEffect,
+  DeathProtection,
+} from "#/models/data-components/death-protection.ts";
+import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
 
 const pack = new DataPack("TEST");
 pack.addBrewingRecipe(
@@ -28,6 +31,13 @@ pack.addBrewingRecipe(
         .withEffects(
           MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
         ),
+      Rarity.negated(),
+      DeathProtection.new().withDeathEffects(
+        ConsumeEffect.playSound("??").withRange(12),
+        ConsumeEffect.applyEffects()
+          .withEffects(MobEffect.new(MobEffects.AWKWARD))
+          .withProbability(1),
+      ),
     ),
 );
 
