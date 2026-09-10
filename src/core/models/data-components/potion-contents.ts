@@ -2,12 +2,12 @@ import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
 
 export class PotionContents implements DataComponent {
-  private potion: string | false;
+  private potion?: string | false;
   private customName?: string;
   private customColor?: number;
   private customEffects?: Array<MobEffect>;
 
-  private constructor(potion: string | false) {
+  private constructor(potion?: string | false) {
     this.potion = potion;
   }
 
@@ -15,7 +15,7 @@ export class PotionContents implements DataComponent {
     return new this(false);
   }
 
-  public static new(potion: string) {
+  public static new(potion?: string) {
     return new this(potion);
   }
 

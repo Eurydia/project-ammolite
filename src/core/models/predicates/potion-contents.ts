@@ -67,25 +67,22 @@ export class PotionContentsPredicate {
   public asJsonObject() {
     return {
       potions: this.potions,
-      effects:
-        this.effects === undefined
-          ? undefined
-          : {
-              contains: this.effects.contains?.map((mobEff) => {
-                const { effect, ...rest } = mobEff.asJSONObject();
-                return {
-                  [effect]: rest,
-                };
-              }),
-              size: this.effects.size,
-              count: this.effects.count?.map(({ count, test }) => ({
-                count,
-                test: test.reduce((prev, curr) => {
-                  const { effect, ...rest } = curr.asJSONObject();
-                  return Object.assign(prev, { [effect]: rest });
-                }, {}),
-              })),
-            },
+      effects: this.effects === undefined ? undefined : {
+        contains: this.effects.contains?.map((mobEff) => {
+          const { effect, ...rest } = mobEff.asJSONObject();
+          return {
+            [effect]: rest,
+          };
+        }),
+        size: this.effects.size,
+        count: this.effects.count?.map(({ count, test }) => ({
+          count,
+          test: test.reduce((prev, curr) => {
+            const { effect, ...rest } = curr.asJSONObject();
+            return Object.assign(prev, { [effect]: rest });
+          }, {}),
+        })),
+      },
     };
   }
 

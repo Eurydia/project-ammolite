@@ -10,16 +10,12 @@ export class SoundEvent {
         };
   }
 
-  private constructor(sound: string) {
+  private constructor(sound: string, range?: number) {
     this.sound = sound;
+    this.range = range;
   }
 
-  public static new(sound: string) {
-    return new this(sound);
-  }
-
-  public withRange(value: number) {
-    this.range = value;
-    return this;
+  public static new(sound: string, range?: number) {
+    return new this(sound, range);
   }
 }

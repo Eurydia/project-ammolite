@@ -6,38 +6,43 @@ import { PotionContentsPredicate } from "#/models/predicates/potion-contents.ts"
 import { MobEffects } from "#/enum/mob-effects.ts";
 import { PotionContents } from "#/models/data-components/potion-contents.ts";
 import { Rarity } from "#/models/data-components/rarity.ts";
-import {
-  ConsumeEffect,
-  DeathProtection,
-} from "#/models/data-components/death-protection.ts";
+import { DeathProtection } from "#/models/data-components/death-protection.ts";
 import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
+import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
+import { Lore } from "#/models/data-components/lore.ts";
+import { Text } from "#/models/data-components/common/text.ts";
 
 const pack = new DataPack("TEST");
 pack.addBrewingRecipe(
   BrewingRecipe.new(
-    MinecraftItem.NETHER_WART_BLOCK,
-    MinecraftItem.POTENT_SULFUR,
+    MinecraftItem.POTION,
+    MinecraftItem.TOTEM_OF_UNDYING,
     MinecraftItem.POTION,
   )
     .whereInputPredicate(
-      PotionContentsPredicate.new().wherePotions(
-        MobEffects.FIRE_RESISTANCE,
-        MobEffects.INVISIBILITY,
-      ),
+      PotionContentsPredicate.new().wherePotions(MobEffects.STRONG_SWIFTNESS),
     )
     .withOutputComponents(
-      PotionContents.new(MobEffects.LONG_SLOWNESS)
-        .withHexColor("#339bcf")
-        .withEffects(
-          MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
-        ),
-      Rarity.negated(),
-      DeathProtection.new().withDeathEffects(
-        ConsumeEffect.playSound("??").withRange(12),
-        ConsumeEffect.applyEffects()
-          .withEffects(MobEffect.new(MobEffects.AWKWARD))
-          .withProbability(1),
+      PotionContents.new().withEffects(
+        MobEffect.new(MobEffects.REGENERATION)
+          .withDuration(2000)
+          .withAmplifier(3),
+        MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
+        MobEffect.new("minecraft:absorption").withDuration(2000),
+        MobEffect.new(MobEffects.STRONG_SWIFTNESS).withDuration(2000),
       ),
+      Rarity.epic(),
+      DeathProtection.new(
+        ConsumeEffect.applyEffects(
+          MobEffect.new(MobEffects.REGENERATION)
+            .withDuration(2000)
+            .withAmplifier(3),
+          MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
+          MobEffect.new("minecraft:absorption").withDuration(2000),
+          MobEffect.new(MobEffects.STRONG_SWIFTNESS).withDuration(2000),
+        ).withProbability(1),
+      ),
+      Lore.new(Text.Str("Protects you upon death")),
     ),
 );
 
