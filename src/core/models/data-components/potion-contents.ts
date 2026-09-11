@@ -1,8 +1,9 @@
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
+import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
 
 export class PotionContents implements DataComponent {
-  private potion?: string | false;
+  private potion?: string | MinecraftPotions | false;
   private customName?: string;
   private customColor?: number;
   private customEffects?: Array<MobEffect>;
@@ -15,30 +16,21 @@ export class PotionContents implements DataComponent {
     return new this(false);
   }
 
-  public static new(potion?: string) {
+  public static new(potion?: string | MinecraftPotions) {
     return new this(potion);
   }
 
-  private validateNegated() {
-    if (this.potion === false) {
-      throw new Error();
-    }
-  }
-
   public withHexColor(hex: string) {
-    this.validateNegated();
     this.customColor = Number.parseInt(hex.slice(1), 16);
     return this;
   }
 
   public withName(name: string) {
-    this.validateNegated();
     this.customName = name;
     return this;
   }
 
   public withEffects(...effs: Array<MobEffect>) {
-    this.validateNegated();
     this.customEffects = [...effs];
     return this;
   }

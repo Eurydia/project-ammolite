@@ -1,4 +1,5 @@
 import { MobEffects } from "#/enum/mob-effects.ts";
+import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
 
 type NumberBound = number | { max?: number; min?: number };
 
@@ -55,7 +56,7 @@ export class Effects {
 }
 
 export class PotionContentsPredicate {
-  private potions?: MobEffects[];
+  private potions?: (string | MinecraftPotions)[];
   private effects?: Effects;
 
   private constructor() {}
@@ -67,31 +68,33 @@ export class PotionContentsPredicate {
   public asJsonObject() {
     return {
       potions: this.potions,
-      effects: this.effects === undefined ? undefined : {
-        contains: this.effects.contains?.map((mobEff) => {
-          const { effect, ...rest } = mobEff.asJSONObject();
-          return {
-            [effect]: rest,
-          };
-        }),
-        size: this.effects.size,
-        count: this.effects.count?.map(({ count, test }) => ({
-          count,
-          test: test.reduce((prev, curr) => {
-            const { effect, ...rest } = curr.asJSONObject();
-            return Object.assign(prev, { [effect]: rest });
-          }, {}),
-        })),
-      },
+      effects:
+        this.effects === undefined
+          ? undefined
+          : {
+              contains: this.effects.contains?.map((mobEff) => {
+                const { effect, ...rest } = mobEff.asJSONObject();
+                return {
+                  [effect]: rest,
+                };
+              }),
+              size: this.effects.size,
+              count: this.effects.count?.map(({ count, test }) => ({
+                count,
+                test: test.reduce((prev, curr) => {
+                  const { effect, ...rest } = curr.asJSONObject();
+                  return Object.assign(prev, { [effect]: rest });
+                }, {}),
+              })),
+            },
     };
   }
 
-  public toJSON() {
-    return JSON.stringify(this.asJsonObject());
-  }
-
-  public wherePotions(...potions: MobEffects[]) {
-    this.potions = [...potions];
+  public wherePotions(
+    potion: string | MinecraftPotions,
+    ...rest: (string | MinecraftPotions)[]
+  ) {
+    this.potions = [potion, ...rest];
     return this;
   }
 

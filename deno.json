@@ -4,6 +4,7 @@
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
+    "@std/fs": "jsr:@std/fs",
     "#/enum/": "./src/core/enums/",
     "#/models/": "./src/core/models/",
     "adm-zip": "npm:adm-zip@^0.6.0",

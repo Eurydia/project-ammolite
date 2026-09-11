@@ -7,6 +7,7 @@ export abstract class Text {
   protected strikethrough?: boolean;
   protected obfuscated?: boolean;
   protected variant: string;
+  protected extra?: Array<Text>;
 
   public static Text(body: string) {
     return Text$Text.new(body);
@@ -14,9 +15,10 @@ export abstract class Text {
   protected constructor(variant: string) {
     this.variant = variant;
   }
-  public asJsonObject() {
+  public asJsonObject(): object {
     return {
       type: this.variant,
+
       color: this.color,
       font: this.font,
       bold: this.bold,
@@ -24,6 +26,8 @@ export abstract class Text {
       underlined: this.underlined,
       strikethrough: this.strikethrough,
       obfuscated: this.obfuscated,
+
+      extra: this.extra?.map((item) => item.asJsonObject()),
     };
   }
 
@@ -54,6 +58,10 @@ export abstract class Text {
 
   public withObfuscated(value: boolean = true) {
     this.obfuscated = value;
+    return this;
+  }
+  public withExtra(item: Text, ...items: Array<Text>) {
+    this.extra = [item, ...items];
     return this;
   }
 }

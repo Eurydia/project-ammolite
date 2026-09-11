@@ -1,4 +1,5 @@
 import { DataPack } from "#/models/data_pack.ts";
+import { exists, existsSync } from "@std/fs/exists";
 
 export class PackBuilder {
   private zip?: boolean;
@@ -13,6 +14,9 @@ export class PackBuilder {
 
   public static buildDataPack(dataPack: DataPack) {
     const root = `./OUTPUT/${dataPack.getName()}`;
+    if (existsSync(root, { isDirectory: true })) {
+      Deno.removeSync(root, { recursive: true });
+    }
     Deno.mkdirSync(root, { recursive: true });
     Deno.writeTextFileSync(
       `${root}/pack.mcmeta`,

@@ -1,4 +1,4 @@
-import { MinecraftItem } from "#/enum/minecraft-item.enum.ts";
+import { MinecraftItem } from "#/enum/minecraft-item.ts";
 import { PotionContentsPredicate as InputPredicate } from "#/models/predicates/potion-contents.ts";
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { Recipe } from "./recipe.ts";
@@ -21,7 +21,7 @@ class RecipeInput {
   public asJsonObject() {
     return {
       item: this.item,
-      potionContents: this.potionContents?.asJsonObject(),
+      potion_contents: this.potionContents?.asJsonObject(),
     };
   }
 }
