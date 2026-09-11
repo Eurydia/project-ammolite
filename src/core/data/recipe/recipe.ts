@@ -3,5 +3,3 @@ export interface Recipe {
     type: string;
   };
 }
-
-export class IllegalRecipeNameError extends Error {}

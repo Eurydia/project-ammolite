@@ -11,7 +11,7 @@ import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
 import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 import { Lore } from "#/models/data-components/lore.ts";
 import { Text } from "#/models/data-components/common/text.ts";
-
+import { ItemName } from "#/models/data-components/item-name.ts";
 const pack = new DataPack("TEST");
 pack.addBrewingRecipe(
   BrewingRecipe.new(
@@ -20,7 +20,7 @@ pack.addBrewingRecipe(
     MinecraftItem.POTION,
   )
     .whereInputPredicate(
-      PotionContentsPredicate.new().wherePotions(MobEffects.STRONG_SWIFTNESS),
+      PotionContentsPredicate.new().wherePotions(MobEffects.SPEED),
     )
     .withOutputComponents(
       PotionContents.new().withEffects(
@@ -29,7 +29,7 @@ pack.addBrewingRecipe(
           .withAmplifier(3),
         MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
         MobEffect.new("minecraft:absorption").withDuration(2000),
-        MobEffect.new(MobEffects.STRONG_SWIFTNESS).withDuration(2000),
+        MobEffect.new(MobEffects.SPEED).withDuration(2000),
       ),
       Rarity.epic(),
       DeathProtection.new(
@@ -38,11 +38,12 @@ pack.addBrewingRecipe(
             .withDuration(2000)
             .withAmplifier(3),
           MobEffect.new(MobEffects.FIRE_RESISTANCE).withDuration(2000),
-          MobEffect.new("minecraft:absorption").withDuration(2000),
-          MobEffect.new(MobEffects.STRONG_SWIFTNESS).withDuration(2000),
+          MobEffect.new(MobEffects.ABSORPTION).withDuration(2000),
+          MobEffect.new(MobEffects.SPEED).withDuration(2000),
         ).withProbability(1),
       ),
       Lore.new(Text.Str("Protects you upon death")),
+      ItemName.from(Text.Str("Potion of Undying")),
     ),
 );
 

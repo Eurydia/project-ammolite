@@ -2,12 +2,10 @@ export class SoundEvent {
   private sound: string;
   private range?: number;
   public asJsonObject() {
-    return this.range === undefined
-      ? this.sound
-      : {
-          sound_id: this.sound,
-          range: this.range,
-        };
+    return this.range === undefined ? this.sound : {
+      sound_id: this.sound,
+      range: this.range,
+    };
   }
 
   private constructor(sound: string, range?: number) {
