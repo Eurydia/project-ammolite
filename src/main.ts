@@ -12,6 +12,8 @@ import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts
 import { Lore } from "#/models/data-components/lore.ts";
 import { Text } from "#/models/data-components/common/text.ts";
 import { ItemName } from "#/models/data-components/item-name.ts";
+import { MinecraftColor } from "#/enum/colors.ts";
+import { CustomName } from "#/models/data-components/custom-name.ts";
 const pack = new DataPack("TEST");
 pack.addBrewingRecipe(
   BrewingRecipe.new(
@@ -42,8 +44,13 @@ pack.addBrewingRecipe(
           MobEffect.new(MobEffects.SPEED).withDuration(2000),
         ).withProbability(1),
       ),
-      Lore.new(Text.Str("Protects you upon death")),
-      ItemName.from(Text.Str("Potion of Undying")),
+      Lore.new(Text.Text("Protects you upon death")),
+      CustomName.from(
+        Text.Text("Potion of Undying")
+          .withColor(MinecraftColor.LIGHT_PURPLE)
+          .withItalic(false)
+          .withUnderlined(),
+      ),
     ),
 );
 
