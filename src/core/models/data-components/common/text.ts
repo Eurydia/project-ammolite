@@ -75,4 +75,9 @@ class Text$Text extends Text {
   public static new(body: string) {
     return new this(body);
   }
+
+  public override asJsonObject() {
+    const obj: object = { ...super.asJsonObject() };
+    return Object.assign(obj, { text: this.body });
+  }
 }
