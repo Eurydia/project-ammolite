@@ -20,8 +20,12 @@ import { CustomName } from "#/models/data-components/custom-name.ts";
 import { MinecraftTick } from "./core/utility/duration.ts";
 import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
 import { DamageResistant } from "#/models/data-components/damage-resistant.ts";
+import { SuspiciousStewEffects } from "#/models/data-components/suspicious-stew-effects.ts";
 
 const pack = new DataPack("eurydia_long_lasting_potions");
+const tagLore = Lore.new(
+  Text.Text("✦Eurydia's Long Lasting Potions").withItalic(false),
+);
 
 for (const [preset, eff, duration, name] of [
   [
@@ -82,19 +86,16 @@ for (const [preset, eff, duration, name] of [
         ),
         CustomName.from(
           Text.Text("Long Lasting")
-            .withBold()
-            .withUnderlined()
             .withItalic(false)
-            .withColor(MinecraftColor.LIGHT_PURPLE)
+            .withColor(MinecraftColor.GOLD)
             .withExtra(
               Text.Text(` Potion of ${name}`)
                 .withBold(false)
-                .withUnderlined(false),
+                .withUnderlined(false)
+                .withColor(MinecraftColor.WHITE),
             ),
         ),
-        Lore.new(
-          Text.Text("✦Eurydia's Long Lasting Potions").withItalic(false),
-        ),
+        tagLore,
       ),
   );
 }
@@ -121,18 +122,53 @@ pack.addBrewingRecipe(
       ),
       CustomName.from(
         Text.Text("Long Lasting")
-          .withBold()
-          .withUnderlined()
           .withItalic(false)
-          .withColor(MinecraftColor.LIGHT_PURPLE)
+          .withColor(MinecraftColor.GOLD)
           .withExtra(
             Text.Text(` Potion of Turtle Master`)
-              .withBold(false)
-              .withUnderlined(false),
+              .withUnderlined(false)
+              .withColor(MinecraftColor.WHITE),
           ),
       ),
-      Lore.new(Text.Text("✦Eurydia's Long Lasting Potions").withItalic(false)),
+      tagLore,
     ),
 );
+
+for (const [flowers, eff] of [
+  [[MinecraftItems.ALLIUM], MobEffects.FIRE_RESISTANCE],
+  [
+    [MinecraftItems.AZURE_BLUET, MinecraftItems.OPEN_EYEBLOSSOM],
+    MobEffects.BLINDNESS,
+  ],
+  [
+    [MinecraftItems.BLUE_ORCHID, MinecraftItems.DANDELION],
+    MobEffects.SATURATION,
+  ],
+  [[MinecraftItems.CLOSED_EYEBLOSSOM], MobEffects.NAUSEA],
+  [[MinecraftItems.CORNFLOWER], MobEffects.JUMP_BOOST],
+  [[MinecraftItems.LILY_OF_THE_VALLEY], MobEffects.POISON],
+  [[MinecraftItems.OXEYE_DAISY], MobEffects.REGENERATION],
+  [[MinecraftItems.POPPY, MinecraftItems.TORCHFLOWER], MobEffects.NIGHT_VISION],
+  [
+    [
+      MinecraftItems.RED_TULIP,
+      MinecraftItems.ORANGE_TULIP,
+      MinecraftItems.WHITE_TULIP,
+      MinecraftItems.PINK_TULIP,
+    ],
+    MobEffects.WEAKNESS,
+  ],
+  [[MinecraftItems.WITHER_ROSE], MobEffects.WITHER],
+] as const) {
+  for (const f of flowers) {
+    pack.addBrewingRecipe(
+      BrewingRecipe.new(
+        MinecraftItems.MUSHROOM_STEW,
+        f,
+        MinecraftItems.SUSPICIOUS_STEW,
+      ).withOutputComponents(SuspiciousStewEffects.from({ id: eff })),
+    );
+  }
+}
 
 PackBuilder.buildDataPack(pack);
