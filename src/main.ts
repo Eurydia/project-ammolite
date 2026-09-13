@@ -2,24 +2,16 @@ import { BrewingRecipe } from "./core/data/recipe/brewing.ts";
 import { DataPack } from "#/models/data_pack.ts";
 import { MinecraftItem as MinecraftItems } from "#/enum/minecraft-item.ts";
 import { PackBuilder } from "./pack-builder/builder.ts";
-import {
-  Effects,
-  MobEffectPredicate,
-  PotionContentsPredicate,
-} from "#/models/predicates/potion-contents.ts";
+import { PotionContentsPredicate } from "#/models/predicates/potion-contents.ts";
 import { MobEffects } from "#/enum/mob-effects.ts";
 import { PotionContents } from "#/models/data-components/potion-contents.ts";
-import { Rarity } from "#/models/data-components/rarity.ts";
-import { DeathProtection } from "#/models/data-components/death-protection.ts";
 import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
-import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 import { Lore } from "#/models/data-components/lore.ts";
 import { Text } from "#/models/data-components/common/text.ts";
 import { MinecraftColor } from "#/enum/minecraft-colors.ts";
 import { CustomName } from "#/models/data-components/custom-name.ts";
 import { MinecraftTick } from "./core/utility/duration.ts";
 import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
-import { DamageResistant } from "#/models/data-components/damage-resistant.ts";
 import { SuspiciousStewEffects } from "#/models/data-components/suspicious-stew-effects.ts";
 
 const pack = new DataPack("eurydia_long_lasting_potions");
@@ -77,7 +69,9 @@ for (const [preset, eff, duration, name] of [
       MinecraftItems.REDSTONE_BLOCK,
       MinecraftItems.POTION,
     )
-      .whereInputPredicate(PotionContentsPredicate.new().wherePotions(preset))
+      .whereInputPredicate(
+        PotionContentsPredicate.fromObject({ potions: preset }),
+      )
       .withOutputComponents(
         PotionContents.new().withEffects(
           MobEffect.new(eff).withDuration(
@@ -107,9 +101,9 @@ pack.addBrewingRecipe(
     MinecraftItems.POTION,
   )
     .whereInputPredicate(
-      PotionContentsPredicate.new().wherePotions(
-        MinecraftPotions.LONG_TURTLE_MASTER,
-      ),
+      PotionContentsPredicate.fromObject({
+        potions: MinecraftPotions.LONG_TURTLE_MASTER,
+      }),
     )
     .withOutputComponents(
       PotionContents.new(MinecraftPotions.LONG_TURTLE_MASTER).withEffects(

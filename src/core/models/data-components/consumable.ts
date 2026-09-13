@@ -1,6 +1,6 @@
 import { DataComponent } from "#/models/data-components/data-component-base.ts";
 import { SoundEvent } from "#/models/data-components/common/sound-event.ts";
-import { ConsumeEffect } from "#/models/data-components/death-protection.ts";
+import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 
 export enum ConsumeAnimations {
   NONE = "none",
@@ -53,10 +53,7 @@ export class Consumable implements DataComponent {
   }
   public withSound(sound: string, range?: number) {
     this.throwIfNegated();
-    this.sound = SoundEvent.new(sound);
-    if (range !== undefined) {
-      this.sound.withRange(range);
-    }
+    this.sound = SoundEvent.new(sound, range);
     return this;
   }
   public withEffects(...effs: Array<ConsumeEffect>) {

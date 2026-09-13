@@ -1,51 +1,63 @@
-import { MobEffects } from "#/enum/mob-effects.ts";
-import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
-
-type NumberBound = number | { max?: number; min?: number };
+import { NumberBound } from "#/models/snbt/number-bound.ts";
 
 export class MobEffectPredicate {
-  private effect: string | MobEffects;
-  private amplifier?: NumberBound;
-  private duration?: NumberBound;
-  private ambient?: boolean;
-  private visible?: boolean;
+  public readonly effect: string;
+  public readonly amplifier?: NumberBound;
+  public readonly duration?: NumberBound;
+  public readonly ambient?: boolean;
+  public readonly visible?: boolean;
 
-  private constructor(effect: string | MobEffects) {
+  private constructor(
+    effect: string,
+    amplifier?: number,
+    duration?: number,
+    ambient?: boolean,
+    visible?: boolean,
+  ) {
     this.effect = effect;
+
+    if (amplifier !== undefined) {
+      this.amplifier = NumberBound.byte(amplifier);
+    }
+
+    if (duration !== undefined) {
+      this.duration = NumberBound.integer(duration);
+    }
+
+    this.ambient = ambient;
+    this.visible = visible;
   }
 
-  public static new(effect: string | MobEffects) {
-    return new this(effect);
+  public static from(obj: {
+    effect: string;
+    amplifier?: number;
+    duration?: number;
+    ambient?: boolean;
+    visible?: boolean;
+  }) {
+    return new this(
+      obj.effect,
+      obj.amplifier,
+      obj.duration,
+      obj.ambient,
+      obj.visible,
+    );
   }
 
-  public whereAmplifier(bound: NumberBound) {
-    this.amplifier = bound;
-    return this;
-  }
-
-  public whereDuration(bound: NumberBound) {
-    this.duration = bound;
-    return this;
-  }
-
-  public whereAmbient(value: boolean) {
-    this.ambient = value;
-    return this;
-  }
-
-  public whereVisible(value: boolean) {
-    this.visible = value;
-    return this;
-  }
-
-  public asJSONObject() {
-    return {
+  public asJsonObject(): Readonly<{
+    effect: string;
+    amplifier?: number | Readonly<{ min?: number; max?: number }>;
+    duration?: number | Readonly<{ min?: number; max?: number }>;
+    visible?: boolean;
+    ambient?: boolean;
+  }> {
+    return Object.freeze({
       effect: this.effect,
-      amplifier: this.amplifier,
-      duration: this.duration,
+      amplifier: this.amplifier?.valueOf(),
+      duration: this.duration?.valueOf(),
       visible: this.visible,
       ambient: this.ambient,
-    };
+    });
   }
 }
 
@@ -56,13 +68,19 @@ export class Effects {
 }
 
 export class PotionContentsPredicate {
-  private potions?: (string | MinecraftPotions)[];
-  private effects?: Effects;
+  private readonly potions?: string | Array<string>;
+  private readonly effects?: Effects;
 
-  private constructor() {}
+  public constructor(potions?: string | Array<string>, effects?: Effects) {
+    this.effects = effects;
+    this.potions = potions;
+  }
 
-  public static new() {
-    return new this();
+  public static fromObject(obj: {
+    potions?: string | Array<string>;
+    effects?: Effects;
+  }) {
+    return new this(obj.potions, obj.effects);
   }
 
   public asJsonObject() {
@@ -73,7 +91,7 @@ export class PotionContentsPredicate {
           ? undefined
           : {
               contains: this.effects.contains?.map((mobEff) => {
-                const { effect, ...rest } = mobEff.asJSONObject();
+                const { effect, ...rest } = mobEff.asJsonObject();
                 return {
                   [effect]: rest,
                 };
@@ -82,24 +100,11 @@ export class PotionContentsPredicate {
               count: this.effects.count?.map(({ count, test }) => ({
                 count,
                 test: test.reduce((prev, curr) => {
-                  const { effect, ...rest } = curr.asJSONObject();
+                  const { effect, ...rest } = curr.asJsonObject();
                   return Object.assign(prev, { [effect]: rest });
                 }, {}),
               })),
             },
     };
-  }
-
-  public wherePotions(
-    potion: string | MinecraftPotions,
-    ...rest: (string | MinecraftPotions)[]
-  ) {
-    this.potions = [potion, ...rest];
-    return this;
-  }
-
-  public whereEffects(effects: Effects) {
-    this.effects = effects;
-    return this;
   }
 }
