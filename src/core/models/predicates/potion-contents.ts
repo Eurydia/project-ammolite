@@ -1,20 +1,36 @@
 import { MobEffectPredicateType } from "#/models/predicates/common/mob-effect.ts";
 import { keepUndefinedOrTransform } from "#/utility/transform.ts";
-import { NumberBoundType } from "#/models/snbt/number-bound.ts";
+import { NumberBound, NumberBoundType } from "#/models/snbt/number-bound.ts";
+
+const makeEffectPredicateValue = ({
+  amplifier,
+  duration,
+  ambient,
+  visible,
+}: Omit<MobEffectPredicateType, "effect">) => {
+  return Object.freeze({
+    amplifier,
+    duration,
+    ambient,
+    visible,
+  });
+};
 
 export type PotionContentsPredicateType = Readonly<{
   potions?: string | ReadonlyArray<string>;
   effects?: {
-    contains?: Readonly<{
-      [k: string]: Readonly<{
-        amplifier?: NumberBoundType;
-        duration?: NumberBoundType;
-        ambient?: boolean;
-        visible?: boolean;
-      }>;
-    }>;
+    contains?: ReadonlyArray<
+      Readonly<{
+        [k: string]: Readonly<{
+          amplifier?: NumberBoundType;
+          duration?: NumberBoundType;
+          ambient?: boolean;
+          visible?: boolean;
+        }>;
+      }>
+    >;
     count?: ReadonlyArray<{
-      count: number;
+      count: NumberBoundType;
       test: Readonly<{
         [k: string]: Readonly<{
           amplifier?: NumberBoundType;
@@ -24,7 +40,7 @@ export type PotionContentsPredicateType = Readonly<{
         }>;
       }>;
     }>;
-    size?: number;
+    size?: NumberBoundType;
   };
 }>;
 
@@ -37,10 +53,10 @@ export const PotionContentsPredicate = {
     effects?: {
       contains?: Array<MobEffectPredicateType>;
       count?: Array<{
-        count: number;
+        count: NumberBoundType;
         test: Array<MobEffectPredicateType>;
       }>;
-      size?: number;
+      size?: NumberBoundType;
     };
   }) {
     return Object.freeze({
@@ -51,29 +67,35 @@ export const PotionContentsPredicate = {
         effects,
         ({ contains, count, size }) => {
           return Object.freeze({
-            size,
+            size: size === undefined
+              ? undefined
+              : NumberBound.integer(size, 0, 2_147_483_647),
             contains: keepUndefinedOrTransform(contains, (vals) => {
               return Object.freeze(
-                vals.reduce((prev, { effect, ...rest }) => {
-                  return Object.assign(prev, { [effect]: rest });
-                }, {}) as {
-                  [K: string]: Readonly<{
-                    amplifier?: NumberBoundType;
-                    duration?: NumberBoundType;
-                    ambient?: boolean;
-                    visible?: boolean;
-                  }>;
-                },
+                vals.map(({ effect, ...rest }) =>
+                  Object.freeze({
+                    [effect]: makeEffectPredicateValue(rest),
+                  }) as Readonly<{
+                    [K: string]: Readonly<{
+                      amplifier?: NumberBoundType;
+                      duration?: NumberBoundType;
+                      ambient?: boolean;
+                      visible?: boolean;
+                    }>;
+                  }>
+                ),
               );
             }),
             count: keepUndefinedOrTransform(count, (vals) => {
               return Object.freeze(
                 vals.map(({ count, test }) => {
                   return Object.freeze({
-                    count,
+                    count: NumberBound.integer(count, 0, 2_147_483_647),
                     test: Object.freeze(
                       test.reduce((prev, { effect, ...rest }) => {
-                        return Object.assign(prev, { [effect]: rest });
+                        return Object.assign(prev, {
+                          [effect]: makeEffectPredicateValue(rest),
+                        });
                       }, {}) as {
                         [K: string]: {
                           amplifier?: NumberBoundType;

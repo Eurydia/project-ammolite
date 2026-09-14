@@ -6,10 +6,10 @@ export type RarityComponentType = Readonly<
 >;
 
 export const RarityComponent = {
-  from({ rarity }: { rarity: ItemRarity }): RarityComponentType {
-    return { "minecraft:rarity": rarity };
+  from(rarity: ItemRarity): RarityComponentType {
+    return Object.freeze({ "minecraft:rarity": rarity });
   },
   negated(): RarityComponentType {
-    return { "!minecraft:rarity": {} };
+    return Object.freeze({ "!minecraft:rarity": Object.freeze({}) });
   },
 };

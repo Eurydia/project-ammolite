@@ -25,20 +25,25 @@ export const PotionContentsComponent = {
     potion?: string;
     customName?: string;
     customColor?: string;
-    customEffects?: ReadonlyArray<MobEffectComponentType>;
+    customEffects?: Array<MobEffectComponentType>;
   }): PotionContentsComponentType {
-    return {
-      "minecraft:potion_contents": {
+    return Object.freeze({
+      "minecraft:potion_contents": Object.freeze({
         potion,
         custom_name: customName,
-        custom_effects: customEffects,
+        custom_effects: keepUndefinedOrTransform(
+          customEffects,
+          (value) => Object.freeze([...value]),
+        ),
         custom_color: keepUndefinedOrTransform(customColor, (val) => {
           return Number.parseInt(val.slice(1), 16);
         }),
-      },
-    };
+      }),
+    });
   },
   negated(): PotionContentsComponentType {
-    return { "!minecraft:potion_contents": {} };
+    return Object.freeze({
+      "!minecraft:potion_contents": Object.freeze({}),
+    });
   },
 };

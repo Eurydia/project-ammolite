@@ -1,4 +1,4 @@
-import { MobEffects } from "#/enum/mob-effects.ts";
+import { SuspiciousStewEffectType } from "#/models/data-components/common/suspicious-stew-effect.ts";
 
 export type SuspiciousStewEffectsComponentType = Readonly<
   | {
@@ -8,20 +8,22 @@ export type SuspiciousStewEffectsComponentType = Readonly<
   }
   | {
     "minecraft:suspicious_stew_effects": ReadonlyArray<
-      Readonly<{ id: MobEffects; duration?: number }>
+      SuspiciousStewEffectType
     >;
   }
 >;
 
 export const SuspiciousStewEffectsComponent = {
-  from({
-    effects,
-  }: {
-    effects: ReadonlyArray<Readonly<{ id: MobEffects; duration?: number }>>;
-  }): SuspiciousStewEffectsComponentType {
-    return { "minecraft:suspicious_stew_effects": effects };
+  from(
+    ...effects: Array<SuspiciousStewEffectType>
+  ): SuspiciousStewEffectsComponentType {
+    return Object.freeze({
+      "minecraft:suspicious_stew_effects": Object.freeze([...effects]),
+    });
   },
   negated(): SuspiciousStewEffectsComponentType {
-    return { "!minecraft:suspicious_stew_effects": {} };
+    return Object.freeze({
+      "!minecraft:suspicious_stew_effects": Object.freeze({}),
+    });
   },
 };

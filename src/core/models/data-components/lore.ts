@@ -6,18 +6,14 @@ export type LoreComponentType = Readonly<
 >;
 
 export const LoreComponent = {
-  from({
-    lines,
-  }: {
-    lines: ReadonlyArray<TextComponentType>;
-  }): LoreComponentType {
+  from(...lines: Array<TextComponentType>): LoreComponentType {
     if (lines.length > 256) {
       throw new Error("Minecraft lore supports at most 256 lines.");
     }
 
-    return { "minecraft:lore": lines };
+    return Object.freeze({ "minecraft:lore": Object.freeze([...lines]) });
   },
   negated(): LoreComponentType {
-    return { "!minecraft:lore": {} };
+    return Object.freeze({ "!minecraft:lore": Object.freeze({}) });
   },
 };

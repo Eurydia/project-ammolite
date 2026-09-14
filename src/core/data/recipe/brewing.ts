@@ -1,5 +1,9 @@
 import { PotionContentsPredicateType } from "#/models/predicates/potion-contents.ts";
-import { DataComponentType } from "#/models/data-components/data-component.ts";
+import {
+  ItemStack,
+  type ItemStackInput,
+  type ItemStackType,
+} from "#/models/data-components/common/item-stack.ts";
 
 // export class BrewingRecipe implements Recipe {
 //   private inputItem: RecipeInput;
@@ -53,6 +57,7 @@ import { DataComponentType } from "#/models/data-components/data-component.ts";
 // }
 
 export type BrewingRecipeType = Readonly<{
+  type: "minecraft:brewing";
   input: Readonly<{
     item: string;
     potion_contents?: PotionContentsPredicateType;
@@ -61,10 +66,7 @@ export type BrewingRecipeType = Readonly<{
     item: string;
     potion_contents?: PotionContentsPredicateType;
   }>;
-  output: Readonly<{
-    id: string;
-    components?: DataComponentType;
-  }>;
+  output: ItemStackType;
 }>;
 
 export const BrewingRecipe = {
@@ -77,17 +79,15 @@ export const BrewingRecipe = {
       item: string;
       potion_contents?: PotionContentsPredicateType;
     },
-    output: {
-      id: string;
-      components?: DataComponentType;
-    },
+    output: ItemStackInput,
   ) {
     return Object.freeze({
+      type: "minecraft:brewing",
       input: Object.freeze({
         ...input,
       }),
       reagent: Object.freeze({ ...reagent }),
-      output: Object.freeze({ ...output }),
+      output: ItemStack.from(output),
     });
   },
 };

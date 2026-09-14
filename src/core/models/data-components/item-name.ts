@@ -6,10 +6,10 @@ export type ItemNameComponentType = Readonly<
 >;
 
 export const ItemNameComponent = {
-  from({ text }: { text: TextComponentType }): ItemNameComponentType {
-    return { "minecraft:item_name": text };
+  from(text: TextComponentType): ItemNameComponentType {
+    return Object.freeze({ "minecraft:item_name": text });
   },
   negated(): ItemNameComponentType {
-    return { "!minecraft:item_name": {} };
+    return Object.freeze({ "!minecraft:item_name": Object.freeze({}) });
   },
 };

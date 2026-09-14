@@ -11,19 +11,18 @@ import { CustomNameComponent } from "#/models/data-components/custom-name.ts";
 import { MinecraftTick } from "./core/utility/duration.ts";
 import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
 import { SuspiciousStewEffectsComponent } from "#/models/data-components/suspicious-stew-effects.ts";
+import { SuspiciousStewEffect } from "#/models/data-components/common/suspicious-stew-effect.ts";
 import { DataComponent } from "#/models/data-components/data-component.ts";
 import { PotionContentsComponent } from "#/models/data-components/potion-contents.ts";
 import { MobEffectComponent } from "#/models/data-components/common/mob-effect.ts";
 
 const pack = new DataPack("eurydia_long_lasting_potions");
-const tagLore = LoreComponent.from({
-  lines: [
-    TextComponent.from({
-      text: "✦Eurydia's Long Lasting Potions",
-      italic: false,
-    }),
-  ],
-});
+const tagLore = LoreComponent.from(
+  TextComponent.from({
+    text: "✦Eurydia's Long Lasting Potions",
+    italic: false,
+  }),
+);
 
 for (
   const [preset, eff, duration, name] of [
@@ -89,8 +88,8 @@ for (
               }),
             ],
           }),
-          CustomNameComponent.from({
-            text: TextComponent.from({
+          CustomNameComponent.from(
+            TextComponent.from({
               text: "Long Lasting",
               italic: false,
               color: MinecraftColor.GOLD,
@@ -103,7 +102,7 @@ for (
                 }),
               ],
             }),
-          }),
+          ),
           tagLore,
         ),
       },
@@ -150,7 +149,9 @@ for (
         {
           id: MinecraftItems.SUSPICIOUS_STEW,
           components: DataComponent.from(
-            SuspiciousStewEffectsComponent.from({ effects: [{ id: eff }] }),
+            SuspiciousStewEffectsComponent.from(
+              SuspiciousStewEffect.from(eff),
+            ),
           ),
         },
       ),

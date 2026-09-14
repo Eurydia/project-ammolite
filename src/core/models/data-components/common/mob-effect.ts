@@ -29,7 +29,7 @@ export const MobEffectComponent = {
     showIcon?: boolean;
     showParticles?: boolean;
   }): MobEffectComponentType {
-    return {
+    return Object.freeze({
       id,
       duration: keepUndefinedOrTransform(
         duration,
@@ -43,6 +43,6 @@ export const MobEffectComponent = {
       ambient,
       show_icon: showIcon,
       show_particles: showParticles,
-    };
+    });
   },
 };

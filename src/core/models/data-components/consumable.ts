@@ -1,5 +1,7 @@
 import type { ConsumeEffectType } from "#/models/data-components/common/consume-effect.ts";
 import type { SoundEventType } from "#/models/data-components/common/sound-event.ts";
+import { NumberBound } from "#/models/snbt/number-bound.ts";
+import { keepUndefinedOrTransform } from "#/utility/transform.ts";
 
 export enum ConsumeAnimations {
   NONE = "none",
@@ -41,19 +43,25 @@ export const ConsumableComponent = {
     animation?: string | ConsumeAnimations;
     sound?: SoundEventType;
     hasConsumeParticles?: boolean;
-    onConsumeEffects?: ReadonlyArray<ConsumeEffectType>;
+    onConsumeEffects?: Array<ConsumeEffectType>;
   }): ConsumableComponentType {
-    return {
-      "minecraft:consumable": {
-        consume_seconds: consumeSeconds,
+    return Object.freeze({
+      "minecraft:consumable": Object.freeze({
+        consume_seconds: keepUndefinedOrTransform(
+          consumeSeconds,
+          (value) => NumberBound.float(value, 0),
+        ),
         animation,
         sound,
         has_consume_particles: hasConsumeParticles,
-        on_consume_effects: onConsumeEffects,
-      },
-    };
+        on_consume_effects: keepUndefinedOrTransform(
+          onConsumeEffects,
+          (value) => Object.freeze([...value]),
+        ),
+      }),
+    });
   },
   negated(): ConsumableComponentType {
-    return { "!minecraft:consumable": {} };
+    return Object.freeze({ "!minecraft:consumable": Object.freeze({}) });
   },
 };

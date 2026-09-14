@@ -1,5 +1,6 @@
 import { NumberBound, NumberBoundType } from "#/models/snbt/number-bound.ts";
 import { keepUndefinedOrTransform } from "#/utility/transform.ts";
+
 export type MobEffectPredicateType = Readonly<{
   effect: string;
   amplifier?: NumberBoundType;
@@ -22,11 +23,13 @@ export const MobEffectPredicate = {
   }): MobEffectPredicateType {
     return Object.freeze({
       ...rest,
-      amplifier: keepUndefinedOrTransform(amplifier, (val) =>
-        NumberBound.byte(val),
+      amplifier: keepUndefinedOrTransform(
+        amplifier,
+        (val) => NumberBound.byte(val),
       ),
-      duration: keepUndefinedOrTransform(duration, (val) =>
-        NumberBound.byte(val),
+      duration: keepUndefinedOrTransform(
+        duration,
+        (val) => NumberBound.integer(val),
       ),
     });
   },

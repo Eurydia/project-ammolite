@@ -8,10 +8,12 @@ export type EnchantmentGlintOverrideComponentType = Readonly<
 >;
 
 export const EnchantmentGlintOverrideComponent = {
-  from({ value }: { value: boolean }): EnchantmentGlintOverrideComponentType {
-    return { "minecraft:enchantment_glint_override": value };
+  from(value: boolean): EnchantmentGlintOverrideComponentType {
+    return Object.freeze({ "minecraft:enchantment_glint_override": value });
   },
   negated(): EnchantmentGlintOverrideComponentType {
-    return { "!minecraft:enchantment_glint_override": {} };
+    return Object.freeze({
+      "!minecraft:enchantment_glint_override": Object.freeze({}),
+    });
   },
 };

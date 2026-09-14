@@ -9,6 +9,7 @@ import type { PotionContentsComponentType } from "#/models/data-components/potio
 import type { PotionDurationScaleComponentType } from "#/models/data-components/potion-duration-scale.ts";
 import type { RarityComponentType } from "#/models/data-components/rarity.ts";
 import type { SuspiciousStewEffectsComponentType } from "#/models/data-components/suspicious-stew-effects.ts";
+import type { UseRemainderComponentType } from "#/models/data-components/use-remainder.ts";
 
 type UnionToIntersection<T> = (
   T extends unknown ? (value: T) => void : never
@@ -25,14 +26,15 @@ type IndividualDataComponentType =
   | PotionContentsComponentType
   | PotionDurationScaleComponentType
   | RarityComponentType
-  | SuspiciousStewEffectsComponentType;
+  | SuspiciousStewEffectsComponentType
+  | UseRemainderComponentType;
 
 export type DataComponentType = Readonly<
   Partial<UnionToIntersection<IndividualDataComponentType>>
 >;
 
 export const DataComponent = {
-  from(...components: ReadonlyArray<DataComponentType>): DataComponentType {
-    return Object.assign({}, ...components);
+  from(...components: Array<DataComponentType>): DataComponentType {
+    return Object.freeze(Object.assign({}, ...components));
   },
 };

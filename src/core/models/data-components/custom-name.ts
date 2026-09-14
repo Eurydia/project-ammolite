@@ -6,10 +6,10 @@ export type CustomNameComponentType = Readonly<
 >;
 
 export const CustomNameComponent = {
-  from({ text }: { text: TextComponentType }): CustomNameComponentType {
-    return { "minecraft:custom_name": text };
+  from(text: TextComponentType): CustomNameComponentType {
+    return Object.freeze({ "minecraft:custom_name": text });
   },
   negated(): CustomNameComponentType {
-    return { "!minecraft:custom_name": {} };
+    return Object.freeze({ "!minecraft:custom_name": Object.freeze({}) });
   },
 };

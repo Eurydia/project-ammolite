@@ -10,14 +10,18 @@ export type DeathProtectionComponentType = Readonly<
 >;
 
 export const DeathProtectionComponent = {
-  from({
-    deathEffects,
-  }: {
-    deathEffects: ReadonlyArray<ConsumeEffectType>;
-  }): DeathProtectionComponentType {
-    return { "minecraft:death_protection": { death_effects: deathEffects } };
+  from(
+    ...deathEffects: Array<ConsumeEffectType>
+  ): DeathProtectionComponentType {
+    return Object.freeze({
+      "minecraft:death_protection": Object.freeze({
+        death_effects: Object.freeze([...deathEffects]),
+      }),
+    });
   },
   negated(): DeathProtectionComponentType {
-    return { "!minecraft:death_protection": {} };
+    return Object.freeze({
+      "!minecraft:death_protection": Object.freeze({}),
+    });
   },
 };

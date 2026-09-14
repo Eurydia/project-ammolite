@@ -1,3 +1,8 @@
+import {
+  NumberBound,
+  SNBT_FLOAT_MIN_POSITIVE,
+} from "#/models/snbt/number-bound.ts";
+
 export type SoundEventType =
   | string
   | Readonly<{
@@ -6,9 +11,10 @@ export type SoundEventType =
   }>;
 
 export const SoundEvent = {
-  from(
-    { soundId, range }: { soundId: string; range?: number },
-  ): SoundEventType {
-    return range === undefined ? soundId : { sound_id: soundId, range };
+  from(soundId: string, range?: number): SoundEventType {
+    return range === undefined ? soundId : Object.freeze({
+      sound_id: soundId,
+      range: NumberBound.float(range, SNBT_FLOAT_MIN_POSITIVE),
+    });
   },
 };

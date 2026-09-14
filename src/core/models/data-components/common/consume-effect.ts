@@ -3,6 +3,11 @@ import {
   SoundEvent,
   type SoundEventType,
 } from "#/models/data-components/common/sound-event.ts";
+import {
+  NumberBound,
+  SNBT_FLOAT_MIN_POSITIVE,
+} from "#/models/snbt/number-bound.ts";
+import { keepUndefinedOrTransform } from "#/utility/transform.ts";
 
 export type ConsumeEffectType = Readonly<
   | {
@@ -27,20 +32,30 @@ export type ConsumeEffectType = Readonly<
 >;
 
 export const ConsumeEffect = {
-  removeEffects(effects: ReadonlyArray<string>): ConsumeEffectType {
-    return { type: "minecraft:remove_effects", effects };
+  removeEffects(effects: Array<string>): ConsumeEffectType {
+    return Object.freeze({
+      type: "minecraft:remove_effects",
+      effects: Object.freeze([...effects]),
+    });
   },
   applyEffects({
     effects,
     probability,
   }: {
-    effects: ReadonlyArray<MobEffectComponentType>;
+    effects: Array<MobEffectComponentType>;
     probability?: number;
   }): ConsumeEffectType {
-    return { type: "minecraft:apply_effects", effects, probability };
+    return Object.freeze({
+      type: "minecraft:apply_effects",
+      effects: Object.freeze([...effects]),
+      probability: keepUndefinedOrTransform(
+        probability,
+        (value) => NumberBound.float(value, 0, 1),
+      ),
+    });
   },
   clearAllEffects(): ConsumeEffectType {
-    return { type: "minecraft:clear_all_effects" };
+    return Object.freeze({ type: "minecraft:clear_all_effects" });
   },
   teleportRandomly({
     diameter,
@@ -49,11 +64,14 @@ export const ConsumeEffect = {
     diameter?: number;
     directionalParticles?: boolean;
   } = {}): ConsumeEffectType {
-    return {
+    return Object.freeze({
       type: "minecraft:teleport_randomly",
-      diameter,
+      diameter: keepUndefinedOrTransform(
+        diameter,
+        (value) => NumberBound.float(value, SNBT_FLOAT_MIN_POSITIVE),
+      ),
       directional_particles: directionalParticles,
-    };
+    });
   },
   playSound({
     soundId,
@@ -62,9 +80,9 @@ export const ConsumeEffect = {
     soundId: string;
     range?: number;
   }): ConsumeEffectType {
-    return {
+    return Object.freeze({
       type: "minecraft:play_sound",
-      sound: SoundEvent.from({ soundId, range }),
-    };
+      sound: SoundEvent.from(soundId, range),
+    });
   },
 };

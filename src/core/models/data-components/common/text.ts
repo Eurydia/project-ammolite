@@ -1,3 +1,5 @@
+import { keepUndefinedOrTransform } from "#/utility/transform.ts";
+
 export type TextComponentType = Readonly<{
   type: "text";
   text: string;
@@ -31,9 +33,9 @@ export const TextComponent = {
     underlined?: boolean;
     strikethrough?: boolean;
     obfuscated?: boolean;
-    extra?: ReadonlyArray<TextComponentType>;
+    extra?: Array<TextComponentType>;
   }): TextComponentType {
-    return {
+    return Object.freeze({
       type: "text",
       text,
       color,
@@ -43,7 +45,10 @@ export const TextComponent = {
       underlined,
       strikethrough,
       obfuscated,
-      extra,
-    };
+      extra: keepUndefinedOrTransform(
+        extra,
+        (value) => Object.freeze([...value]),
+      ),
+    });
   },
 };
