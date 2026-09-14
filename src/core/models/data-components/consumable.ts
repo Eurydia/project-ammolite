@@ -1,6 +1,5 @@
-import { DataComponent } from "#/models/data-components/data-component-base.ts";
-import { SoundEvent } from "#/models/data-components/common/sound-event.ts";
-import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
+import type { ConsumeEffectType } from "#/models/data-components/common/consume-effect.ts";
+import type { SoundEventType } from "#/models/data-components/common/sound-event.ts";
 
 export enum ConsumeAnimations {
   NONE = "none",
@@ -17,68 +16,44 @@ export enum ConsumeAnimations {
   TRIDENT = "trident",
 }
 
-export class Consumable implements DataComponent {
-  private consumeSeconds?: number;
-  private animation?: string;
-  private sound?: SoundEvent;
-  private particles?: boolean;
-  private effects?: Array<ConsumeEffect>;
-
-  private negated: boolean;
-
-  private constructor(negated: boolean) {
-    this.negated = negated;
+export type ConsumableComponentType = Readonly<
+  | { "!minecraft:consumable": Readonly<Record<PropertyKey, never>> }
+  | {
+    "minecraft:consumable": Readonly<{
+      consume_seconds?: number;
+      animation?: string;
+      sound?: SoundEventType;
+      has_consume_particles?: boolean;
+      on_consume_effects?: ReadonlyArray<ConsumeEffectType>;
+    }>;
   }
+>;
 
-  public static negated() {
-    return new this(true);
-  }
-
-  private throwIfNegated() {
-    if (this.negated) {
-      throw new Error();
-    }
-  }
-
-  public withComsumeSeconds(sec: number) {
-    this.throwIfNegated();
-    this.consumeSeconds = sec;
-    return this;
-  }
-
-  public withanimation(anim: string | ConsumeAnimations) {
-    this.throwIfNegated();
-    this.animation = anim;
-    return this;
-  }
-  public withSound(sound: string, range?: number) {
-    this.throwIfNegated();
-    this.sound = SoundEvent.new(sound, range);
-    return this;
-  }
-  public withEffects(...effs: Array<ConsumeEffect>) {
-    this.throwIfNegated();
-    this.effects = effs;
-    return this;
-  }
-
-  public static new() {
-    return new this(true);
-  }
-
-  public asJsonObject(): [string, object] {
-    if (this.negated) {
-      return ["!minecraft:consumable", {}];
-    }
-    return [
-      "minecraft:consumable",
-      {
-        consume_seconds: this.consumeSeconds,
-        animation: this.animation,
-        sound: this.sound?.asJsonObject(),
-        has_consume_particles: this.particles,
-        on_consume_effects: this.effects?.map((eff) => eff.asJsonObject()),
+export const ConsumableComponent = {
+  from({
+    consumeSeconds,
+    animation,
+    sound,
+    hasConsumeParticles,
+    onConsumeEffects,
+  }: {
+    consumeSeconds?: number;
+    animation?: string | ConsumeAnimations;
+    sound?: SoundEventType;
+    hasConsumeParticles?: boolean;
+    onConsumeEffects?: ReadonlyArray<ConsumeEffectType>;
+  }): ConsumableComponentType {
+    return {
+      "minecraft:consumable": {
+        consume_seconds: consumeSeconds,
+        animation,
+        sound,
+        has_consume_particles: hasConsumeParticles,
+        on_consume_effects: onConsumeEffects,
       },
-    ];
-  }
-}
+    };
+  },
+  negated(): ConsumableComponentType {
+    return { "!minecraft:consumable": {} };
+  },
+};

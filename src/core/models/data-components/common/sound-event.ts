@@ -1,19 +1,14 @@
-export class SoundEvent {
-  private sound: string;
-  private range?: number;
-  public asJsonObject() {
-    return this.range === undefined ? this.sound : {
-      sound_id: this.sound,
-      range: this.range,
-    };
-  }
+export type SoundEventType =
+  | string
+  | Readonly<{
+    sound_id: string;
+    range?: number;
+  }>;
 
-  private constructor(sound: string, range?: number) {
-    this.sound = sound;
-    this.range = range;
-  }
-
-  public static new(sound: string, range?: number) {
-    return new this(sound, range);
-  }
-}
+export const SoundEvent = {
+  from(
+    { soundId, range }: { soundId: string; range?: number },
+  ): SoundEventType {
+    return range === undefined ? soundId : { sound_id: soundId, range };
+  },
+};

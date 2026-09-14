@@ -34,7 +34,7 @@ export class PackBuilder {
     dataPack.getRecipes().forEach((recipe, i) => {
       Deno.writeTextFileSync(
         `${nsPath}/${i}.json`,
-        JSON.stringify(recipe.asJsonObject()),
+        JSON.stringify(recipe),
       );
     });
   }

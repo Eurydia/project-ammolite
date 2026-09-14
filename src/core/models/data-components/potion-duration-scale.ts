@@ -1,24 +1,17 @@
-import { DataComponent } from "#/models/data-components/data-component-base.ts";
-
-export class PotionDurationScale implements DataComponent {
-  private scale: number | false;
-
-  private constructor(scale: number | false) {
-    this.scale = scale;
+export type PotionDurationScaleComponentType = Readonly<
+  | {
+    "!minecraft:potion_duration_scale": Readonly<
+      Record<PropertyKey, never>
+    >;
   }
+  | { "minecraft:potion_duration_scale": number }
+>;
 
-  public static new(value: number) {
-    return new this(value);
-  }
-
-  public static negated() {
-    return new this(false);
-  }
-
-  public asJsonObject(): [string, number | object] {
-    if (this.scale === false) {
-      return ["!minecraft:potion_duration_scale", {}];
-    }
-    return ["minecraft:potion_duration_scale", this.scale];
-  }
-}
+export const PotionDurationScaleComponent = {
+  from({ value }: { value: number }): PotionDurationScaleComponentType {
+    return { "minecraft:potion_duration_scale": value };
+  },
+  negated(): PotionDurationScaleComponentType {
+    return { "!minecraft:potion_duration_scale": {} };
+  },
+};

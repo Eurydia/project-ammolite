@@ -1,102 +1,93 @@
-import { MinecraftItem } from "#/enum/minecraft-item.ts";
-import { PotionContentsPredicateType as InputPredicate } from "#/models/predicates/potion-contents.ts";
-import { DataComponent } from "#/models/data-components/data-component-base.ts";
-import { Recipe } from "./recipe.ts";
+import { PotionContentsPredicateType } from "#/models/predicates/potion-contents.ts";
+import { DataComponentType } from "#/models/data-components/data-component.ts";
 
-class RecipeInput {
-  private item: string;
-  private potionContents?: InputPredicate;
+// export class BrewingRecipe implements Recipe {
+//   private inputItem: RecipeInput;
+//   private reagentItem: RecipeInput;
+//   private outputItem: RecipeOutput;
 
-  private constructor(item: string) {
-    this.item = item;
-  }
-  public static new(item: string) {
-    return new this(item);
-  }
+//   private constructor(
+//     inputItem: string,
+//     reagentItem: string,
+//     outputItem: string,
+//   ) {
+//     this.inputItem = RecipeInput.new(inputItem);
+//     this.reagentItem = RecipeInput.new(reagentItem);
+//     this.outputItem = RecipeOutput.new(outputItem);
+//   }
 
-  public wherePotionContents(predicate: InputPredicate) {
-    this.potionContents = predicate;
-  }
+//   public static new(
+//     inputItem: string,
+//     reagentItem: string,
+//     outputItem: string,
+//   ) {
+//     return new this(inputItem, reagentItem, outputItem);
+//   }
 
-  public asJsonObject() {
-    return {
-      item: this.item,
-      potion_contents: this.potionContents,
-    };
-  }
-}
+//   public whereInputPredicate(pred: InputPredicate) {
+//     this.inputItem.wherePotionContents(pred);
+//     return this;
+//   }
 
-class RecipeOutput {
-  private item: string;
-  private components?: DataComponent[];
+//   public whereReagentPredicate(pred: InputPredicate) {
+//     this.reagentItem.wherePotionContents(pred);
+//     return this;
+//   }
 
-  private constructor(item: string | MinecraftItem) {
-    this.item = item;
-  }
+//   public withOutputComponents(
+//     comp: [string, unknown],
+//     ...rest: Array<[string, unknown]>
+//   ) {
+//     this.outputItem.withComponents(comp, rest);
+//     return this;
+//   }
 
-  public static new(item: string | MinecraftItem) {
-    return new this(item);
-  }
+//   public asJsonObject() {
+//     return {
+//       type: "minecraft:brewing",
+//       input: this.inputItem.asJsonObject(),
+//       reagent: this.reagentItem.asJsonObject(),
+//       output: this.outputItem.asJsonObject(),
+//     };
+//   }
+// }
 
-  public withComponents(...comp: Array<DataComponent>) {
-    this.components = [...comp];
-  }
+export type BrewingRecipeType = Readonly<{
+  input: Readonly<{
+    item: string;
+    potion_contents?: PotionContentsPredicateType;
+  }>;
+  reagent: Readonly<{
+    item: string;
+    potion_contents?: PotionContentsPredicateType;
+  }>;
+  output: Readonly<{
+    id: string;
+    components?: DataComponentType;
+  }>;
+}>;
 
-  public asJsonObject() {
-    return {
-      id: this.item,
-      components: this.components?.reduce((prev, curr) => {
-        const [id, value] = curr.asJsonObject();
-        return Object.assign(prev, { [id]: value });
-      }, {}),
-    };
-  }
-}
-
-export class BrewingRecipe implements Recipe {
-  private inputItem: RecipeInput;
-  private reagentItem: RecipeInput;
-  private outputItem: RecipeOutput;
-
-  private constructor(
-    inputItem: string,
-    reagentItem: string,
-    outputItem: string,
+export const BrewingRecipe = {
+  from(
+    input: {
+      item: string;
+      potion_contents?: PotionContentsPredicateType;
+    },
+    reagent: {
+      item: string;
+      potion_contents?: PotionContentsPredicateType;
+    },
+    output: {
+      id: string;
+      components?: DataComponentType;
+    },
   ) {
-    this.inputItem = RecipeInput.new(inputItem);
-    this.reagentItem = RecipeInput.new(reagentItem);
-    this.outputItem = RecipeOutput.new(outputItem);
-  }
-
-  public static new(
-    inputItem: string,
-    reagentItem: string,
-    outputItem: string,
-  ) {
-    return new this(inputItem, reagentItem, outputItem);
-  }
-
-  public whereInputPredicate(pred: InputPredicate) {
-    this.inputItem.wherePotionContents(pred);
-    return this;
-  }
-
-  public whereReagentPredicate(pred: InputPredicate) {
-    this.reagentItem.wherePotionContents(pred);
-    return this;
-  }
-
-  public withOutputComponents(...comps: Array<DataComponent>) {
-    this.outputItem.withComponents(...comps);
-    return this;
-  }
-
-  public asJsonObject() {
-    return {
-      type: "minecraft:brewing",
-      input: this.inputItem.asJsonObject(),
-      reagent: this.reagentItem.asJsonObject(),
-      output: this.outputItem.asJsonObject(),
-    };
-  }
-}
+    return Object.freeze({
+      input: Object.freeze({
+        ...input,
+      }),
+      reagent: Object.freeze({ ...reagent }),
+      output: Object.freeze({ ...output }),
+    });
+  },
+};

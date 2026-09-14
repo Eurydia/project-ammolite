@@ -45,38 +45,29 @@ const validate = (
   }
 };
 
-const makeNew = (
-  value: number | { min?: number; max?: number },
+const makeNew = <T extends number | { min?: number; max?: number }>(
+  value: T,
   inclMin: number,
   InclMax: number,
-) => {
+): T => {
   if (!validate(value, inclMin, InclMax)) {
     throw new Error("Bad value for NumberBound");
   }
-  switch (typeof value) {
-    case "number": {
-      return value;
-    }
-    case "object": {
-      return Object.freeze({ ...value });
-    }
-    default:
-      throw new Error("Unsupported type");
-  }
+  return value;
 };
 
 export type NumberBoundType = number | Readonly<{ min?: number; max?: number }>;
 
 export const NumberBound = {
-  integer(
-    value: number | { min?: number; max?: number },
+  integer<T extends number | { min?: number; max?: number }>(
+    value: T,
     inclMin: number = -2_147_483_648,
     inclMax: number = 2_147_483_647,
   ) {
     return makeNew(value, inclMin, inclMax);
   },
-  byte(
-    value: number | { min?: number; max?: number },
+  byte<T extends number | { min?: number; max?: number }>(
+    value: T,
     inclMin: number = -128,
     inclMax: number = 127,
   ) {

@@ -1,56 +1,48 @@
-export class MobEffect {
-  private id: string;
-  private duration?: number;
-  private amplifier?: number;
-  private visible?: boolean;
-  private ambient?: boolean;
-  private showIcon?: boolean;
-  private showParticles?: boolean;
+import { NumberBound } from "#/models/snbt/number-bound.ts";
+import { keepUndefinedOrTransform } from "#/utility/transform.ts";
 
-  private constructor(id: string) {
-    this.id = id;
-  }
+export type MobEffectComponentType = Readonly<{
+  id: string;
+  duration?: number;
+  amplifier?: number;
+  visible?: boolean;
+  ambient?: boolean;
+  show_icon?: boolean;
+  show_particles?: boolean;
+}>;
 
-  public static new(id: string) {
-    return new this(id);
-  }
-
-  public withDuration(ticks: number) {
-    this.duration = ticks;
-    return this;
-  }
-
-  public withAmplifier(amp: number) {
-    this.amplifier = amp;
-    return this;
-  }
-
-  public withAmbient(value: boolean) {
-    this.ambient = value;
-    return this;
-  }
-  public withVisible(value: boolean) {
-    this.visible = value;
-    return this;
-  }
-  public withShowIcon(value: boolean) {
-    this.showIcon = value;
-    return this;
-  }
-  public withShowParticles(value: boolean) {
-    this.showParticles = value;
-    return this;
-  }
-
-  public asJsonObject() {
+export const MobEffectComponent = {
+  from({
+    duration,
+    amplifier,
+    id,
+    visible,
+    ambient,
+    showIcon,
+    showParticles,
+  }: {
+    id: string;
+    duration?: number;
+    amplifier?: number;
+    visible?: boolean;
+    ambient?: boolean;
+    showIcon?: boolean;
+    showParticles?: boolean;
+  }): MobEffectComponentType {
     return {
-      id: this.id,
-      duration: this.duration,
-      amplifier: this.amplifier,
-      visible: this.visible,
-      ambient: this.ambient,
-      show_icon: this.showIcon,
-      show_particles: this.showParticles,
+      id,
+      duration: keepUndefinedOrTransform(
+        duration,
+        (val) => NumberBound.integer(val),
+      ),
+      amplifier: keepUndefinedOrTransform(
+        amplifier,
+        (val) => NumberBound.byte(val),
+      ),
+      visible,
+      ambient,
+      show_icon: showIcon,
+      show_particles: showParticles,
     };
-  }
-}
+  },
+};

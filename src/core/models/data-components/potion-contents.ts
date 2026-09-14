@@ -1,52 +1,44 @@
-import { DataComponent } from "#/models/data-components/data-component-base.ts";
-import { MobEffect } from "#/models/data-components/common/mob-effect.ts";
-import { MinecraftPotions } from "#/enum/minecraft-potions.ts";
+import { MobEffectComponentType } from "#/models/data-components/common/mob-effect.ts";
+import { keepUndefinedOrTransform } from "#/utility/transform.ts";
 
-export class PotionContents implements DataComponent {
-  private potion?: string | MinecraftPotions | false;
-  private customName?: string;
-  private customColor?: number;
-  private customEffects?: Array<MobEffect>;
-
-  private constructor(potion?: string | false) {
-    this.potion = potion;
+export type PotionContentsComponentType = Readonly<
+  | {
+    "!minecraft:potion_contents": Readonly<Record<PropertyKey, never>>;
   }
-
-  public static negated() {
-    return new this(false);
+  | {
+    "minecraft:potion_contents": Readonly<{
+      potion?: string;
+      custom_name?: string;
+      custom_color?: number;
+      custom_effects?: ReadonlyArray<MobEffectComponentType>;
+    }>;
   }
+>;
 
-  public static new(potion?: string | MinecraftPotions) {
-    return new this(potion);
-  }
-
-  public withHexColor(hex: string) {
-    this.customColor = Number.parseInt(hex.slice(1), 16);
-    return this;
-  }
-
-  public withName(name: string) {
-    this.customName = name;
-    return this;
-  }
-
-  public withEffects(...effs: Array<MobEffect>) {
-    this.customEffects = [...effs];
-    return this;
-  }
-
-  public asJsonObject(): [string, object] {
-    if (this.potion === false) {
-      return ["!minecraft:potion_contents", {}];
-    }
-    return [
-      "minecraft:potion_contents",
-      {
-        potion: this.potion,
-        custom_name: this.customName,
-        custom_color: this.customColor,
-        custom_effects: this.customEffects,
+export const PotionContentsComponent = {
+  from({
+    customColor,
+    customEffects,
+    customName,
+    potion,
+  }: {
+    potion?: string;
+    customName?: string;
+    customColor?: string;
+    customEffects?: ReadonlyArray<MobEffectComponentType>;
+  }): PotionContentsComponentType {
+    return {
+      "minecraft:potion_contents": {
+        potion,
+        custom_name: customName,
+        custom_effects: customEffects,
+        custom_color: keepUndefinedOrTransform(customColor, (val) => {
+          return Number.parseInt(val.slice(1), 16);
+        }),
       },
-    ];
-  }
-}
+    };
+  },
+  negated(): PotionContentsComponentType {
+    return { "!minecraft:potion_contents": {} };
+  },
+};

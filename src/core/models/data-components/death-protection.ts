@@ -1,28 +1,23 @@
-import { DataComponent } from "#/models/data-components/data-component-base.ts";
-import { ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
+import type { ConsumeEffectType } from "#/models/data-components/common/consume-effect.ts";
 
-export class DeathProtection implements DataComponent {
-  private deathEffects: Array<ConsumeEffect> | false = [];
-
-  asJsonObject(): [string, object] {
-    if (this.deathEffects === false) {
-      return ["!minecraft:death_protection", {}];
-    }
-    return [
-      "minecraft:death_protection",
-      { death_effects: this.deathEffects.map((eff) => eff.asJsonObject()) },
-    ];
+export type DeathProtectionComponentType = Readonly<
+  | { "!minecraft:death_protection": Readonly<Record<PropertyKey, never>> }
+  | {
+    "minecraft:death_protection": Readonly<{
+      death_effects: ReadonlyArray<ConsumeEffectType>;
+    }>;
   }
+>;
 
-  private constructor(eff: Array<ConsumeEffect> | false) {
-    this.deathEffects = eff;
-  }
-
-  public static new(...eff: Array<ConsumeEffect>) {
-    return new this(eff);
-  }
-
-  public static negated() {
-    new this(false);
-  }
-}
+export const DeathProtectionComponent = {
+  from({
+    deathEffects,
+  }: {
+    deathEffects: ReadonlyArray<ConsumeEffectType>;
+  }): DeathProtectionComponentType {
+    return { "minecraft:death_protection": { death_effects: deathEffects } };
+  },
+  negated(): DeathProtectionComponentType {
+    return { "!minecraft:death_protection": {} };
+  },
+};
