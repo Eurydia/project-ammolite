@@ -1,26 +1,3 @@
-class NumberBoundImpl {
-  private readonly value: number | Readonly<{ min?: number; max?: number }>;
-
-  public valueOf() {
-    return this.value;
-  }
-
-  public constructor(value: number | { min?: number; max?: number }) {
-    switch (typeof value) {
-      case "number": {
-        this.value = value;
-        break;
-      }
-      case "object": {
-        this.value = Object.freeze({ ...value });
-        break;
-      }
-      default:
-        throw new Error("Unsupported type");
-    }
-  }
-}
-
 const validateExact = (value: number, inclMin: number, inclMax: number) => {
   if (!Number.isInteger(value)) {
     return false;
@@ -68,7 +45,27 @@ const validate = (
   }
 };
 
-export type NumberBound = NumberBoundImpl;
+const makeNew = (
+  value: number | { min?: number; max?: number },
+  inclMin: number,
+  InclMax: number,
+) => {
+  if (!validate(value, inclMin, InclMax)) {
+    throw new Error("Bad value for NumberBound");
+  }
+  switch (typeof value) {
+    case "number": {
+      return value;
+    }
+    case "object": {
+      return Object.freeze({ ...value });
+    }
+    default:
+      throw new Error("Unsupported type");
+  }
+};
+
+export type NumberBoundType = number | Readonly<{ min?: number; max?: number }>;
 
 export const NumberBound = {
   integer(
@@ -76,19 +73,13 @@ export const NumberBound = {
     inclMin: number = -2_147_483_648,
     inclMax: number = 2_147_483_647,
   ) {
-    if (!validate(value, inclMin, inclMax)) {
-      throw new Error();
-    }
-    return new NumberBoundImpl(value);
+    return makeNew(value, inclMin, inclMax);
   },
   byte(
     value: number | { min?: number; max?: number },
     inclMin: number = -128,
     inclMax: number = 127,
-  ): NumberBoundImpl {
-    if (!validate(value, inclMin, inclMax)) {
-      throw new Error();
-    }
-    return new NumberBoundImpl(value);
+  ) {
+    return makeNew(value, inclMin, inclMax);
   },
 };

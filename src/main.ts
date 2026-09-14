@@ -69,9 +69,7 @@ for (const [preset, eff, duration, name] of [
       MinecraftItems.REDSTONE_BLOCK,
       MinecraftItems.POTION,
     )
-      .whereInputPredicate(
-        PotionContentsPredicate.fromObject({ potions: preset }),
-      )
+      .whereInputPredicate(PotionContentsPredicate.from({ potions: preset }))
       .withOutputComponents(
         PotionContents.new().withEffects(
           MobEffect.new(eff).withDuration(
@@ -101,7 +99,7 @@ pack.addBrewingRecipe(
     MinecraftItems.POTION,
   )
     .whereInputPredicate(
-      PotionContentsPredicate.fromObject({
+      PotionContentsPredicate.from({
         potions: MinecraftPotions.LONG_TURTLE_MASTER,
       }),
     )
