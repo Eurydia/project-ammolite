@@ -12,11 +12,11 @@ Deno.test("brewing output uses the common item stack factory", () => {
       EnchantmentGlintOverrideComponent.from(true),
     ),
   };
-  const recipe = BrewingRecipe.from(
-    { item: MinecraftItem.POTION },
-    { item: MinecraftItem.NETHER_WART },
+  const recipe = BrewingRecipe.from({
+    input: { item: MinecraftItem.POTION },
+    reagent: { item: MinecraftItem.NETHER_WART },
     output,
-  );
+  });
 
   assertEquals(JSON.parse(JSON.stringify(recipe)), {
     type: "minecraft:brewing",

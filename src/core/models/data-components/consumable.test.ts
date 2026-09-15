@@ -1,17 +1,22 @@
 import { assertEquals } from "@std/assert";
 import { ConsumeEffect } from "./common/consume-effect.ts";
 import { SoundEvent } from "./common/sound-event.ts";
-import { ConsumableComponent, ConsumeAnimations } from "./consumable.ts";
+import { ConsumableComponent } from "./consumable.ts";
+import { ConsumeAnimations } from "#/enum/consume-animations.ts";
 
 Deno.test("consumable components serialize with Minecraft field names", () => {
   assertEquals(
-    JSON.parse(JSON.stringify(ConsumableComponent.from({
-      consumeSeconds: 1.6,
-      animation: ConsumeAnimations.DRINK,
-      sound: SoundEvent.from("minecraft:entity.generic.drink", 16),
-      hasConsumeParticles: false,
-      onConsumeEffects: [ConsumeEffect.clearAllEffects()],
-    }))),
+    JSON.parse(
+      JSON.stringify(
+        ConsumableComponent.from({
+          consumeSeconds: 1.6,
+          animation: ConsumeAnimations.DRINK,
+          sound: SoundEvent.from("minecraft:entity.generic.drink", 16),
+          hasConsumeParticles: false,
+          onConsumeEffects: [ConsumeEffect.clearAllEffects()],
+        }),
+      ),
+    ),
     {
       "minecraft:consumable": {
         consume_seconds: 1.6,

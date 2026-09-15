@@ -1,7 +1,6 @@
 import { PotionContentsPredicateType } from "#/models/predicates/potion-contents.ts";
 import {
   ItemStack,
-  type ItemStackInput,
   type ItemStackType,
 } from "#/models/data-components/common/item-stack.ts";
 
@@ -70,17 +69,21 @@ export type BrewingRecipeType = Readonly<{
 }>;
 
 export const BrewingRecipe = {
-  from(
+  from({
+    input,
+    output,
+    reagent,
+  }: {
     input: {
       item: string;
       potion_contents?: PotionContentsPredicateType;
-    },
+    };
     reagent: {
       item: string;
       potion_contents?: PotionContentsPredicateType;
-    },
-    output: ItemStackInput,
-  ) {
+    };
+    output: ItemStackType;
+  }) {
     return Object.freeze({
       type: "minecraft:brewing",
       input: Object.freeze({

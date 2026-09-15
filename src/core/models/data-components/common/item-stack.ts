@@ -1,15 +1,21 @@
 import type { DataComponentType } from "#/models/data-components/data-component.ts";
 
-export type ItemStackInput = {
+export type ItemStackType = Readonly<{
   id: string;
   count?: number;
   components?: DataComponentType;
-};
-
-export type ItemStackType = Readonly<ItemStackInput>;
+}>;
 
 export const ItemStack = {
-  from({ id, count, components }: ItemStackInput): ItemStackType {
+  from({
+    id,
+    count,
+    components,
+  }: {
+    id: string;
+    count?: number;
+    components?: DataComponentType;
+  }): ItemStackType {
     return Object.freeze({ id, count, components });
   },
 };

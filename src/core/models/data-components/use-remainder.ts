@@ -1,14 +1,14 @@
 import {
   ItemStack,
-  type ItemStackInput,
   type ItemStackType,
 } from "#/models/data-components/common/item-stack.ts";
+import { DataComponentType } from "#/models/data-components/data-component.ts";
 
 export type UseRemainderComponentType = Readonly<
   | { "!minecraft:use_remainder": Readonly<Record<PropertyKey, never>> }
   | {
-    "minecraft:use_remainder": ItemStackType;
-  }
+      "minecraft:use_remainder": ItemStackType;
+    }
 >;
 
 export const UseRemainderComponent = {
@@ -16,7 +16,11 @@ export const UseRemainderComponent = {
     id,
     count,
     components,
-  }: ItemStackInput): UseRemainderComponentType {
+  }: {
+    id: string;
+    count?: number;
+    components?: DataComponentType;
+  }): UseRemainderComponentType {
     return Object.freeze({
       "minecraft:use_remainder": ItemStack.from({ id, count, components }),
     });
