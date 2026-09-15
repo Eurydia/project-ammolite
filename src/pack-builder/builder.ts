@@ -1,5 +1,5 @@
 import { DataPack } from "#/models/data_pack.ts";
-import { exists, existsSync } from "@std/fs/exists";
+import { existsSync } from "@std/fs/exists";
 
 export class PackBuilder {
   private zip?: boolean;
@@ -32,10 +32,7 @@ export class PackBuilder {
     const nsPath = `${root}/data/0/recipe/brewing`;
     Deno.mkdirSync(nsPath, { recursive: true });
     dataPack.getRecipes().forEach((recipe, i) => {
-      Deno.writeTextFileSync(
-        `${nsPath}/${i}.json`,
-        JSON.stringify(recipe),
-      );
+      Deno.writeTextFileSync(`${nsPath}/${i}.json`, JSON.stringify(recipe));
     });
   }
 }
