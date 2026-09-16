@@ -5,7 +5,7 @@ import { EnchantmentGlintOverrideComponent } from "../enchantment-glint-override
 import { ItemStack } from "./item-stack.ts";
 
 Deno.test("item stacks serialize with id, count, and components", () => {
-  const itemStack = ItemStack.from({
+  const itemStack = ItemStack.__from({
     id: MinecraftItem.POTION,
     count: 2,
     components: DataComponent.from(

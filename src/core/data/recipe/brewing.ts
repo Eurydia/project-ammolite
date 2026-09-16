@@ -3,6 +3,7 @@ import {
   ItemStack,
   type ItemStackType,
 } from "#/models/data-components/common/item-stack.ts";
+import { DataComponentType } from "#/models/data-components/data-component.ts";
 
 // export class BrewingRecipe implements Recipe {
 //   private inputItem: RecipeInput;
@@ -70,27 +71,45 @@ export type BrewingRecipeType = Readonly<{
 
 export const BrewingRecipe = {
   from({
-    input,
-    output,
-    reagent,
+    input: inputData,
   }: {
     input: {
       item: string;
-      potion_contents?: PotionContentsPredicateType;
+      potionContents?: PotionContentsPredicateType;
     };
-    reagent: {
-      item: string;
-      potion_contents?: PotionContentsPredicateType;
-    };
-    output: ItemStackType;
   }) {
-    return Object.freeze({
-      type: "minecraft:brewing",
-      input: Object.freeze({
-        ...input,
-      }),
-      reagent: Object.freeze({ ...reagent }),
-      output: ItemStack.from(output),
-    });
+    return ({
+      reagent: reagentData,
+    }: {
+      reagent: {
+        item: string;
+        potionContents?: PotionContentsPredicateType;
+      };
+    }) => {
+      return ItemStack.__from(
+        (data: {
+          output: {
+            id: string;
+            count?: number;
+            components?: DataComponentType;
+          };
+        }) => {
+          return data.output;
+        },
+        (output) =>
+          Object.freeze({
+            type: "minecraft:brewing",
+            input: Object.freeze({
+              item: inputData.item,
+              potion_contents: inputData.potionContents,
+            }),
+            reagent: Object.freeze({
+              item: reagentData.item,
+              potion_contents: reagentData.potionContents,
+            }),
+            output,
+          }),
+      );
+    };
   },
 };

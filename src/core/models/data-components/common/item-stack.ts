@@ -7,15 +7,17 @@ export type ItemStackType = Readonly<{
 }>;
 
 export const ItemStack = {
-  from({
-    id,
-    count,
-    components,
-  }: {
-    id: string;
-    count?: number;
-    components?: DataComponentType;
-  }): ItemStackType {
-    return Object.freeze({ id, count, components });
+  __from<T, K>(
+    picker: (data: T) => {
+      id: string;
+      count?: number;
+      components?: DataComponentType;
+    },
+    transformer: (value: ItemStackType) => K,
+  ) {
+    return (data: T) => {
+      const { id, components, count } = picker(data);
+      return transformer(Object.freeze({ id, count, components }));
+    };
   },
 };

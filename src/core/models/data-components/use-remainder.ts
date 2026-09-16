@@ -22,7 +22,7 @@ export const UseRemainderComponent = {
     components?: DataComponentType;
   }): UseRemainderComponentType {
     return Object.freeze({
-      "minecraft:use_remainder": ItemStack.from({ id, count, components }),
+      "minecraft:use_remainder": ItemStack.__from({ id, count, components }),
     });
   },
   negated(): UseRemainderComponentType {

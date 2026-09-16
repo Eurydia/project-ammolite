@@ -80,35 +80,34 @@ for (const [preset, eff, duration, name] of [
         potion_contents: PotionContentsPredicate.from({ potions: preset }),
       },
       reagent: { item: MinecraftItems.REDSTONE_BLOCK },
-      output: {
-        id: MinecraftItems.POTION,
-        components: DataComponent.from(
-          PotionContentsComponent.from({
-            customEffects: [
-              MobEffectComponent.from({
-                id: eff,
-                duration: MinecraftTick.fromSeconds(duration * 1.5),
+    })({
+      id: MinecraftItems.POTION,
+      components: DataComponent.from(
+        PotionContentsComponent.from({
+          customEffects: [
+            MobEffectComponent.from({
+              id: eff,
+              duration: MinecraftTick.fromSeconds(duration * 1.5),
+            }),
+          ],
+        }),
+        CustomNameComponent.from(
+          TextComponent.from({
+            text: "Long Lasting",
+            italic: false,
+            color: MinecraftColor.GOLD,
+            extra: [
+              TextComponent.from({
+                text: ` Potion of ${name}`,
+                bold: false,
+                underlined: false,
+                color: MinecraftColor.WHITE,
               }),
             ],
           }),
-          CustomNameComponent.from(
-            TextComponent.from({
-              text: "Long Lasting",
-              italic: false,
-              color: MinecraftColor.GOLD,
-              extra: [
-                TextComponent.from({
-                  text: ` Potion of ${name}`,
-                  bold: false,
-                  underlined: false,
-                  color: MinecraftColor.WHITE,
-                }),
-              ],
-            }),
-          ),
-          LoreComponent.from(tagLore),
         ),
-      },
+        LoreComponent.from(tagLore),
+      ),
     }),
   );
 }
@@ -143,7 +142,7 @@ for (const [flowers, eff] of [
     pack.addBrewingRecipe(
       BrewingRecipe.from({
         input: { item: MinecraftItems.MUSHROOM_STEW },
-        reagent: { item: f },
+      })({ reagent: { item: f } })({
         output: {
           id: MinecraftItems.SUSPICIOUS_STEW,
           components: DataComponent.from(
@@ -156,7 +155,7 @@ for (const [flowers, eff] of [
   }
 }
 
-const lastUse = ItemStack.from({
+const lastUse = ItemStack.__from({
   id: MinecraftItems.POTION,
   components: DataComponent.from(
     CustomNameComponent.from(
@@ -187,15 +186,13 @@ const lastUse = ItemStack.from({
       }),
       tagLore,
     ),
-    UseRemainderComponent.from(
-      ItemStack.from({
-        id: MinecraftItems.GLASS_BOTTLE,
-      }),
-    ),
+    UseRemainderComponent.from({
+      id: MinecraftItems.GLASS_BOTTLE,
+    }),
   ),
 });
 
-const secondUse = ItemStack.from({
+const secondUse = ItemStack.__from({
   id: MinecraftItems.POTION,
   components: DataComponent.from(
     CustomNameComponent.from(
@@ -238,7 +235,7 @@ pack.addBrewingRecipe(
       }),
     },
     reagent: { item: MinecraftItems.ICE },
-    output: ItemStack.from({
+    output: ItemStack.__from({
       id: MinecraftItems.POTION,
       components: DataComponent.from(
         CustomNameComponent.from(
