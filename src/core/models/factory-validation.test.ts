@@ -12,7 +12,7 @@ Deno.test("number bounds accept an in-range NBT range", () => {
 
 Deno.test("potion predicates reuse nested factor values", () => {
   const duration = { min: 20, max: 40 };
-  const effect = MobEffectPredicate.from({
+  const effect = MobEffectPredicate.__from({
     effect: "minecraft:speed",
     duration,
   });
@@ -34,8 +34,7 @@ Deno.test("potion predicates reuse nested factor values", () => {
   );
   assert(Object.isFrozen(predicate.effects?.size));
   assertEquals(Object.isFrozen(duration), false);
-  assertEquals(
-    JSON.parse(JSON.stringify(predicate.effects?.contains)),
-    [{ "minecraft:speed": { duration: { min: 20, max: 40 } } }],
-  );
+  assertEquals(JSON.parse(JSON.stringify(predicate.effects?.contains)), [
+    { "minecraft:speed": { duration: { min: 20, max: 40 } } },
+  ]);
 });

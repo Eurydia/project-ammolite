@@ -15,21 +15,19 @@ export const MobEffectPredicate = {
     duration,
     ...rest
   }: {
-    effect: string;
     amplifier?: number | { min?: number; max?: number };
     duration?: number | { min?: number; max?: number };
+    effect: string;
     ambient?: boolean;
     visible?: boolean;
   }): MobEffectPredicateType {
     return Object.freeze({
       ...rest,
-      amplifier: keepUndefinedOrTransform(
-        amplifier,
-        (val) => NumberBound.byte(val),
+      amplifier: keepUndefinedOrTransform(amplifier, (val) =>
+        NumberBound.byte(val),
       ),
-      duration: keepUndefinedOrTransform(
-        duration,
-        (val) => NumberBound.integer(val),
+      duration: keepUndefinedOrTransform(duration, (val) =>
+        NumberBound.integer(val),
       ),
     });
   },

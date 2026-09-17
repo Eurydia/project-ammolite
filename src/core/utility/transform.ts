@@ -7,3 +7,10 @@ export const keepUndefinedOrTransform = <T, K>(
   }
   return transformInto(value);
 };
+
+export const executeThenChain = <FnInputT, FnOutputT, TransformedOutputT>(
+  fn: (v: FnInputT) => FnOutputT,
+  transformer: (v: FnOutputT) => TransformedOutputT,
+) => {
+  return (data: FnInputT) => transformer(fn(data));
+};

@@ -50,7 +50,8 @@ const validate = (
 };
 
 type NumberBoundInput = number | { min?: number; max?: number };
-type FrozenNumberBound<T extends NumberBoundInput> = T extends number ? T
+type FrozenNumberBound<T extends NumberBoundInput> = T extends number
+  ? T
   : Readonly<T>;
 
 const makeNew = <T extends NumberBoundInput>(
