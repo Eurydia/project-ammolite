@@ -9,3 +9,18 @@ Deno.test("glint overrides serialize as a boolean", () => {
     "!minecraft:enchantment_glint_override": {},
   });
 });
+
+Deno.test("glint override builders separate positive and negated variants", () => {
+  assertEquals(
+    EnchantmentGlintOverrideComponent.builder()
+      .glint(true)
+      .build()
+      .asJsonObject(),
+    { "minecraft:enchantment_glint_override": true },
+  );
+  assertEquals(
+    EnchantmentGlintOverrideComponent.builder().negated().build()
+      .asJsonObject(),
+    { "!minecraft:enchantment_glint_override": {} },
+  );
+});

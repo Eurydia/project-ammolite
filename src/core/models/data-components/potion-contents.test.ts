@@ -24,3 +24,25 @@ Deno.test("potion-content components serialize with Minecraft field names", () =
     "!minecraft:potion_contents": {},
   });
 });
+
+Deno.test("potion-content builders serialize snake-case fields", () => {
+  const data = PotionContentsComponent.builder()
+    .potion("minecraft:swiftness")
+    .customName("Swift")
+    .customColor("#123456")
+    .customEffect(MobEffectComponent.builder(MobEffects.SPEED).build())
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+    "minecraft:potion_contents": {
+      potion: "minecraft:swiftness",
+      custom_name: "Swift",
+      custom_effects: [{ id: "minecraft:speed" }],
+      custom_color: 1_193_046,
+    },
+  });
+  assertEquals(
+    PotionContentsComponent.builder().negated().build().asJsonObject(),
+    { "!minecraft:potion_contents": {} },
+  );
+});

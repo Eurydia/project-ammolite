@@ -1,7 +1,7 @@
 import { assert, assertEquals } from "@std/assert";
 import { MobEffectPredicate } from "#/models/predicates/common/mob-effect.ts";
 import { PotionContentsPredicate } from "#/models/predicates/potion-contents.ts";
-import { NumberBound } from "#/models/snbt/number-bound.ts";
+import { NumberBound } from "#/models/predicates/common/byte-bound.ts";
 
 Deno.test("number bounds accept an in-range NBT range", () => {
   assertEquals(NumberBound.integer({ min: 20, max: 40 }), {
@@ -12,7 +12,7 @@ Deno.test("number bounds accept an in-range NBT range", () => {
 
 Deno.test("potion predicates reuse nested factor values", () => {
   const duration = { min: 20, max: 40 };
-  const effect = MobEffectPredicate.__from({
+  const effect = MobEffectPredicate.from({
     effect: "minecraft:speed",
     duration,
   });

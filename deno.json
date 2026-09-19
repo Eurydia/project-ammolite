@@ -10,6 +10,6 @@
     "#/utility/": "./src/core/utility/",
     "#/core/": "./src/core/",
     "adm-zip": "npm:adm-zip@^0.6.0",
-    "hashery": "npm:hashery@^3.0.1"
+    "zod": "npm:zod@^4.6.5"
   }
 }

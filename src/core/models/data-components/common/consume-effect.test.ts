@@ -2,6 +2,7 @@ import { assertEquals } from "@std/assert";
 import { MobEffects } from "#/enum/mob-effects.ts";
 import { ConsumeEffect } from "./consume-effect.ts";
 import { MobEffectComponent } from "./mob-effect.ts";
+import { SoundEvent } from "./sound-event.ts";
 
 Deno.test("consume effects serialize with Minecraft effect discriminators", () => {
   const effects = [
@@ -41,4 +42,21 @@ Deno.test("consume effects serialize with Minecraft effect discriminators", () =
       sound: { sound_id: "minecraft:entity.generic.drink", range: 16 },
     },
   ]);
+});
+
+Deno.test("consume-effect builders convert nested sound data", () => {
+  const data = ConsumeEffect.builder()
+    .playSound(
+      SoundEvent.builder("minecraft:entity.generic.drink").range(16)
+        .build(),
+    )
+    .build();
+
+  assertEquals(data.asJsonObject(), {
+    type: "minecraft:play_sound",
+    sound: {
+      sound_id: "minecraft:entity.generic.drink",
+      range: 16,
+    },
+  });
 });

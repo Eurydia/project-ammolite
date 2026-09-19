@@ -1,9 +1,10 @@
-import { assertEquals, assertThrows } from "@std/assert";
+import { assert, assertEquals, assertThrows } from "@std/assert";
 import {
+  IntBoundBuilder,
   NumberBound,
   SNBT_FLOAT_MAX,
   SNBT_FLOAT_MIN,
-} from "#/models/snbt/number-bound.ts";
+} from "#/models/predicates/common/byte-bound.ts";
 
 Deno.test("float number bounds accept only scalar SNBT floats", () => {
   assertEquals(NumberBound.float(1.5), 1.5);
@@ -12,6 +13,21 @@ Deno.test("float number bounds accept only scalar SNBT floats", () => {
   assertThrows(() => NumberBound.float(Number.POSITIVE_INFINITY));
   assertThrows(() => NumberBound.float({ min: 0 } as unknown as number));
 });
+
+Deno.test(
+  "number-bound builders expose immutable values and conversion",
+  () => {
+    const exact = new IntBoundBuilder().exact(20).build();
+    const range = new IntBoundBuilder()
+      .range((builder) => builder.min(20).max(40))
+      .build();
+
+    assert(Object.isFrozen(exact));
+    assert(Object.isFrozen(range));
+    assertEquals(exact.asJsonObject(), 20);
+    assertEquals(range.asJsonObject(), { min: 20, max: 40 });
+  },
+);
 
 Deno.test("number bounds serialize as a scalar or range", () => {
   assertEquals(NumberBound.integer(20), 20);

@@ -11,3 +11,21 @@ Deno.test("item-name components serialize as Minecraft text", () => {
   );
   assertEquals(ItemNameComponent.negated(), { "!minecraft:item_name": {} });
 });
+
+Deno.test("item-name builders separate positive and negated variants", () => {
+  assertEquals(
+    JSON.parse(
+      JSON.stringify(
+        ItemNameComponent.builder()
+          .text(TextComponent.builder("Swift").build())
+          .build()
+          .asJsonObject(),
+      ),
+    ),
+    { "minecraft:item_name": { type: "text", text: "Swift" } },
+  );
+  assertEquals(
+    ItemNameComponent.builder().negated().build().asJsonObject(),
+    { "!minecraft:item_name": {} },
+  );
+});

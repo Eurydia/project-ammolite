@@ -1,4 +1,8 @@
-import type { BrewingRecipeType } from "../data/recipe/brewing.ts";
+import type {
+  BrewingRecipeData,
+  BrewingRecipeType,
+} from "../data/recipe/brewing.ts";
+import { toDataPackObject } from "#/models/model.ts";
 
 export class MissingNamespaceError extends Error {}
 export class IllegalNamespaceName extends Error {}
@@ -22,8 +26,8 @@ export class DataPack {
     return [...this.recipes];
   }
 
-  public addBrewingRecipe(recipe: BrewingRecipeType) {
-    this.recipes.push(recipe);
+  public addBrewingRecipe(recipe: BrewingRecipeType | BrewingRecipeData) {
+    this.recipes.push(toDataPackObject(recipe) as BrewingRecipeType);
   }
   public getName() {
     return this.name;

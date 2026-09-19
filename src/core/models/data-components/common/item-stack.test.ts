@@ -19,3 +19,18 @@ Deno.test("item stacks serialize with id, count, and components", () => {
     components: { "minecraft:enchantment_glint_override": true },
   });
 });
+
+Deno.test("item-stack builders convert data components", () => {
+  const data = ItemStack.builder(MinecraftItem.POTION)
+    .count(2)
+    .components(
+      EnchantmentGlintOverrideComponent.builder().glint(true).build(),
+    )
+    .build();
+
+  assertEquals(data.asJsonObject(), {
+    id: "minecraft:potion",
+    count: 2,
+    components: { "minecraft:enchantment_glint_override": true },
+  });
+});

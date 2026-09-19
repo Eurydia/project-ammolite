@@ -15,3 +15,21 @@ Deno.test("death-protection components serialize their effect list", () => {
     "!minecraft:death_protection": {},
   });
 });
+
+Deno.test("death-protection builders separate positive and negated variants", () => {
+  assertEquals(
+    DeathProtectionComponent.builder()
+      .deathEffect(ConsumeEffect.builder().clearAllEffects().build())
+      .build()
+      .asJsonObject(),
+    {
+      "minecraft:death_protection": {
+        death_effects: [{ type: "minecraft:clear_all_effects" }],
+      },
+    },
+  );
+  assertEquals(
+    DeathProtectionComponent.builder().negated().build().asJsonObject(),
+    { "!minecraft:death_protection": {} },
+  );
+});

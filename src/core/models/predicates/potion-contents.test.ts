@@ -10,7 +10,7 @@ Deno.test(
       potions: ["minecraft:swiftness"],
       effects: {
         contains: [
-          MobEffectPredicate.__from({
+          MobEffectPredicate.from({
             effect: MobEffects.SPEED,
             amplifier: { min: 1, max: 2 },
             duration: 200,
@@ -21,7 +21,7 @@ Deno.test(
         count: [
           {
             count: { min: 1 },
-            test: [MobEffectPredicate.__from({ effect: MobEffects.SPEED })],
+            test: [MobEffectPredicate.from({ effect: MobEffects.SPEED })],
           },
         ],
         size: { min: 1, max: 2 },
@@ -52,3 +52,22 @@ Deno.test(
     });
   },
 );
+
+Deno.test("potion-content predicate builders serialize nested effects", () => {
+  const data = PotionContentsPredicate.builder()
+    .potion("minecraft:swiftness")
+    .effects((effects) =>
+      effects
+        .contains("minecraft:speed", (effect) => effect.duration(200))
+        .size({ min: 1, max: 2 })
+    )
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+    potions: "minecraft:swiftness",
+    effects: {
+      contains: [{ "minecraft:speed": { duration: 200 } }],
+      size: { min: 1, max: 2 },
+    },
+  });
+});

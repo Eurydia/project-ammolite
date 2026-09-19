@@ -18,3 +18,24 @@ Deno.test("suspicious-stew effects serialize as Minecraft effect instances", () 
     "!minecraft:suspicious_stew_effects": {},
   });
 });
+
+Deno.test("suspicious-stew effect builders separate positive and negated variants", () => {
+  assertEquals(
+    SuspiciousStewEffectsComponent.builder()
+      .effect(
+        SuspiciousStewEffect.builder(MobEffects.NIGHT_VISION).duration(200)
+          .build(),
+      )
+      .build()
+      .asJsonObject(),
+    {
+      "minecraft:suspicious_stew_effects": [
+        { id: MobEffects.NIGHT_VISION, duration: 200 },
+      ],
+    },
+  );
+  assertEquals(
+    SuspiciousStewEffectsComponent.builder().negated().build().asJsonObject(),
+    { "!minecraft:suspicious_stew_effects": {} },
+  );
+});

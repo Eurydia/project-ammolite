@@ -11,3 +11,18 @@ Deno.test("custom-name components serialize as Minecraft text", () => {
   );
   assertEquals(CustomNameComponent.negated(), { "!minecraft:custom_name": {} });
 });
+
+Deno.test("custom-name negated builders expose only build", () => {
+  const builder = CustomNameComponent.builder().negated();
+  if (false) {
+    // @ts-expect-error A negated component cannot be configured as positive.
+    builder.text(TextComponent.from({ text: "invalid" }));
+  }
+
+  assertEquals(builder.build().asJsonObject(), {
+    "!minecraft:custom_name": {},
+  });
+  assertEquals(CustomNameComponent.negatedBuilder().build().asJsonObject(), {
+    "!minecraft:custom_name": {},
+  });
+});

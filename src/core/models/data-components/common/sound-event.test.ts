@@ -11,3 +11,14 @@ Deno.test("sound events serialize in both Minecraft formats", () => {
     { sound_id: "minecraft:entity.generic.drink", range: 16 },
   );
 });
+
+Deno.test("sound-event builders convert range data", () => {
+  const data = SoundEvent.builder("minecraft:entity.generic.drink")
+    .range(16)
+    .build();
+
+  assertEquals(data.asJsonObject(), {
+    sound_id: "minecraft:entity.generic.drink",
+    range: 16,
+  });
+});

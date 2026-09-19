@@ -15,3 +15,15 @@ Deno.test("data-component patches merge keyed component values", () => {
     "minecraft:rarity": "rare",
   });
 });
+
+Deno.test("data-component builders merge built components", () => {
+  const data = DataComponent.builder()
+    .component(EnchantmentGlintOverrideComponent.builder().glint(true).build())
+    .component(RarityComponent.builder().rarity(ItemRarity.RARE).build())
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+    "minecraft:enchantment_glint_override": true,
+    "minecraft:rarity": "rare",
+  });
+});

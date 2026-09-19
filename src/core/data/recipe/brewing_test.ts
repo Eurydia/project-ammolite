@@ -31,3 +31,18 @@ Deno.test("brewing output uses the common item stack factory", () => {
   assertEquals(recipe.output, output);
   assertEquals(Object.isFrozen(output), false);
 });
+
+Deno.test("brewing recipe builders serialize item stacks", () => {
+  const recipe = BrewingRecipe.builder()
+    .input({ item: MinecraftItem.POTION })
+    .reagent({ item: MinecraftItem.NETHER_WART })
+    .output({ id: MinecraftItem.POTION })
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(recipe.asJsonObject())), {
+    type: "minecraft:brewing",
+    input: { item: "minecraft:potion" },
+    reagent: { item: "minecraft:nether_wart" },
+    output: { id: "minecraft:potion" },
+  });
+});

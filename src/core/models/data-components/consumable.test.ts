@@ -29,3 +29,23 @@ Deno.test("consumable components serialize with Minecraft field names", () => {
   );
   assertEquals(ConsumableComponent.negated(), { "!minecraft:consumable": {} });
 });
+
+Deno.test("consumable builders serialize snake-case fields", () => {
+  const data = ConsumableComponent.builder()
+    .consumeSeconds(1.6)
+    .animation(ConsumeAnimations.DRINK)
+    .consumeParticles(false)
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+    "minecraft:consumable": {
+      consume_seconds: 1.6,
+      animation: "drink",
+      has_consume_particles: false,
+      on_consume_effects: [],
+    },
+  });
+  assertEquals(ConsumableComponent.builder().negated().build().asJsonObject(), {
+    "!minecraft:consumable": {},
+  });
+});

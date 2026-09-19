@@ -25,3 +25,20 @@ Deno.test("use-remainder components serialize as an item stack", () => {
     "!minecraft:use_remainder": {},
   });
 });
+
+Deno.test("use-remainder builders expose an item-stack configurator", () => {
+  const data = UseRemainderComponent.builder()
+    .item(MinecraftItem.GLASS_BOTTLE, (item) => item.count(1))
+    .build();
+
+  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+    "minecraft:use_remainder": {
+      id: "minecraft:glass_bottle",
+      count: 1,
+    },
+  });
+  assertEquals(
+    UseRemainderComponent.builder().negated().build().asJsonObject(),
+    { "!minecraft:use_remainder": {} },
+  );
+});
