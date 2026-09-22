@@ -77,14 +77,12 @@ export class MobEffectPredicateBuilder implements MobEffectPredicateConfigurator
   }
 
   public build() {
-    return Object.freeze(
-      MOB_EFFECT_PREDICATE_SCHEMA.parse({
-        effect: this.effectValue,
-        amplifier: this.amplifierValue,
-        duration: this.durationValue,
-        ambient: this.ambientValue,
-        visible: this.visibleValue,
-      }),
-    );
+    return MOB_EFFECT_PREDICATE_SCHEMA.parse({
+      effect: this.effectValue,
+      amplifier: this.amplifierValue,
+      duration: this.durationValue,
+      ambient: this.ambientValue,
+      visible: this.visibleValue,
+    });
   }
 }

@@ -40,7 +40,7 @@ class IntBoundRangeBuilder implements IntBoundRangeConfigurator {
   }
 
   public build() {
-    return Object.freeze({ min: this.minValue, max: this.maxValue });
+    return { min: this.minValue, max: this.maxValue };
   }
 }
 
@@ -52,7 +52,7 @@ export interface IntBoundConfigurator {
 }
 
 export class IntBoundBuilder implements IntBoundConfigurator {
-  private value?: IntBoundType;
+  private value?: number | { min?: number; max?: number };
 
   range(configure: (builder: IntBoundRangeConfigurator) => void): this {
     const rangeBuilder = new IntBoundRangeBuilder();
