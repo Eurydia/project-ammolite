@@ -1,94 +1,75 @@
-import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-} from "#/models/model.ts";
+import z from "zod";
 
-export type DamageResistantComponentType = Readonly<
-  | { "!minecraft:damage_resistant": Readonly<Record<PropertyKey, never>> }
-  | {
-    "minecraft:damage_resistant": Readonly<{
-      types: string | ReadonlyArray<string>;
-    }>;
-  }
+const Schema$DamageResistantActive = z.compile(
+  z.object({
+    "minecraft:damage_resistant": z.object({
+      types: z.union([z.string(), z.string().array().readonly()]),
+    }).readonly(),
+  }).readonly(),
+);
+const Schema$DamageResistantDisabled = z.compile(
+  z.object({ "!minecraft:damage_resistant": z.object({}).readonly() })
+    .readonly(),
+);
+export const Schema$DamageResistantComponent = z.compile(
+  z.union([Schema$DamageResistantActive, Schema$DamageResistantDisabled]),
+);
+
+export type DamageResistantComponentType = z.output<
+  typeof Schema$DamageResistantComponent
 >;
-
-export class DamageResistantComponentData
-  implements DataPackModel<DamageResistantComponentType> {
-  public readonly types: ReadonlyArray<string>;
-  public readonly negated: boolean;
-
-  public constructor(types: ReadonlyArray<string>, negated = false) {
-    this.types = freezeArray(types);
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): DamageResistantComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:damage_resistant": Object.freeze({}) })
-      : Object.freeze({
-        "minecraft:damage_resistant": Object.freeze({ types: this.types }),
-      });
-  }
+export type Type$DamageResistantComponent = DamageResistantComponentType;
+export interface Configurator$DamageResistantComponent {
+  type(value: string): Configurator$DamageResistantComponent;
 }
 
-export interface DamageResistantComponentBuilderConfigurator {
-  type(value: string): DamageResistantComponentBuilderConfigurator;
-  negated(): NegatedDamageResistantComponentBuilderConfigurator;
-}
+class Builder$DamageResistantActive
+  implements Configurator$DamageResistantComponent {
+  private readonly values: string[] = [];
 
-export interface NegatedDamageResistantComponentBuilderConfigurator {
-  build(): Readonly<DamageResistantComponentData>;
-}
-
-export class DamageResistantComponentBuilder
-  implements DamageResistantComponentBuilderConfigurator {
-  private readonly typeValues: Array<string> = [];
-
-  public type(value: string): this {
-    this.typeValues.push(value);
+  type(value: string) {
+    this.values.push(value);
     return this;
   }
 
-  public negated(): NegatedDamageResistantComponentBuilderConfigurator {
-    return new NegatedDamageResistantComponentBuilder();
-  }
-
-  public build(): Readonly<DamageResistantComponentData> {
-    if (this.typeValues.length === 0) {
-      throw new Error("A damage-resistant component needs at least one type.");
+  build() {
+    if (this.values.length === 0) {
+      throw new Error("A damage-resistant component needs a type.");
     }
-    return freezeDataClass(
-      new DamageResistantComponentData(this.typeValues),
-    );
+    return Schema$DamageResistantActive.parse({
+      "minecraft:damage_resistant": { types: this.values },
+    });
   }
 }
 
-export class NegatedDamageResistantComponentBuilder
-  implements NegatedDamageResistantComponentBuilderConfigurator {
-  public build(): Readonly<DamageResistantComponentData> {
-    return freezeDataClass(new DamageResistantComponentData([], true));
+export class Builder$DamageResistantComponent {
+  private value?: DamageResistantComponentType;
+
+  types(configure: (builder: Configurator$DamageResistantComponent) => void) {
+    const builder = new Builder$DamageResistantActive();
+    configure(builder);
+    this.value = builder.build();
+  }
+
+  disabled() {
+    this.value = { "!minecraft:damage_resistant": {} };
+  }
+
+  build() {
+    return Schema$DamageResistantComponent.parse(this.value);
   }
 }
 
 export const DamageResistantComponent = {
-  builder(): DamageResistantComponentBuilder {
-    return new DamageResistantComponentBuilder();
-  },
-  negatedBuilder(): NegatedDamageResistantComponentBuilder {
-    return new NegatedDamageResistantComponentBuilder();
-  },
-  from(...types: Array<string>): DamageResistantComponentType {
-    return Object.freeze({
-      "minecraft:damage_resistant": Object.freeze({
-        types: Object.freeze(types),
-      }),
+  builder: () => new Builder$DamageResistantComponent(),
+  from(...types: string[]) {
+    return Schema$DamageResistantComponent.parse({
+      "minecraft:damage_resistant": { types },
     });
   },
-  negated(): DamageResistantComponentType {
-    return Object.freeze({
-      "!minecraft:damage_resistant": Object.freeze({}),
+  negated() {
+    return Schema$DamageResistantComponent.parse({
+      "!minecraft:damage_resistant": {},
     });
   },
 };

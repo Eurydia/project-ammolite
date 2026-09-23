@@ -38,7 +38,8 @@ interface __Configurator$SuspiciousStewEffectsComponent$Active {
   ): __Configurator$SuspiciousStewEffectsComponent$Active;
 }
 
-class __Builder$SuspiciousStewEffectsComponent$Active implements __Configurator$SuspiciousStewEffectsComponent$Active {
+class __Builder$SuspiciousStewEffectsComponent$Active
+  implements __Configurator$SuspiciousStewEffectsComponent$Active {
   private values: Array<{ id: string; duration?: number }> = [];
 
   effect(id: string, duration?: number): this {

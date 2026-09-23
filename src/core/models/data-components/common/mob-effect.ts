@@ -1,35 +1,65 @@
-import { NumberBound } from "#/models/predicates/common/byte-bound.ts";
-import { type DataPackModel, freezeDataClass } from "#/models/model.ts";
-import { keepUndefinedOrTransform } from "#/utility/transform.ts";
+import z from "zod";
 
-export type MobEffectComponentType = Readonly<{
-  id: string;
-  duration?: number;
-  amplifier?: number;
-  visible?: boolean;
-  ambient?: boolean;
-  show_icon?: boolean;
-  show_particles?: boolean;
-}>;
+export const Schema$MobEffectComponent = z.compile(
+  z.object({
+    id: z.string(),
+    duration: z.int().optional(),
+    amplifier: z.int().min(0).max(255).optional(),
+    visible: z.boolean().optional(),
+    ambient: z.boolean().optional(),
+    show_icon: z.boolean().optional(),
+    show_particles: z.boolean().optional(),
+  }).readonly(),
+);
+export type MobEffectComponentType = z.output<typeof Schema$MobEffectComponent>;
+export type Type$MobEffectComponent = MobEffectComponentType;
+export interface Configurator$MobEffectComponent {
+  duration(value: number): Configurator$MobEffectComponent;
+  amplifier(value: number): Configurator$MobEffectComponent;
+  visible(value?: boolean): Configurator$MobEffectComponent;
+  ambient(value?: boolean): Configurator$MobEffectComponent;
+  showIcon(value?: boolean): Configurator$MobEffectComponent;
+  showParticles(value?: boolean): Configurator$MobEffectComponent;
+}
 
-export class MobEffectComponentData implements DataPackModel<MobEffectComponentType> {
-  public readonly id: string;
-  public readonly duration?: number;
-  public readonly amplifier?: number;
-  public readonly visible?: boolean;
-  public readonly ambient?: boolean;
-  public readonly showIcon?: boolean;
-  public readonly showParticles?: boolean;
+export class Builder$MobEffectComponent
+  implements Configurator$MobEffectComponent {
+  private readonly value: Record<string, unknown>;
+  constructor(id: string) {
+    this.value = { id };
+  }
+  duration(value: number) {
+    this.value.duration = value;
+    return this;
+  }
+  amplifier(value: number) {
+    this.value.amplifier = value;
+    return this;
+  }
+  visible(value = true) {
+    this.value.visible = value;
+    return this;
+  }
+  ambient(value = true) {
+    this.value.ambient = value;
+    return this;
+  }
+  showIcon(value = true) {
+    this.value.show_icon = value;
+    return this;
+  }
+  showParticles(value = true) {
+    this.value.show_particles = value;
+    return this;
+  }
+  build() {
+    return Schema$MobEffectComponent.parse(this.value);
+  }
+}
 
-  public constructor({
-    id,
-    duration,
-    amplifier,
-    visible,
-    ambient,
-    showIcon,
-    showParticles,
-  }: {
+export const MobEffectComponent = {
+  builder: (id: string) => new Builder$MobEffectComponent(id),
+  from({ id, duration, amplifier, visible, ambient, showIcon, showParticles }: {
     id: string;
     duration?: number;
     amplifier?: number;
@@ -38,125 +68,10 @@ export class MobEffectComponentData implements DataPackModel<MobEffectComponentT
     showIcon?: boolean;
     showParticles?: boolean;
   }) {
-    this.id = id;
-    this.duration = duration;
-    this.amplifier = amplifier;
-    this.visible = visible;
-    this.ambient = ambient;
-    this.showIcon = showIcon;
-    this.showParticles = showParticles;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): MobEffectComponentType {
-    return Object.freeze({
-      id: this.id,
-      duration: this.duration,
-      amplifier: this.amplifier,
-      visible: this.visible,
-      ambient: this.ambient,
-      show_icon: this.showIcon,
-      show_particles: this.showParticles,
-    });
-  }
-}
-
-export interface MobEffectComponentBuilderConfigurator {
-  duration(value: number): MobEffectComponentBuilderConfigurator;
-  amplifier(value: number): MobEffectComponentBuilderConfigurator;
-  visible(value?: boolean): MobEffectComponentBuilderConfigurator;
-  ambient(value?: boolean): MobEffectComponentBuilderConfigurator;
-  showIcon(value?: boolean): MobEffectComponentBuilderConfigurator;
-  showParticles(value?: boolean): MobEffectComponentBuilderConfigurator;
-}
-
-export class MobEffectComponentBuilder implements MobEffectComponentBuilderConfigurator {
-  private readonly id: string;
-  private durationValue?: number;
-  private amplifierValue?: number;
-  private visibleValue?: boolean;
-  private ambientValue?: boolean;
-  private showIconValue?: boolean;
-  private showParticlesValue?: boolean;
-
-  public constructor(id: string) {
-    this.id = id;
-  }
-
-  public duration(value: number): this {
-    this.durationValue = NumberBound.integer(value);
-    return this;
-  }
-
-  public amplifier(value: number): this {
-    this.amplifierValue = NumberBound.byte(value);
-    return this;
-  }
-
-  public visible(value = true): this {
-    this.visibleValue = value;
-    return this;
-  }
-
-  public ambient(value = true): this {
-    this.ambientValue = value;
-    return this;
-  }
-
-  public showIcon(value = true): this {
-    this.showIconValue = value;
-    return this;
-  }
-
-  public showParticles(value = true): this {
-    this.showParticlesValue = value;
-    return this;
-  }
-
-  public build(): Readonly<MobEffectComponentData> {
-    return freezeDataClass(
-      new MobEffectComponentData({
-        id: this.id,
-        duration: this.durationValue,
-        amplifier: this.amplifierValue,
-        visible: this.visibleValue,
-        ambient: this.ambientValue,
-        showIcon: this.showIconValue,
-        showParticles: this.showParticlesValue,
-      }),
-    );
-  }
-}
-
-export const MobEffectComponent = {
-  builder(id: string): MobEffectComponentBuilder {
-    return new MobEffectComponentBuilder(id);
-  },
-  from({
-    duration,
-    amplifier,
-    id,
-    visible,
-    ambient,
-    showIcon,
-    showParticles,
-  }: {
-    id: string;
-    duration?: number;
-    amplifier?: number;
-    visible?: boolean;
-    ambient?: boolean;
-    showIcon?: boolean;
-    showParticles?: boolean;
-  }): MobEffectComponentType {
-    return Object.freeze({
+    return Schema$MobEffectComponent.parse({
       id,
-      duration: keepUndefinedOrTransform(duration, (val) =>
-        NumberBound.integer(val),
-      ),
-      amplifier: keepUndefinedOrTransform(amplifier, (val) =>
-        NumberBound.byte(val),
-      ),
+      duration,
+      amplifier,
       visible,
       ambient,
       show_icon: showIcon,

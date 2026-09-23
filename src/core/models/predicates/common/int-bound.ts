@@ -25,7 +25,8 @@ interface __Configurator$IntBoundPredicate$Range {
   max(value: number): __Configurator$IntBoundPredicate$Range;
 }
 
-class __Builder$IntBoundPredicate$Range implements __Configurator$IntBoundPredicate$Range {
+class __Builder$IntBoundPredicate$Range
+  implements __Configurator$IntBoundPredicate$Range {
   private minValue?: number;
   private maxValue?: number;
 
@@ -51,7 +52,8 @@ export interface Configurator$IntBoundPredicate {
   exact(value: number): Configurator$IntBoundPredicate;
 }
 
-export class Builder$IntBoundPredicate implements Configurator$IntBoundPredicate {
+export class Builder$IntBoundPredicate
+  implements Configurator$IntBoundPredicate {
   private value?: number | { min?: number; max?: number };
 
   range(

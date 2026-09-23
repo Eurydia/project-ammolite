@@ -32,7 +32,8 @@ export interface Configurator$PotionDurationScaleComponent {
   disabled(): void;
 }
 
-export class Builder$PotionDurationScaleComponent implements Configurator$PotionDurationScaleComponent {
+export class Builder$PotionDurationScaleComponent
+  implements Configurator$PotionDurationScaleComponent {
   private value?: Type$PotionDurationScaleComponent;
 
   scale(scaleValue: number) {

@@ -35,7 +35,7 @@ Deno.test("mob-effect builders serialize snake-case fields", () => {
     .showParticles(false)
     .build();
 
-  assertEquals(data.asJsonObject(), {
+  assertEquals(data, {
     id: "minecraft:speed",
     duration: 200,
     amplifier: 1,

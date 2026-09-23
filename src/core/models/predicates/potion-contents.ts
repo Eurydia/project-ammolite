@@ -6,9 +6,9 @@ import {
 import z from "zod";
 import { Schema$ByteBoundPredicate } from "#/models/predicates/common/byte-bound.ts";
 import {
-  Schema$IntBoundPredicate,
   Builder$IntBoundPredicate,
   Configurator$IntBoundPredicate,
+  Schema$IntBoundPredicate,
   Type$IntBoundPredicate,
 } from "#/models/predicates/common/int-bound.ts";
 
@@ -61,6 +61,7 @@ export const Schema$PotionContentsPredicate = z.compile(
 export type PotionContentsPredicateType = z.output<
   typeof Schema$PotionContentsPredicate
 >;
+export type PotionContentsPredicateData = PotionContentsPredicateType;
 
 interface __Configurator$PotionContentsPredicate$Effects$Count {
   test(
@@ -68,7 +69,8 @@ interface __Configurator$PotionContentsPredicate$Effects$Count {
   ): __Configurator$PotionContentsPredicate$Effects$Count;
 }
 
-class __Builder$PotionContentsPredicate$Effects$Count implements __Configurator$PotionContentsPredicate$Effects$Count {
+class __Builder$PotionContentsPredicate$Effects$Count
+  implements __Configurator$PotionContentsPredicate$Effects$Count {
   private countValue?: Type$IntBoundPredicate;
   private testValues?: Array<Type$MobEffectPredicate>;
 
@@ -111,7 +113,8 @@ interface __Configurator$PotionContentsPredicate$Effects {
   ): __Configurator$PotionContentsPredicate$Effects;
 }
 
-class __Builder$PotionContentsPredicate$Effects implements __Configurator$PotionContentsPredicate$Effects {
+class __Builder$PotionContentsPredicate$Effects
+  implements __Configurator$PotionContentsPredicate$Effects {
   private containsValues?: Array<Type$MobEffectPredicate>;
   private countValues?: Array<
     z.output<typeof __Schema$PotionContentsPredicate$Effects$Count>
@@ -166,7 +169,8 @@ export interface Configurator$PotionContentsPredicate {
   ): Configurator$PotionContentsPredicate;
 }
 
-export class Builder$PotionContentsPredicate implements Configurator$PotionContentsPredicate {
+export class Builder$PotionContentsPredicate
+  implements Configurator$PotionContentsPredicate {
   private potionsValue?: string | Array<string>;
   private effectsValue?: __PotionContentPredicateType$Effects;
 
@@ -193,3 +197,12 @@ export class Builder$PotionContentsPredicate implements Configurator$PotionConte
     });
   }
 }
+
+export const PotionContentsPredicate = {
+  builder(): Builder$PotionContentsPredicate {
+    return new Builder$PotionContentsPredicate();
+  },
+  from(value: PotionContentsPredicateType): PotionContentsPredicateType {
+    return Schema$PotionContentsPredicate.parse(value);
+  },
+};

@@ -28,7 +28,8 @@ export interface Configurator$EnchantmentGlintOverrideComponent {
   disabled(): void;
 }
 
-export class Builder$EnchantmentGlintOverrideComponent implements Configurator$EnchantmentGlintOverrideComponent {
+export class Builder$EnchantmentGlintOverrideComponent
+  implements Configurator$EnchantmentGlintOverrideComponent {
   private value?: Type$EnchantmentGlintOverrideComponent;
 
   glint(showGlint: boolean) {

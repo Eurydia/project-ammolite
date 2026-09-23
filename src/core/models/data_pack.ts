@@ -1,3 +1,5 @@
+import type { BrewingRecipeType } from "#/models/data/recipe/brewing.ts";
+
 export class DataPack {
   private name: string;
   private desc: string;
@@ -17,8 +19,8 @@ export class DataPack {
     return [...this.recipes];
   }
 
-  public addBrewingRecipe(recipe: BrewingRecipeType | BrewingRecipeData) {
-    this.recipes.push(toDataPackObject(recipe) as BrewingRecipeType);
+  public addBrewingRecipe(recipe: BrewingRecipeType) {
+    this.recipes.push(recipe);
   }
   public getName() {
     return this.name;

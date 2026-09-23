@@ -1,94 +1,61 @@
-import type {
-  TextComponentType,
-  TextComponentValue,
-} from "#/models/data-components/common/text.ts";
+import z from "zod";
 import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
+  Schema$TextComponent,
+  type TextComponentType,
+} from "#/models/data-components/common/text.ts";
 
-export type LoreComponentType = Readonly<
-  | { "!minecraft:lore": Readonly<Record<PropertyKey, never>> }
-  | { "minecraft:lore": ReadonlyArray<TextComponentType> }
->;
+export const Schema$LoreComponent = z.compile(
+  z.union([
+    z.object({ "minecraft:lore": Schema$TextComponent.array().readonly() })
+      .readonly(),
+    z.object({ "!minecraft:lore": z.object({}).readonly() }).readonly(),
+  ]),
+);
+export type LoreComponentType = z.output<typeof Schema$LoreComponent>;
+export type Type$LoreComponent = LoreComponentType;
 
-export class LoreComponentData implements DataPackModel<LoreComponentType> {
-  public readonly lines: ReadonlyArray<TextComponentValue>;
-  public readonly negated: boolean;
-
-  public constructor(
-    lines: ReadonlyArray<TextComponentValue>,
-    negated = false,
-  ) {
-    this.lines = freezeArray(lines);
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): LoreComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:lore": Object.freeze({}) })
-      : Object.freeze({
-        "minecraft:lore": Object.freeze(
-          this.lines.map((line) => toDataPackObject(line) as TextComponentType),
-        ),
-      });
-  }
+export interface Configurator$LoreComponent {
+  line(value: TextComponentType): Configurator$LoreComponent;
 }
 
-export interface LoreComponentBuilderConfigurator {
-  line(value: TextComponentValue): LoreComponentBuilderConfigurator;
-  negated(): NegatedLoreComponentBuilderConfigurator;
-}
-
-export interface NegatedLoreComponentBuilderConfigurator {
-  build(): Readonly<LoreComponentData>;
-}
-
-export class LoreComponentBuilder implements LoreComponentBuilderConfigurator {
-  private readonly lineValues: Array<TextComponentValue> = [];
-
-  public line(value: TextComponentValue): this {
-    this.lineValues.push(value);
+class Builder$LoreLines implements Configurator$LoreComponent {
+  private readonly lines: TextComponentType[] = [];
+  line(value: TextComponentType) {
+    this.lines.push(value);
     return this;
   }
-
-  public negated(): NegatedLoreComponentBuilderConfigurator {
-    return new NegatedLoreComponentBuilder();
-  }
-
-  public build(): Readonly<LoreComponentData> {
-    if (this.lineValues.length > 256) {
+  build() {
+    if (this.lines.length > 256) {
       throw new Error("Minecraft lore supports at most 256 lines.");
     }
-    return freezeDataClass(new LoreComponentData(this.lineValues));
+    return Schema$LoreComponent.parse({ "minecraft:lore": this.lines });
   }
 }
 
-export class NegatedLoreComponentBuilder
-  implements NegatedLoreComponentBuilderConfigurator {
-  public build(): Readonly<LoreComponentData> {
-    return freezeDataClass(new LoreComponentData([], true));
+export class Builder$LoreComponent {
+  private value?: LoreComponentType;
+  lines(configure: (builder: Configurator$LoreComponent) => void) {
+    const builder = new Builder$LoreLines();
+    configure(builder);
+    this.value = builder.build();
+  }
+  disabled() {
+    this.value = { "!minecraft:lore": {} };
+  }
+  build() {
+    return Schema$LoreComponent.parse(this.value);
   }
 }
 
 export const LoreComponent = {
-  builder(): LoreComponentBuilder {
-    return new LoreComponentBuilder();
-  },
-  negatedBuilder(): NegatedLoreComponentBuilder {
-    return new NegatedLoreComponentBuilder();
-  },
-  from(...lines: Array<TextComponentType>): LoreComponentType {
+  builder: () => new Builder$LoreComponent(),
+  from(...lines: TextComponentType[]) {
     if (lines.length > 256) {
       throw new Error("Minecraft lore supports at most 256 lines.");
     }
-
-    return Object.freeze({ "minecraft:lore": Object.freeze([...lines]) });
+    return Schema$LoreComponent.parse({ "minecraft:lore": lines });
   },
-  negated(): LoreComponentType {
-    return Object.freeze({ "!minecraft:lore": Object.freeze({}) });
+  negated() {
+    return Schema$LoreComponent.parse({ "!minecraft:lore": {} });
   },
 };

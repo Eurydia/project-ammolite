@@ -14,7 +14,7 @@ Deno.test(
       builder
         .amplifier((amplifier) => amplifier.exact(1))
         .duration((duration) =>
-          duration.range((range) => range.min(200).max(400)),
+          duration.range((range) => range.min(200).max(400))
         )
         .ambient(false)
         .visible(true);

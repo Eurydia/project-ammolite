@@ -1,110 +1,67 @@
+import z from "zod";
 import {
-  ConsumeEffectData,
   type ConsumeEffectType,
+  Schema$ConsumeEffect,
 } from "#/models/data-components/common/consume-effect.ts";
-import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
 
-export type DeathProtectionComponentType = Readonly<
-  | { "!minecraft:death_protection": Readonly<Record<PropertyKey, never>> }
-  | {
-    "minecraft:death_protection": Readonly<{
-      death_effects: ReadonlyArray<ConsumeEffectType>;
-    }>;
-  }
+export const Schema$DeathProtectionComponent = z.compile(
+  z.union([
+    z.object({
+      "minecraft:death_protection": z.object({
+        death_effects: Schema$ConsumeEffect.array().readonly(),
+      }).readonly(),
+    }).readonly(),
+    z.object({ "!minecraft:death_protection": z.object({}).readonly() })
+      .readonly(),
+  ]),
+);
+export type DeathProtectionComponentType = z.output<
+  typeof Schema$DeathProtectionComponent
 >;
-export type ConsumeEffectValue = ConsumeEffectType | ConsumeEffectData;
+export type Type$DeathProtectionComponent = DeathProtectionComponentType;
 
-export class DeathProtectionComponentData
-  implements DataPackModel<DeathProtectionComponentType> {
-  public readonly deathEffects: ReadonlyArray<ConsumeEffectValue>;
-  public readonly negated: boolean;
-
-  public constructor(
-    deathEffects: ReadonlyArray<ConsumeEffectValue>,
-    negated = false,
-  ) {
-    this.deathEffects = freezeArray(deathEffects);
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): DeathProtectionComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:death_protection": Object.freeze({}) })
-      : Object.freeze({
-        "minecraft:death_protection": Object.freeze({
-          death_effects: Object.freeze(
-            this.deathEffects.map((effect) =>
-              toDataPackObject(effect) as ConsumeEffectType
-            ),
-          ),
-        }),
-      }) as DeathProtectionComponentType;
-  }
+export interface Configurator$DeathProtectionComponent {
+  effect(value: ConsumeEffectType): Configurator$DeathProtectionComponent;
 }
 
-export interface DeathProtectionComponentBuilderConfigurator {
-  deathEffect(
-    value: ConsumeEffectValue,
-  ): DeathProtectionComponentBuilderConfigurator;
-  negated(): NegatedDeathProtectionComponentBuilderConfigurator;
-}
-
-export interface NegatedDeathProtectionComponentBuilderConfigurator {
-  build(): Readonly<DeathProtectionComponentData>;
-}
-
-export class DeathProtectionComponentBuilder
-  implements DeathProtectionComponentBuilderConfigurator {
-  private readonly effectValues: Array<ConsumeEffectValue> = [];
-
-  public deathEffect(value: ConsumeEffectValue): this {
-    this.effectValues.push(value);
+class Builder$DeathEffects implements Configurator$DeathProtectionComponent {
+  private readonly values: ConsumeEffectType[] = [];
+  effect(value: ConsumeEffectType) {
+    this.values.push(value);
     return this;
   }
-
-  public negated(): NegatedDeathProtectionComponentBuilderConfigurator {
-    return new NegatedDeathProtectionComponentBuilder();
-  }
-
-  public build(): Readonly<DeathProtectionComponentData> {
-    return freezeDataClass(
-      new DeathProtectionComponentData(this.effectValues),
-    );
+  build() {
+    return this.values;
   }
 }
 
-export class NegatedDeathProtectionComponentBuilder
-  implements NegatedDeathProtectionComponentBuilderConfigurator {
-  public build(): Readonly<DeathProtectionComponentData> {
-    return freezeDataClass(new DeathProtectionComponentData([], true));
+export class Builder$DeathProtectionComponent {
+  private value?: DeathProtectionComponentType;
+  effects(configure: (builder: Configurator$DeathProtectionComponent) => void) {
+    const builder = new Builder$DeathEffects();
+    configure(builder);
+    this.value = Schema$DeathProtectionComponent.parse({
+      "minecraft:death_protection": { death_effects: builder.build() },
+    });
+  }
+  disabled() {
+    this.value = { "!minecraft:death_protection": {} };
+  }
+  build() {
+    return Schema$DeathProtectionComponent.parse(this.value);
   }
 }
 
 export const DeathProtectionComponent = {
-  builder(): DeathProtectionComponentBuilder {
-    return new DeathProtectionComponentBuilder();
-  },
-  negatedBuilder(): NegatedDeathProtectionComponentBuilder {
-    return new NegatedDeathProtectionComponentBuilder();
-  },
-  from(
-    ...deathEffects: Array<ConsumeEffectType>
-  ): DeathProtectionComponentType {
-    return Object.freeze({
-      "minecraft:death_protection": Object.freeze({
-        death_effects: Object.freeze([...deathEffects]),
-      }),
+  builder: () => new Builder$DeathProtectionComponent(),
+  from(...deathEffects: ConsumeEffectType[]) {
+    return Schema$DeathProtectionComponent.parse({
+      "minecraft:death_protection": { death_effects: deathEffects },
     });
   },
-  negated(): DeathProtectionComponentType {
-    return Object.freeze({
-      "!minecraft:death_protection": Object.freeze({}),
+  negated() {
+    return Schema$DeathProtectionComponent.parse({
+      "!minecraft:death_protection": {},
     });
   },
 };

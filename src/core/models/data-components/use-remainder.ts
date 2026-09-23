@@ -1,123 +1,61 @@
+import z from "zod";
 import {
   ItemStack,
-  type ItemStackBuilderConfigurator,
-  ItemStackData,
   type ItemStackInput,
   type ItemStackType,
+  Schema$ItemStack,
 } from "#/models/data-components/common/item-stack.ts";
-import type { DataComponentValue } from "#/models/data-components/data-component.ts";
-import {
-  type DataPackModel,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
 
-export type UseRemainderComponentType = Readonly<
-  | { "!minecraft:use_remainder": Readonly<Record<PropertyKey, never>> }
-  | {
-    "minecraft:use_remainder": ItemStackType;
-  }
+export const Schema$UseRemainderComponent = z.compile(
+  z.union([
+    z.object({ "minecraft:use_remainder": Schema$ItemStack }).readonly(),
+    z.object({ "!minecraft:use_remainder": z.object({}).readonly() })
+      .readonly(),
+  ]),
+);
+export type UseRemainderComponentType = z.output<
+  typeof Schema$UseRemainderComponent
 >;
+export type Type$UseRemainderComponent = UseRemainderComponentType;
 
-export class UseRemainderComponentData
-  implements DataPackModel<UseRemainderComponentType> {
-  public readonly itemStack?: ItemStackType | ItemStackData;
-  public readonly negated: boolean;
-
-  public constructor(
-    itemStack?: ItemStackType | ItemStackData,
-    negated = false,
-  ) {
-    this.itemStack = itemStack;
-    this.negated = negated;
-    freezeDataClass(this);
+export class Builder$UseRemainderComponent {
+  private stack?: ItemStackType;
+  private isDisabled = false;
+  itemStack(value: ItemStackInput) {
+    this.stack = ItemStack.from(value);
+    return this;
   }
-
-  public asJsonObject(): UseRemainderComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:use_remainder": Object.freeze({}) })
-      : Object.freeze({
-        "minecraft:use_remainder": toDataPackObject(this.itemStack!),
-      }) as UseRemainderComponentType;
-  }
-}
-
-export interface UseRemainderComponentBuilderConfigurator {
-  itemStack(
-    value: ItemStackInput | ItemStackData,
-  ): UseRemainderComponentBuilderConfigurator;
   item(
     id: string,
-    configure?: (builder: ItemStackBuilderConfigurator) => void,
-  ): UseRemainderComponentBuilderConfigurator;
-  negated(): NegatedUseRemainderComponentBuilderConfigurator;
-}
-
-export interface NegatedUseRemainderComponentBuilderConfigurator {
-  build(): Readonly<UseRemainderComponentData>;
-}
-
-export class UseRemainderComponentBuilder
-  implements UseRemainderComponentBuilderConfigurator {
-  private itemStackValue?: ItemStackType | ItemStackData;
-
-  public itemStack(value: ItemStackInput | ItemStackData): this {
-    this.itemStackValue = value instanceof ItemStackData
-      ? value
-      : ItemStack.from(value);
-    return this;
-  }
-
-  public item(
-    id: string,
-    configure?: (builder: ItemStackBuilderConfigurator) => void,
-  ): this {
-    const builder = ItemStack.builder(id);
+    configure?: (builder: ReturnType<typeof ItemStack.builder>) => void,
+  ) {
+    const builder = ItemStack.builder().id(id);
     configure?.(builder);
-    this.itemStackValue = builder.build();
+    this.stack = builder.build();
     return this;
   }
-
-  public negated(): NegatedUseRemainderComponentBuilderConfigurator {
-    return new NegatedUseRemainderComponentBuilder();
+  disabled() {
+    this.isDisabled = true;
   }
-
-  public build(): Readonly<UseRemainderComponentData> {
-    if (this.itemStackValue === undefined) {
-      throw new Error("A use-remainder component needs an item stack.");
-    }
-    return freezeDataClass(new UseRemainderComponentData(this.itemStackValue));
-  }
-}
-
-export class NegatedUseRemainderComponentBuilder
-  implements NegatedUseRemainderComponentBuilderConfigurator {
-  public build(): Readonly<UseRemainderComponentData> {
-    return freezeDataClass(new UseRemainderComponentData(undefined, true));
+  build() {
+    return this.isDisabled
+      ? Schema$UseRemainderComponent.parse({ "!minecraft:use_remainder": {} })
+      : Schema$UseRemainderComponent.parse({
+        "minecraft:use_remainder": this.stack,
+      });
   }
 }
 
 export const UseRemainderComponent = {
-  builder(): UseRemainderComponentBuilder {
-    return new UseRemainderComponentBuilder();
-  },
-  negatedBuilder(): NegatedUseRemainderComponentBuilder {
-    return new NegatedUseRemainderComponentBuilder();
-  },
-  from({
-    id,
-    count,
-    components,
-  }: {
-    id: string;
-    count?: number;
-    components?: DataComponentValue;
-  }): UseRemainderComponentType {
-    return Object.freeze({
-      "minecraft:use_remainder": ItemStack.__from({ id, count, components }),
+  builder: () => new Builder$UseRemainderComponent(),
+  from(value: ItemStackInput) {
+    return Schema$UseRemainderComponent.parse({
+      "minecraft:use_remainder": ItemStack.from(value),
     });
   },
-  negated(): UseRemainderComponentType {
-    return Object.freeze({ "!minecraft:use_remainder": Object.freeze({}) });
+  negated() {
+    return Schema$UseRemainderComponent.parse({
+      "!minecraft:use_remainder": {},
+    });
   },
 };

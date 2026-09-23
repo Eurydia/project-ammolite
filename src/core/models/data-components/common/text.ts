@@ -1,10 +1,4 @@
-import { keepUndefinedOrTransform } from "#/utility/transform.ts";
-import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
+import z from "zod";
 
 export type TextComponentType = Readonly<{
   type: "text";
@@ -18,194 +12,89 @@ export type TextComponentType = Readonly<{
   obfuscated?: boolean;
   extra?: ReadonlyArray<TextComponentType>;
 }>;
-export type TextComponentValue = TextComponentType | TextComponentData;
+export type TextComponentValue = TextComponentType;
+export type Type$TextComponent = TextComponentType;
 
-export class TextComponentData implements DataPackModel<TextComponentType> {
-  public readonly text: string;
-  public readonly color?: string;
-  public readonly font?: string;
-  public readonly bold?: boolean;
-  public readonly italic?: boolean;
-  public readonly underlined?: boolean;
-  public readonly strikethrough?: boolean;
-  public readonly obfuscated?: boolean;
-  public readonly extra?: ReadonlyArray<TextComponentValue>;
+export const Schema$TextComponent: z.ZodType<TextComponentType> = z.compile(
+  z.lazy((): z.ZodType<TextComponentType> =>
+    z.object({
+      type: z.literal("text"),
+      text: z.string(),
+      color: z.string().optional(),
+      font: z.string().optional(),
+      bold: z.boolean().optional(),
+      italic: z.boolean().optional(),
+      underlined: z.boolean().optional(),
+      strikethrough: z.boolean().optional(),
+      obfuscated: z.boolean().optional(),
+      extra: z.lazy((): z.ZodType<ReadonlyArray<TextComponentType>> =>
+        Schema$TextComponent.array().readonly()
+      ).optional(),
+    }).readonly()
+  ) as z.ZodType<TextComponentType>,
+);
 
-  public constructor({
-    text,
-    color,
-    font,
-    bold,
-    italic,
-    underlined,
-    strikethrough,
-    obfuscated,
-    extra,
-  }: {
-    text: string;
-    color?: string;
-    font?: string;
-    bold?: boolean;
-    italic?: boolean;
-    underlined?: boolean;
-    strikethrough?: boolean;
-    obfuscated?: boolean;
-    extra?: ReadonlyArray<TextComponentValue>;
-  }) {
-    this.text = text;
-    this.color = color;
-    this.font = font;
-    this.bold = bold;
-    this.italic = italic;
-    this.underlined = underlined;
-    this.strikethrough = strikethrough;
-    this.obfuscated = obfuscated;
-    this.extra = extra === undefined ? undefined : freezeArray(extra);
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): TextComponentType {
-    return Object.freeze({
-      type: "text",
-      text: this.text,
-      color: this.color,
-      font: this.font,
-      bold: this.bold,
-      italic: this.italic,
-      underlined: this.underlined,
-      strikethrough: this.strikethrough,
-      obfuscated: this.obfuscated,
-      extra: this.extra === undefined ? undefined : Object.freeze(
-        this.extra.map((value) => toDataPackObject(value) as TextComponentType),
-      ),
-    });
-  }
+export interface Configurator$TextComponent {
+  color(value: string): Configurator$TextComponent;
+  font(value: string): Configurator$TextComponent;
+  bold(value?: boolean): Configurator$TextComponent;
+  italic(value?: boolean): Configurator$TextComponent;
+  underlined(value?: boolean): Configurator$TextComponent;
+  strikethrough(value?: boolean): Configurator$TextComponent;
+  obfuscated(value?: boolean): Configurator$TextComponent;
+  extra(...values: TextComponentType[]): Configurator$TextComponent;
 }
 
-export interface TextComponentBuilderConfigurator {
-  color(value: string): TextComponentBuilderConfigurator;
-  font(value: string): TextComponentBuilderConfigurator;
-  bold(value?: boolean): TextComponentBuilderConfigurator;
-  italic(value?: boolean): TextComponentBuilderConfigurator;
-  underlined(value?: boolean): TextComponentBuilderConfigurator;
-  strikethrough(value?: boolean): TextComponentBuilderConfigurator;
-  obfuscated(value?: boolean): TextComponentBuilderConfigurator;
-  extra(
-    ...values: Array<TextComponentValue>
-  ): TextComponentBuilderConfigurator;
-}
-
-export class TextComponentBuilder implements TextComponentBuilderConfigurator {
-  private readonly text: string;
-  private colorValue?: string;
-  private fontValue?: string;
-  private boldValue?: boolean;
-  private italicValue?: boolean;
-  private underlinedValue?: boolean;
-  private strikethroughValue?: boolean;
-  private obfuscatedValue?: boolean;
-  private extraValues: Array<TextComponentValue> = [];
-
-  public constructor(text: string) {
-    this.text = text;
+export class Builder$TextComponent implements Configurator$TextComponent {
+  private readonly value: { text: string } & Record<string, unknown>;
+  private readonly extraValues: TextComponentType[] = [];
+  constructor(text: string) {
+    this.value = { text };
   }
-
-  public color(value: string): this {
-    this.colorValue = value;
+  color(value: string) {
+    this.value.color = value;
     return this;
   }
-
-  public font(value: string): this {
-    this.fontValue = value;
+  font(value: string) {
+    this.value.font = value;
     return this;
   }
-
-  public bold(value = true): this {
-    this.boldValue = value;
+  bold(value = true) {
+    this.value.bold = value;
     return this;
   }
-
-  public italic(value = true): this {
-    this.italicValue = value;
+  italic(value = true) {
+    this.value.italic = value;
     return this;
   }
-
-  public underlined(value = true): this {
-    this.underlinedValue = value;
+  underlined(value = true) {
+    this.value.underlined = value;
     return this;
   }
-
-  public strikethrough(value = true): this {
-    this.strikethroughValue = value;
+  strikethrough(value = true) {
+    this.value.strikethrough = value;
     return this;
   }
-
-  public obfuscated(value = true): this {
-    this.obfuscatedValue = value;
+  obfuscated(value = true) {
+    this.value.obfuscated = value;
     return this;
   }
-
-  public extra(...values: Array<TextComponentValue>): this {
+  extra(...values: TextComponentType[]) {
     this.extraValues.push(...values);
     return this;
   }
-
-  public build(): Readonly<TextComponentData> {
-    return freezeDataClass(
-      new TextComponentData({
-        text: this.text,
-        color: this.colorValue,
-        font: this.fontValue,
-        bold: this.boldValue,
-        italic: this.italicValue,
-        underlined: this.underlinedValue,
-        strikethrough: this.strikethroughValue,
-        obfuscated: this.obfuscatedValue,
-        extra: this.extraValues.length === 0 ? undefined : this.extraValues,
-      }),
-    );
+  build() {
+    return Schema$TextComponent.parse({
+      type: "text",
+      ...this.value,
+      extra: this.extraValues.length === 0 ? undefined : this.extraValues,
+    });
   }
 }
 
 export const TextComponent = {
-  builder(text: string): TextComponentBuilder {
-    return new TextComponentBuilder(text);
-  },
-  from({
-    text,
-    color,
-    font,
-    bold,
-    italic,
-    underlined,
-    strikethrough,
-    obfuscated,
-    extra,
-  }: {
-    text: string;
-    color?: string;
-    font?: string;
-    bold?: boolean;
-    italic?: boolean;
-    underlined?: boolean;
-    strikethrough?: boolean;
-    obfuscated?: boolean;
-    extra?: Array<TextComponentType>;
-  }): TextComponentType {
-    return Object.freeze({
-      type: "text",
-      text,
-      color,
-      font,
-      bold,
-      italic,
-      underlined,
-      strikethrough,
-      obfuscated,
-      extra: keepUndefinedOrTransform(
-        extra,
-        (value) => Object.freeze([...value]),
-      ),
-    });
+  builder: (text: string) => new Builder$TextComponent(text),
+  from(value: Omit<TextComponentType, "type">) {
+    return Schema$TextComponent.parse({ type: "text", ...value });
   },
 };

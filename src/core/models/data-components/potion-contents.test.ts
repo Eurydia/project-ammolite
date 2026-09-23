@@ -33,7 +33,7 @@ Deno.test("potion-content builders serialize snake-case fields", () => {
     .customEffect(MobEffectComponent.builder(MobEffects.SPEED).build())
     .build();
 
-  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+  assertEquals(JSON.parse(JSON.stringify(data)), {
     "minecraft:potion_contents": {
       potion: "minecraft:swiftness",
       custom_name: "Swift",
@@ -41,8 +41,7 @@ Deno.test("potion-content builders serialize snake-case fields", () => {
       custom_color: 1_193_046,
     },
   });
-  assertEquals(
-    PotionContentsComponent.builder().negated().build().asJsonObject(),
-    { "!minecraft:potion_contents": {} },
-  );
+  const disabled = PotionContentsComponent.builder();
+  disabled.disabled();
+  assertEquals(disabled.build(), { "!minecraft:potion_contents": {} });
 });

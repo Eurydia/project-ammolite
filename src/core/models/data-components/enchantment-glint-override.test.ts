@@ -1,26 +1,37 @@
 import { assertEquals } from "@std/assert";
-import { EnchantmentGlintOverrideComponent } from "./enchantment-glint-override.ts";
+import {
+  Builder$EnchantmentGlintOverrideComponent,
+  Schema$EnchantmentGlintOverrideComponent,
+} from "./enchantment-glint-override.ts";
 
 Deno.test("glint overrides serialize as a boolean", () => {
-  assertEquals(EnchantmentGlintOverrideComponent.from(true), {
-    "minecraft:enchantment_glint_override": true,
-  });
-  assertEquals(EnchantmentGlintOverrideComponent.negated(), {
-    "!minecraft:enchantment_glint_override": {},
-  });
+  assertEquals(
+    Schema$EnchantmentGlintOverrideComponent.parse({
+      "minecraft:enchantment_glint_override": true,
+    }),
+    {
+      "minecraft:enchantment_glint_override": true,
+    },
+  );
+  assertEquals(
+    Schema$EnchantmentGlintOverrideComponent.parse({
+      "!minecraft:enchantment_glint_override": {},
+    }),
+    {
+      "!minecraft:enchantment_glint_override": {},
+    },
+  );
 });
 
 Deno.test("glint override builders separate positive and negated variants", () => {
-  assertEquals(
-    EnchantmentGlintOverrideComponent.builder()
-      .glint(true)
-      .build()
-      .asJsonObject(),
-    { "minecraft:enchantment_glint_override": true },
-  );
-  assertEquals(
-    EnchantmentGlintOverrideComponent.builder().negated().build()
-      .asJsonObject(),
-    { "!minecraft:enchantment_glint_override": {} },
-  );
+  const enabled = new Builder$EnchantmentGlintOverrideComponent();
+  enabled.glint(true);
+  assertEquals(enabled.build(), {
+    "minecraft:enchantment_glint_override": true,
+  });
+  const disabled = new Builder$EnchantmentGlintOverrideComponent();
+  disabled.disabled();
+  assertEquals(disabled.build(), {
+    "!minecraft:enchantment_glint_override": {},
+  });
 });

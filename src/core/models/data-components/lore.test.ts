@@ -12,20 +12,13 @@ Deno.test("lore components serialize as a list of Minecraft text", () => {
   assertEquals(LoreComponent.negated(), { "!minecraft:lore": {} });
 });
 
-Deno.test("lore builders separate positive and negated variants", () => {
-  assertEquals(
-    JSON.parse(
-      JSON.stringify(
-        LoreComponent.builder()
-          .line(TextComponent.builder("Brewed").build())
-          .build()
-          .asJsonObject(),
-      ),
-    ),
-    { "minecraft:lore": [{ type: "text", text: "Brewed" }] },
-  );
-  assertEquals(
-    LoreComponent.builder().negated().build().asJsonObject(),
-    { "!minecraft:lore": {} },
-  );
+Deno.test("lore builder returns a schema value", () => {
+  const builder = LoreComponent.builder();
+  builder.lines((lines) => lines.line(TextComponent.builder("Brewed").build()));
+  assertEquals(builder.build(), {
+    "minecraft:lore": [{ type: "text", text: "Brewed" }],
+  });
+  const disabled = LoreComponent.builder();
+  disabled.disabled();
+  assertEquals(disabled.build(), { "!minecraft:lore": {} });
 });

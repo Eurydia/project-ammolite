@@ -24,7 +24,7 @@ Deno.test("text builders convert nested text components", () => {
     .extra(TextComponent.builder(" Potion").bold().build())
     .build();
 
-  assertEquals(JSON.parse(JSON.stringify(data.asJsonObject())), {
+  assertEquals(JSON.parse(JSON.stringify(data)), {
     type: "text",
     text: "Swift",
     color: "blue",

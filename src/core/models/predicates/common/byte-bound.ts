@@ -16,7 +16,10 @@ export const Schema$ByteBoundPredicate = z.compile(
   ]),
 );
 
-export type ByteBoundType = z.output<typeof Schema$ByteBoundPredicate>;
+export type Type$ByteBoundPredicate = z.output<
+  typeof Schema$ByteBoundPredicate
+>;
+export type ByteBoundType = Type$ByteBoundPredicate;
 
 interface ByteBoundRangeConfigurator {
   min(value: number): ByteBoundRangeConfigurator;
@@ -42,14 +45,15 @@ class ByteBoundRangeBuilder implements ByteBoundRangeConfigurator {
   }
 }
 
-export interface ByteBoundConfigurator {
+export interface Configurator$ByteBoundPredicate {
   range(
     configure: (builder: ByteBoundRangeConfigurator) => void,
-  ): ByteBoundConfigurator;
-  exact(value: number): ByteBoundConfigurator;
+  ): Configurator$ByteBoundPredicate;
+  exact(value: number): Configurator$ByteBoundPredicate;
 }
 
-export class ByteBoundBuilder implements ByteBoundConfigurator {
+export class Builder$ByteBoundPredicate
+  implements Configurator$ByteBoundPredicate {
   private value?: ByteBoundType;
 
   public range(configure: (builder: ByteBoundRangeConfigurator) => void): this {

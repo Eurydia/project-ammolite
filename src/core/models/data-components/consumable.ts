@@ -1,200 +1,104 @@
+import z from "zod";
+import type { ConsumeEffectType } from "#/models/data-components/common/consume-effect.ts";
+import { Schema$ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 import {
-  ConsumeEffectData,
-  type ConsumeEffectType,
-} from "#/models/data-components/common/consume-effect.ts";
-import {
-  SoundEventData,
+  Schema$SoundEventComponent,
   type Type$SoundEventComponent,
 } from "#/models/data-components/common/sound-event.ts";
-import { NumberBound } from "#/models/predicates/common/byte-bound.ts";
-import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
-import { keepUndefinedOrTransform } from "#/utility/transform.ts";
 
-export type ConsumableComponentType = Readonly<
-  | { "!minecraft:consumable": Readonly<Record<PropertyKey, never>> }
-  | {
-      "minecraft:consumable": Readonly<{
-        consume_seconds?: number;
-        animation?: string;
-        sound?: Type$SoundEventComponent;
-        has_consume_particles?: boolean;
-        on_consume_effects?: ReadonlyArray<ConsumeEffectType>;
-      }>;
-    }
+const Schema$ConsumableActive = z.compile(
+  z.object({
+    "minecraft:consumable": z.object({
+      consume_seconds: z.float32().min(0).optional(),
+      animation: z.string().optional(),
+      sound: Schema$SoundEventComponent.optional(),
+      has_consume_particles: z.boolean().optional(),
+      on_consume_effects: Schema$ConsumeEffect.array().readonly().optional(),
+    }).readonly(),
+  }).readonly(),
+);
+const Schema$ConsumableDisabled = z.compile(
+  z.object({ "!minecraft:consumable": z.object({}).readonly() }).readonly(),
+);
+export const Schema$ConsumableComponent = z.compile(
+  z.union([Schema$ConsumableActive, Schema$ConsumableDisabled]),
+);
+export type ConsumableComponentType = z.output<
+  typeof Schema$ConsumableComponent
 >;
-export type ConsumeEffectValue = ConsumeEffectType | ConsumeEffectData;
-export type SoundEventValue = Type$SoundEventComponent | SoundEventData;
+export type Type$ConsumableComponent = ConsumableComponentType;
 
-export class ConsumableComponentData implements DataPackModel<ConsumableComponentType> {
-  public readonly consumeSeconds?: number;
-  public readonly animation?: string;
-  public readonly sound?: SoundEventValue;
-  public readonly hasConsumeParticles?: boolean;
-  public readonly onConsumeEffects?: ReadonlyArray<ConsumeEffectValue>;
-  public readonly negated: boolean;
-
-  public constructor({
-    consumeSeconds,
-    animation,
-    sound,
-    hasConsumeParticles,
-    onConsumeEffects,
-    negated = false,
-  }: {
-    consumeSeconds?: number;
-    animation?: string;
-    sound?: SoundEventValue;
-    hasConsumeParticles?: boolean;
-    onConsumeEffects?: ReadonlyArray<ConsumeEffectValue>;
-    negated?: boolean;
-  }) {
-    this.consumeSeconds = consumeSeconds;
-    this.animation = animation;
-    this.sound = sound;
-    this.hasConsumeParticles = hasConsumeParticles;
-    this.onConsumeEffects =
-      onConsumeEffects === undefined
-        ? undefined
-        : freezeArray(onConsumeEffects);
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): ConsumableComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:consumable": Object.freeze({}) })
-      : (Object.freeze({
-          "minecraft:consumable": Object.freeze({
-            consume_seconds: this.consumeSeconds,
-            animation: this.animation,
-            sound: toDataPackObject(this.sound) as
-              | Type$SoundEventComponent
-              | undefined,
-            has_consume_particles: this.hasConsumeParticles,
-            on_consume_effects:
-              this.onConsumeEffects === undefined
-                ? undefined
-                : Object.freeze(
-                    this.onConsumeEffects.map(
-                      (effect) => toDataPackObject(effect) as ConsumeEffectType,
-                    ),
-                  ),
-          }),
-        }) as ConsumableComponentType);
-  }
+export interface Configurator$ConsumableComponent {
+  consumeSeconds(value: number): Configurator$ConsumableComponent;
+  animation(value: string): Configurator$ConsumableComponent;
+  sound(value: Type$SoundEventComponent): Configurator$ConsumableComponent;
+  consumeEffect(value: ConsumeEffectType): Configurator$ConsumableComponent;
+  consumeParticles(value?: boolean): Configurator$ConsumableComponent;
 }
 
-export interface ConsumableComponentBuilderConfigurator {
-  consumeSeconds(value: number): ConsumableComponentBuilderConfigurator;
-  animation(value: string): ConsumableComponentBuilderConfigurator;
-  sound(value: SoundEventValue): ConsumableComponentBuilderConfigurator;
-  consumeEffect(
-    value: ConsumeEffectValue,
-  ): ConsumableComponentBuilderConfigurator;
-  consumeParticles(value?: boolean): ConsumableComponentBuilderConfigurator;
-  negated(): NegatedConsumableComponentBuilderConfigurator;
-}
-
-export interface NegatedConsumableComponentBuilderConfigurator {
-  build(): Readonly<ConsumableComponentData>;
-}
-
-export class ConsumableComponentBuilder implements ConsumableComponentBuilderConfigurator {
-  private consumeSecondsValue?: number;
-  private animationValue?: string;
-  private soundValue?: SoundEventValue;
-  private consumeParticlesValue?: boolean;
-  private readonly effectValues: Array<ConsumeEffectValue> = [];
-
-  public consumeSeconds(value: number): this {
-    this.consumeSecondsValue = NumberBound.float(value, 0);
+export class Builder$ConsumableComponent
+  implements Configurator$ConsumableComponent {
+  private readonly value: Record<string, unknown> = {};
+  private readonly effects: ConsumeEffectType[] = [];
+  private isDisabled = false;
+  consumeSeconds(value: number) {
+    this.value.consume_seconds = value;
     return this;
   }
-
-  public animation(value: string): this {
-    this.animationValue = value;
+  animation(value: string) {
+    this.value.animation = value;
     return this;
   }
-
-  public sound(value: SoundEventValue): this {
-    this.soundValue = value;
+  sound(value: Type$SoundEventComponent) {
+    this.value.sound = value;
     return this;
   }
-
-  public consumeEffect(value: ConsumeEffectValue): this {
-    this.effectValues.push(value);
+  consumeEffect(value: ConsumeEffectType) {
+    this.effects.push(value);
     return this;
   }
-
-  public consumeParticles(value = true): this {
-    this.consumeParticlesValue = value;
+  consumeParticles(value = true) {
+    this.value.has_consume_particles = value;
     return this;
   }
-
-  public negated(): NegatedConsumableComponentBuilderConfigurator {
-    return new NegatedConsumableComponentBuilder();
+  disabled() {
+    this.isDisabled = true;
   }
-
-  public build(): Readonly<ConsumableComponentData> {
-    return freezeDataClass(
-      new ConsumableComponentData({
-        consumeSeconds: this.consumeSecondsValue,
-        animation: this.animationValue,
-        sound: this.soundValue,
-        hasConsumeParticles: this.consumeParticlesValue,
-        onConsumeEffects: this.effectValues,
-      }),
-    );
-  }
-}
-
-export class NegatedConsumableComponentBuilder implements NegatedConsumableComponentBuilderConfigurator {
-  public build(): Readonly<ConsumableComponentData> {
-    return freezeDataClass(new ConsumableComponentData({ negated: true }));
+  build() {
+    if (this.isDisabled) {
+      return Schema$ConsumableComponent.parse({ "!minecraft:consumable": {} });
+    }
+    return Schema$ConsumableComponent.parse({
+      "minecraft:consumable": {
+        ...this.value,
+        on_consume_effects: this.effects.length ? this.effects : undefined,
+      },
+    });
   }
 }
 
 export const ConsumableComponent = {
-  builder(): ConsumableComponentBuilder {
-    return new ConsumableComponentBuilder();
-  },
-  negatedBuilder(): NegatedConsumableComponentBuilder {
-    return new NegatedConsumableComponentBuilder();
-  },
-  from({
-    consumeSeconds,
-    animation,
-    sound,
-    hasConsumeParticles,
-    onConsumeEffects,
-  }: {
-    consumeSeconds?: number;
-    animation?: string;
-    sound?: Type$SoundEventComponent;
-    hasConsumeParticles?: boolean;
-    onConsumeEffects?: Array<ConsumeEffectType>;
-  }): ConsumableComponentType {
-    return Object.freeze({
-      "minecraft:consumable": Object.freeze({
-        consume_seconds: keepUndefinedOrTransform(consumeSeconds, (value) =>
-          NumberBound.float(value, 0),
-        ),
+  builder: () => new Builder$ConsumableComponent(),
+  from(
+    { consumeSeconds, animation, sound, hasConsumeParticles, onConsumeEffects }:
+      {
+        consumeSeconds?: number;
+        animation?: string;
+        sound?: Type$SoundEventComponent;
+        hasConsumeParticles?: boolean;
+        onConsumeEffects?: ConsumeEffectType[];
+      },
+  ) {
+    return Schema$ConsumableComponent.parse({
+      "minecraft:consumable": {
+        consume_seconds: consumeSeconds,
         animation,
         sound,
         has_consume_particles: hasConsumeParticles,
-        on_consume_effects: keepUndefinedOrTransform(
-          onConsumeEffects,
-          (value) => Object.freeze([...value]),
-        ),
-      }),
+        on_consume_effects: onConsumeEffects,
+      },
     });
   },
-  negated(): ConsumableComponentType {
-    return Object.freeze({ "!minecraft:consumable": Object.freeze({}) });
-  },
+  negated: () =>
+    Schema$ConsumableComponent.parse({ "!minecraft:consumable": {} }),
 };

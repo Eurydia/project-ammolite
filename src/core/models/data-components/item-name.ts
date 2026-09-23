@@ -1,88 +1,46 @@
-import type {
-  TextComponentType,
-  TextComponentValue,
-} from "#/models/data-components/common/text.ts";
+import z from "zod";
 import {
-  type DataPackModel,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
+  Schema$TextComponent,
+  type TextComponentType,
+} from "#/models/data-components/common/text.ts";
 
-export type ItemNameComponentType = Readonly<
-  | { "!minecraft:item_name": Readonly<Record<PropertyKey, never>> }
-  | { "minecraft:item_name": TextComponentType }
->;
+export const Schema$ItemNameComponent = z.compile(
+  z.union([
+    z.object({ "minecraft:item_name": Schema$TextComponent }).readonly(),
+    z.object({ "!minecraft:item_name": z.object({}).readonly() }).readonly(),
+  ]),
+);
 
-export class ItemNameComponentData
-  implements DataPackModel<ItemNameComponentType> {
-  public readonly text?: TextComponentValue;
-  public readonly negated: boolean;
-
-  public constructor(text?: TextComponentValue, negated = false) {
-    this.text = text;
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): ItemNameComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:item_name": Object.freeze({}) })
-      : Object.freeze({
-        "minecraft:item_name": toDataPackObject(this.text),
-      }) as ItemNameComponentType;
-  }
+export type ItemNameComponentType = z.output<typeof Schema$ItemNameComponent>;
+export type Type$ItemNameComponent = ItemNameComponentType;
+export interface Configurator$ItemNameComponent {
+  text(value: TextComponentType): void;
+  disabled(): void;
 }
 
-export interface ItemNameComponentBuilderConfigurator {
-  text(value: TextComponentValue): ItemNameComponentBuilderConfigurator;
-  negated(): NegatedItemNameComponentBuilderConfigurator;
-}
+export class Builder$ItemNameComponent
+  implements Configurator$ItemNameComponent {
+  private value?: ItemNameComponentType;
 
-export interface NegatedItemNameComponentBuilderConfigurator {
-  build(): Readonly<ItemNameComponentData>;
-}
-
-export class ItemNameComponentBuilder
-  implements ItemNameComponentBuilderConfigurator {
-  private textValue?: TextComponentValue;
-
-  public text(value: TextComponentValue): this {
-    this.textValue = value;
-    return this;
+  text(value: TextComponentType) {
+    this.value = { "minecraft:item_name": value };
   }
 
-  public negated(): NegatedItemNameComponentBuilderConfigurator {
-    return new NegatedItemNameComponentBuilder();
+  disabled() {
+    this.value = { "!minecraft:item_name": {} };
   }
 
-  public build(): Readonly<ItemNameComponentData> {
-    if (this.textValue === undefined) {
-      throw new Error("An item-name component needs text.");
-    }
-    return freezeDataClass(
-      new ItemNameComponentData(this.textValue),
-    );
-  }
-}
-
-export class NegatedItemNameComponentBuilder
-  implements NegatedItemNameComponentBuilderConfigurator {
-  public build(): Readonly<ItemNameComponentData> {
-    return freezeDataClass(new ItemNameComponentData(undefined, true));
+  build() {
+    return Schema$ItemNameComponent.parse(this.value);
   }
 }
 
 export const ItemNameComponent = {
-  builder(): ItemNameComponentBuilder {
-    return new ItemNameComponentBuilder();
+  builder: () => new Builder$ItemNameComponent(),
+  from(text: TextComponentType) {
+    return Schema$ItemNameComponent.parse({ "minecraft:item_name": text });
   },
-  negatedBuilder(): NegatedItemNameComponentBuilder {
-    return new NegatedItemNameComponentBuilder();
-  },
-  from(text: TextComponentType): ItemNameComponentType {
-    return Object.freeze({ "minecraft:item_name": text });
-  },
-  negated(): ItemNameComponentType {
-    return Object.freeze({ "!minecraft:item_name": Object.freeze({}) });
+  negated() {
+    return Schema$ItemNameComponent.parse({ "!minecraft:item_name": {} });
   },
 };
