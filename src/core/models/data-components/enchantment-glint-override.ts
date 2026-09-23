@@ -1,92 +1,45 @@
-import { type DataPackModel, freezeDataClass } from "#/models/model.ts";
+import z from "zod";
 
-export type EnchantmentGlintOverrideComponentType = Readonly<
-  | {
-    "!minecraft:enchantment_glint_override": Readonly<
-      Record<PropertyKey, never>
-    >;
-  }
-  | { "minecraft:enchantment_glint_override": boolean }
+const __Schema$EnchantmentGlintOverrideComponent$Active = z.compile(
+  z.object({ "minecraft:enchantment_glint_override": z.boolean() }).readonly(),
+);
+
+const __Schema$EnchantmentGlintOverrideComponent$Disabled = z.compile(
+  z
+    .object({
+      "!minecraft:enchantment_glint_override": z.object({}).readonly(),
+    })
+    .readonly(),
+);
+
+export const Schema$EnchantmentGlintOverrideComponent = z.compile(
+  z.union([
+    __Schema$EnchantmentGlintOverrideComponent$Active,
+    __Schema$EnchantmentGlintOverrideComponent$Disabled,
+  ]),
+);
+
+export type Type$EnchantmentGlintOverrideComponent = z.output<
+  typeof Schema$EnchantmentGlintOverrideComponent
 >;
 
-export class EnchantmentGlintOverrideComponentData
-  implements DataPackModel<EnchantmentGlintOverrideComponentType> {
-  public readonly value?: boolean;
-  public readonly negated: boolean;
-
-  public constructor(value?: boolean, negated = false) {
-    this.value = value;
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): EnchantmentGlintOverrideComponentType {
-    return this.negated
-      ? Object.freeze({
-        "!minecraft:enchantment_glint_override": Object.freeze({}),
-      })
-      : Object.freeze({
-        "minecraft:enchantment_glint_override": this.value!,
-      });
-  }
+export interface Configurator$EnchantmentGlintOverrideComponent {
+  glint(value: boolean): void;
+  disabled(): void;
 }
 
-export interface EnchantmentGlintOverrideComponentBuilderConfigurator {
-  glint(
-    value: boolean,
-  ): EnchantmentGlintOverrideComponentBuilderConfigurator;
-  negated(): NegatedEnchantmentGlintOverrideComponentBuilderConfigurator;
-}
+export class Builder$EnchantmentGlintOverrideComponent implements Configurator$EnchantmentGlintOverrideComponent {
+  private value?: Type$EnchantmentGlintOverrideComponent;
 
-export interface NegatedEnchantmentGlintOverrideComponentBuilderConfigurator {
-  build(): Readonly<EnchantmentGlintOverrideComponentData>;
-}
-
-export class EnchantmentGlintOverrideComponentBuilder
-  implements EnchantmentGlintOverrideComponentBuilderConfigurator {
-  private glintValue?: boolean;
-
-  public glint(value: boolean): this {
-    this.glintValue = value;
-    return this;
+  glint(showGlint: boolean) {
+    this.value = { "minecraft:enchantment_glint_override": showGlint };
   }
 
-  public negated(): NegatedEnchantmentGlintOverrideComponentBuilderConfigurator {
-    return new NegatedEnchantmentGlintOverrideComponentBuilder();
+  disabled() {
+    this.value = { "!minecraft:enchantment_glint_override": {} };
   }
 
-  public build(): Readonly<EnchantmentGlintOverrideComponentData> {
-    if (this.glintValue === undefined) {
-      throw new Error("An enchantment-glint-override component needs a value.");
-    }
-    return freezeDataClass(
-      new EnchantmentGlintOverrideComponentData(this.glintValue),
-    );
+  build() {
+    return Schema$EnchantmentGlintOverrideComponent.parse(this.value);
   }
 }
-
-export class NegatedEnchantmentGlintOverrideComponentBuilder
-  implements NegatedEnchantmentGlintOverrideComponentBuilderConfigurator {
-  public build(): Readonly<EnchantmentGlintOverrideComponentData> {
-    return freezeDataClass(
-      new EnchantmentGlintOverrideComponentData(undefined, true),
-    );
-  }
-}
-
-export const EnchantmentGlintOverrideComponent = {
-  builder(): EnchantmentGlintOverrideComponentBuilder {
-    return new EnchantmentGlintOverrideComponentBuilder();
-  },
-  negatedBuilder(): NegatedEnchantmentGlintOverrideComponentBuilder {
-    return new NegatedEnchantmentGlintOverrideComponentBuilder();
-  },
-  from(value: boolean): EnchantmentGlintOverrideComponentType {
-    return Object.freeze({ "minecraft:enchantment_glint_override": value });
-  },
-  negated(): EnchantmentGlintOverrideComponentType {
-    return Object.freeze({
-      "!minecraft:enchantment_glint_override": Object.freeze({}),
-    });
-  },
-};

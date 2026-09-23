@@ -1,12 +1,3 @@
-import type {
-  BrewingRecipeData,
-  BrewingRecipeType,
-} from "../data/recipe/brewing.ts";
-import { toDataPackObject } from "#/models/model.ts";
-
-export class MissingNamespaceError extends Error {}
-export class IllegalNamespaceName extends Error {}
-
 export class DataPack {
   private name: string;
   private desc: string;

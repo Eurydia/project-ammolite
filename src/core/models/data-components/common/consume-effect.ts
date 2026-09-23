@@ -5,7 +5,7 @@ import {
 import {
   SoundEvent,
   SoundEventData,
-  type SoundEventType,
+  type Type$SoundEventComponent,
 } from "#/models/data-components/common/sound-event.ts";
 import {
   NumberBound,
@@ -37,13 +37,13 @@ export type ConsumeEffectType = Readonly<
     }
   | {
       type: "minecraft:play_sound";
-      sound: SoundEventType;
+      sound: Type$SoundEventComponent;
     }
 >;
 export type MobEffectComponentValue =
   | MobEffectComponentType
   | MobEffectComponentData;
-export type SoundEventValue = SoundEventType | SoundEventData;
+export type SoundEventValue = Type$SoundEventComponent | SoundEventData;
 
 export class ConsumeEffectData implements DataPackModel<ConsumeEffectType> {
   public readonly type: ConsumeEffectType["type"];
@@ -107,7 +107,7 @@ export class ConsumeEffectData implements DataPackModel<ConsumeEffectType> {
       case "minecraft:play_sound":
         return Object.freeze({
           type: this.type,
-          sound: toDataPackObject(this.sound) as SoundEventType,
+          sound: toDataPackObject(this.sound) as Type$SoundEventComponent,
         });
     }
   }

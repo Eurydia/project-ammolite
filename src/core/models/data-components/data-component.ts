@@ -2,11 +2,11 @@ import type { ConsumableComponentType } from "#/models/data-components/consumabl
 import type { CustomNameComponentType } from "#/models/data-components/custom-name.ts";
 import type { DamageResistantComponentType } from "#/models/data-components/damage-resistant.ts";
 import type { DeathProtectionComponentType } from "#/models/data-components/death-protection.ts";
-import type { EnchantmentGlintOverrideComponentType } from "#/models/data-components/enchantment-glint-override.ts";
+import type { Type$EnchantmentGlintOverrideComponent } from "#/models/data-components/enchantment-glint-override.ts";
 import type { ItemNameComponentType } from "#/models/data-components/item-name.ts";
 import type { LoreComponentType } from "#/models/data-components/lore.ts";
 import type { PotionContentsComponentType } from "#/models/data-components/potion-contents.ts";
-import type { PotionDurationScaleComponentType } from "#/models/data-components/potion-duration-scale.ts";
+import type { Type$PotionDurationScaleComponent } from "#/models/data-components/potion-duration-scale.ts";
 import type { Type$RarityComponent } from "#/models/data-components/rarity.ts";
 import type { Type$SuspiciousStewEffectsComponent } from "#/models/data-components/suspicious-stew-effects.ts";
 import type { UseRemainderComponentType } from "#/models/data-components/use-remainder.ts";
@@ -28,11 +28,11 @@ type IndividualDataComponentType =
   | CustomNameComponentType
   | DamageResistantComponentType
   | DeathProtectionComponentType
-  | EnchantmentGlintOverrideComponentType
+  | Type$EnchantmentGlintOverrideComponent
   | ItemNameComponentType
   | LoreComponentType
   | PotionContentsComponentType
-  | PotionDurationScaleComponentType
+  | Type$PotionDurationScaleComponent
   | Type$RarityComponent
   | Type$SuspiciousStewEffectsComponent
   | UseRemainderComponentType;

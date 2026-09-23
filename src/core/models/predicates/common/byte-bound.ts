@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-export const BYTE_BOUND_SCHEMA = z.compile(
+export const Schema$ByteBoundPredicate = z.compile(
   z.union([
     z.int().min(-128).max(127),
     z
@@ -16,7 +16,7 @@ export const BYTE_BOUND_SCHEMA = z.compile(
   ]),
 );
 
-export type ByteBoundType = z.output<typeof BYTE_BOUND_SCHEMA>;
+export type ByteBoundType = z.output<typeof Schema$ByteBoundPredicate>;
 
 interface ByteBoundRangeConfigurator {
   min(value: number): ByteBoundRangeConfigurator;
@@ -66,6 +66,6 @@ export class ByteBoundBuilder implements ByteBoundConfigurator {
   }
 
   public build() {
-    return BYTE_BOUND_SCHEMA.parse(this.value);
+    return Schema$ByteBoundPredicate.parse(this.value);
   }
 }

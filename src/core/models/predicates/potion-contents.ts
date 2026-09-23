@@ -1,23 +1,23 @@
 import {
-  MobEffectPredicateBuilder,
-  MobEffectPredicateConfigurator,
-  MobEffectPredicateType,
+  Builder$MobEffectPredicate,
+  Configurator$MobEffectPredicate,
+  Type$MobEffectPredicate,
 } from "#/models/predicates/common/mob-effect.ts";
 import z from "zod";
-import { BYTE_BOUND_SCHEMA } from "#/models/predicates/common/byte-bound.ts";
+import { Schema$ByteBoundPredicate } from "#/models/predicates/common/byte-bound.ts";
 import {
-  Schema$IntBount,
-  IntBoundBuilder,
-  IntBoundConfigurator,
-  IntBoundType,
+  Schema$IntBoundPredicate,
+  Builder$IntBoundPredicate,
+  Configurator$IntBoundPredicate,
+  Type$IntBoundPredicate,
 } from "#/models/predicates/common/int-bound.ts";
 
 const __Schema$MobEffectPredicateRecord = z.record(
   z.string().normalize(),
   z
     .object({
-      amplifier: BYTE_BOUND_SCHEMA.optional(),
-      duration: Schema$IntBount.optional(),
+      amplifier: Schema$ByteBoundPredicate.optional(),
+      duration: Schema$IntBoundPredicate.optional(),
       ambient: z.boolean().optional(),
       visible: z.boolean().optional(),
     })
@@ -27,7 +27,7 @@ const __Schema$MobEffectPredicateRecord = z.record(
 const __Schema$PotionContentsPredicate$Effects$Count = z
   .object({
     test: __Schema$MobEffectPredicateRecord.optional(),
-    count: Schema$IntBount,
+    count: Schema$IntBoundPredicate,
   })
   .readonly();
 
@@ -38,7 +38,7 @@ const __Schema$PotionContentsPredicate$Effects = z
       .array()
       .readonly()
       .optional(),
-    size: Schema$IntBount.optional(),
+    size: Schema$IntBoundPredicate.optional(),
   })
   .readonly();
 
@@ -64,24 +64,24 @@ export type PotionContentsPredicateType = z.output<
 
 interface __Configurator$PotionContentsPredicate$Effects$Count {
   test(
-    configure: (builder: MobEffectPredicateConfigurator) => void,
+    configure: (builder: Configurator$MobEffectPredicate) => void,
   ): __Configurator$PotionContentsPredicate$Effects$Count;
 }
 
 class __Builder$PotionContentsPredicate$Effects$Count implements __Configurator$PotionContentsPredicate$Effects$Count {
-  private countValue?: IntBoundType;
-  private testValues?: Array<MobEffectPredicateType>;
+  private countValue?: Type$IntBoundPredicate;
+  private testValues?: Array<Type$MobEffectPredicate>;
 
-  count(configure: (builder: IntBoundConfigurator) => void): this {
-    const builder = new IntBoundBuilder();
+  count(configure: (builder: Configurator$IntBoundPredicate) => void): this {
+    const builder = new Builder$IntBoundPredicate();
     configure(builder);
     this.countValue = builder.build();
     return this;
   }
 
-  test(configure: (builder: MobEffectPredicateConfigurator) => void): this {
+  test(configure: (builder: Configurator$MobEffectPredicate) => void): this {
     this.testValues ??= [];
-    const builder = new MobEffectPredicateBuilder();
+    const builder = new Builder$MobEffectPredicate();
     configure(builder);
     this.testValues.push(builder.build());
     return this;
@@ -99,7 +99,7 @@ class __Builder$PotionContentsPredicate$Effects$Count implements __Configurator$
 
 interface __Configurator$PotionContentsPredicate$Effects {
   contains(
-    configure: (builder: MobEffectPredicateConfigurator) => void,
+    configure: (builder: Configurator$MobEffectPredicate) => void,
   ): __Configurator$PotionContentsPredicate$Effects;
   count(
     configure: (
@@ -107,22 +107,22 @@ interface __Configurator$PotionContentsPredicate$Effects {
     ) => void,
   ): __Configurator$PotionContentsPredicate$Effects;
   size(
-    configure: (builder: IntBoundConfigurator) => void,
+    configure: (builder: Configurator$IntBoundPredicate) => void,
   ): __Configurator$PotionContentsPredicate$Effects;
 }
 
 class __Builder$PotionContentsPredicate$Effects implements __Configurator$PotionContentsPredicate$Effects {
-  private containsValues?: Array<MobEffectPredicateType>;
+  private containsValues?: Array<Type$MobEffectPredicate>;
   private countValues?: Array<
     z.output<typeof __Schema$PotionContentsPredicate$Effects$Count>
   >;
-  private sizeValue?: IntBoundType;
+  private sizeValue?: Type$IntBoundPredicate;
 
   public contains(
-    configure: (builder: MobEffectPredicateConfigurator) => void,
+    configure: (builder: Configurator$MobEffectPredicate) => void,
   ): this {
     this.containsValues ??= [];
-    const builder = new MobEffectPredicateBuilder();
+    const builder = new Builder$MobEffectPredicate();
     configure(builder);
     this.containsValues.push(builder.build());
     return this;
@@ -141,8 +141,8 @@ class __Builder$PotionContentsPredicate$Effects implements __Configurator$Potion
     return this;
   }
 
-  public size(config: (builder: IntBoundConfigurator) => void): this {
-    const builder = new IntBoundBuilder();
+  public size(config: (builder: Configurator$IntBoundPredicate) => void): this {
+    const builder = new Builder$IntBoundPredicate();
     config(builder);
     this.sizeValue = builder.build();
     return this;

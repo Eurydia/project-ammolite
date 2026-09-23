@@ -1,86 +1,49 @@
-import { NumberBound } from "#/models/predicates/common/byte-bound.ts";
-import { type DataPackModel, freezeDataClass } from "#/models/model.ts";
+import z from "zod";
 
-export type PotionDurationScaleComponentType = Readonly<
-  | {
-      "!minecraft:potion_duration_scale": Readonly<Record<PropertyKey, never>>;
-    }
-  | { "minecraft:potion_duration_scale": number }
+const __Schema$PotionDurationScaleComponent$Active = z.compile(
+  z
+    .object({
+      "minecraft:potion_duration_scale": z.float32(),
+    })
+    .readonly(),
+);
+
+const __Schema$PotionDurationScaleComponent$Disabled = z.compile(
+  z
+    .object({
+      "!minecraft:potion_duration_scale": z.object({}).readonly(),
+    })
+    .readonly(),
+);
+
+const Schema$PotionDurationScaleComponent = z.compile(
+  z.union([
+    __Schema$PotionDurationScaleComponent$Active,
+    __Schema$PotionDurationScaleComponent$Disabled,
+  ]),
+);
+
+export type Type$PotionDurationScaleComponent = z.output<
+  typeof Schema$PotionDurationScaleComponent
 >;
 
-export class PotionDurationScaleComponentData implements DataPackModel<PotionDurationScaleComponentType> {
-  public readonly value?: number;
-  public readonly negated: boolean;
-
-  public constructor(value?: number, negated = false) {
-    this.value = value;
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): PotionDurationScaleComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:potion_duration_scale": Object.freeze({}) })
-      : Object.freeze({
-          "minecraft:potion_duration_scale": NumberBound.float(this.value!),
-        });
-  }
+export interface Configurator$PotionDurationScaleComponent {
+  scale(value: number): void;
+  disabled(): void;
 }
 
-export interface PotionDurationScaleComponentBuilderConfigurator {
-  scale(value: number): PotionDurationScaleComponentBuilderConfigurator;
-  negated(): NegatedPotionDurationScaleComponentBuilderConfigurator;
-}
+export class Builder$PotionDurationScaleComponent implements Configurator$PotionDurationScaleComponent {
+  private value?: Type$PotionDurationScaleComponent;
 
-export interface NegatedPotionDurationScaleComponentBuilderConfigurator {
-  build(): Readonly<PotionDurationScaleComponentData>;
-}
-
-export class PotionDurationScaleComponentBuilder implements PotionDurationScaleComponentBuilderConfigurator {
-  private scaleValue?: number;
-
-  public scale(value: number): this {
-    this.scaleValue = value;
-    return this;
+  scale(scaleValue: number) {
+    this.value = { "minecraft:potion_duration_scale": scaleValue };
   }
 
-  public negated(): NegatedPotionDurationScaleComponentBuilderConfigurator {
-    return new NegatedPotionDurationScaleComponentBuilder();
+  disabled() {
+    this.value = { "!minecraft:potion_duration_scale": {} };
   }
 
-  public build(): Readonly<PotionDurationScaleComponentData> {
-    if (this.scaleValue === undefined) {
-      throw new Error("A potion-duration-scale component needs a value.");
-    }
-    return freezeDataClass(
-      new PotionDurationScaleComponentData(this.scaleValue),
-    );
+  build() {
+    return Schema$PotionDurationScaleComponent.parse(this.value);
   }
 }
-
-export class NegatedPotionDurationScaleComponentBuilder implements NegatedPotionDurationScaleComponentBuilderConfigurator {
-  public build(): Readonly<PotionDurationScaleComponentData> {
-    return freezeDataClass(
-      new PotionDurationScaleComponentData(undefined, true),
-    );
-  }
-}
-
-export const PotionDurationScaleComponent = {
-  builder(): PotionDurationScaleComponentBuilder {
-    return new PotionDurationScaleComponentBuilder();
-  },
-  negatedBuilder(): NegatedPotionDurationScaleComponentBuilder {
-    return new NegatedPotionDurationScaleComponentBuilder();
-  },
-  from(value: number): PotionDurationScaleComponentType {
-    return Object.freeze({
-      "minecraft:potion_duration_scale": NumberBound.float(value, 0),
-    });
-  },
-  negated(): PotionDurationScaleComponentType {
-    return Object.freeze({
-      "!minecraft:potion_duration_scale": Object.freeze({}),
-    });
-  },
-};

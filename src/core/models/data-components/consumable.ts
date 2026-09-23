@@ -4,7 +4,7 @@ import {
 } from "#/models/data-components/common/consume-effect.ts";
 import {
   SoundEventData,
-  type SoundEventType,
+  type Type$SoundEventComponent,
 } from "#/models/data-components/common/sound-event.ts";
 import { NumberBound } from "#/models/predicates/common/byte-bound.ts";
 import {
@@ -21,14 +21,14 @@ export type ConsumableComponentType = Readonly<
       "minecraft:consumable": Readonly<{
         consume_seconds?: number;
         animation?: string;
-        sound?: SoundEventType;
+        sound?: Type$SoundEventComponent;
         has_consume_particles?: boolean;
         on_consume_effects?: ReadonlyArray<ConsumeEffectType>;
       }>;
     }
 >;
 export type ConsumeEffectValue = ConsumeEffectType | ConsumeEffectData;
-export type SoundEventValue = SoundEventType | SoundEventData;
+export type SoundEventValue = Type$SoundEventComponent | SoundEventData;
 
 export class ConsumableComponentData implements DataPackModel<ConsumableComponentType> {
   public readonly consumeSeconds?: number;
@@ -72,7 +72,9 @@ export class ConsumableComponentData implements DataPackModel<ConsumableComponen
           "minecraft:consumable": Object.freeze({
             consume_seconds: this.consumeSeconds,
             animation: this.animation,
-            sound: toDataPackObject(this.sound) as SoundEventType | undefined,
+            sound: toDataPackObject(this.sound) as
+              | Type$SoundEventComponent
+              | undefined,
             has_consume_particles: this.hasConsumeParticles,
             on_consume_effects:
               this.onConsumeEffects === undefined
@@ -173,7 +175,7 @@ export const ConsumableComponent = {
   }: {
     consumeSeconds?: number;
     animation?: string;
-    sound?: SoundEventType;
+    sound?: Type$SoundEventComponent;
     hasConsumeParticles?: boolean;
     onConsumeEffects?: Array<ConsumeEffectType>;
   }): ConsumableComponentType {

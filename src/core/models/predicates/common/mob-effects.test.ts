@@ -1,14 +1,14 @@
 import { assert, assertEquals } from "@std/assert";
 import { MobEffects } from "#/enum/mob-effects.ts";
 import {
-  MobEffectPredicateBuilder,
-  MobEffectPredicateConfigurator,
+  Builder$MobEffectPredicate,
+  Configurator$MobEffectPredicate,
 } from "#/models/predicates/common/mob-effect.ts";
 
 Deno.test(
   "mob-effect predicate nested callbacks use the configurator API",
   () => {
-    const configure: (builder: MobEffectPredicateConfigurator) => void = (
+    const configure: (builder: Configurator$MobEffectPredicate) => void = (
       builder,
     ) => {
       builder
@@ -20,7 +20,7 @@ Deno.test(
         .visible(true);
     };
 
-    const builder = new MobEffectPredicateBuilder().effect(MobEffects.SPEED);
+    const builder = new Builder$MobEffectPredicate().effect(MobEffects.SPEED);
     configure(builder);
     const data = builder.build();
 

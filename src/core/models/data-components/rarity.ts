@@ -22,36 +22,32 @@ export const Schema$RarityComponent = z.compile(
 export type Type$RarityComponent = z.output<typeof Schema$RarityComponent>;
 
 export interface Configurator$RarityComponent {
-  common(): Configurator$RarityComponent;
-  uncommon(): Configurator$RarityComponent;
-  rare(): Configurator$RarityComponent;
-  epic(): Configurator$RarityComponent;
-  disable(): Configurator$RarityComponent;
+  common(): void;
+  uncommon(): void;
+  rare(): void;
+  epic(): void;
+  disable(): void;
 }
 
 export class Builder$RarityComponent implements Configurator$RarityComponent {
   private value?: Type$RarityComponent;
 
-  common(): this {
+  common() {
     this.value = { "minecraft:rarity": ItemRarity.COMMON };
-    return this;
   }
-  uncommon(): this {
+  uncommon() {
     this.value = { "minecraft:rarity": ItemRarity.UNCOMMON };
-    return this;
   }
-  rare(): this {
+  rare() {
     this.value = { "minecraft:rarity": ItemRarity.RARE };
-    return this;
-  }
-  epic(): this {
-    this.value = { "minecraft:rarity": ItemRarity.EPIC };
-    return this;
   }
 
-  disable(): this {
+  epic() {
+    this.value = { "minecraft:rarity": ItemRarity.EPIC };
+  }
+
+  disable() {
     this.value = { "!minecraft:rarity": {} };
-    return this;
   }
 
   build() {

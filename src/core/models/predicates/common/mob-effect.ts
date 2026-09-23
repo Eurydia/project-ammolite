@@ -1,49 +1,49 @@
 import {
-  BYTE_BOUND_SCHEMA,
+  Schema$ByteBoundPredicate,
   ByteBoundBuilder,
   ByteBoundConfigurator,
   ByteBoundType,
 } from "#/models/predicates/common/byte-bound.ts";
 import {
-  Schema$IntBount,
-  IntBoundBuilder,
-  IntBoundConfigurator,
-  IntBoundType,
+  Schema$IntBoundPredicate,
+  Builder$IntBoundPredicate,
+  Configurator$IntBoundPredicate,
+  Type$IntBoundPredicate,
 } from "#/models/predicates/common/int-bound.ts";
 import { z } from "zod";
 
-export const MOB_EFFECT_PREDICATE_SCHEMA = z.compile(
+export const Schema$MobEffectPredicate = z.compile(
   z
     .object({
       effect: z.string().normalize(),
-      amplifier: BYTE_BOUND_SCHEMA.optional(),
-      duration: Schema$IntBount.optional(),
+      amplifier: Schema$ByteBoundPredicate.optional(),
+      duration: Schema$IntBoundPredicate.optional(),
       ambient: z.boolean().optional(),
       visible: z.boolean().optional(),
     })
     .readonly(),
 );
 
-export type MobEffectPredicateType = z.output<
-  typeof MOB_EFFECT_PREDICATE_SCHEMA
+export type Type$MobEffectPredicate = z.output<
+  typeof Schema$MobEffectPredicate
 >;
 
-export interface MobEffectPredicateConfigurator {
-  effect(value: string): MobEffectPredicateConfigurator;
+export interface Configurator$MobEffectPredicate {
+  effect(value: string): Configurator$MobEffectPredicate;
   amplifier(
     configure: (builder: ByteBoundConfigurator) => void,
-  ): MobEffectPredicateConfigurator;
+  ): Configurator$MobEffectPredicate;
   duration(
-    configure: (builder: IntBoundConfigurator) => void,
-  ): MobEffectPredicateConfigurator;
-  ambient(value?: boolean): MobEffectPredicateConfigurator;
-  visible(value?: boolean): MobEffectPredicateConfigurator;
+    configure: (builder: Configurator$IntBoundPredicate) => void,
+  ): Configurator$MobEffectPredicate;
+  ambient(value: boolean): Configurator$MobEffectPredicate;
+  visible(value: boolean): Configurator$MobEffectPredicate;
 }
 
-export class MobEffectPredicateBuilder implements MobEffectPredicateConfigurator {
+export class Builder$MobEffectPredicate implements Configurator$MobEffectPredicate {
   private effectValue?: string;
   private amplifierValue?: ByteBoundType;
-  private durationValue?: IntBoundType;
+  private durationValue?: Type$IntBoundPredicate;
   private ambientValue?: boolean;
   private visibleValue?: boolean;
 
@@ -59,8 +59,8 @@ export class MobEffectPredicateBuilder implements MobEffectPredicateConfigurator
     return this;
   }
 
-  duration(configure: (builder: IntBoundConfigurator) => void): this {
-    const builder = new IntBoundBuilder();
+  duration(configure: (builder: Configurator$IntBoundPredicate) => void): this {
+    const builder = new Builder$IntBoundPredicate();
     configure(builder);
     this.durationValue = builder.build();
     return this;
@@ -76,8 +76,8 @@ export class MobEffectPredicateBuilder implements MobEffectPredicateConfigurator
     return this;
   }
 
-  public build() {
-    return MOB_EFFECT_PREDICATE_SCHEMA.parse({
+  build() {
+    return Schema$MobEffectPredicate.parse({
       effect: this.effectValue,
       amplifier: this.amplifierValue,
       duration: this.durationValue,

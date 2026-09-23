@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-export const Schema$IntBount = z.compile(
+export const Schema$IntBoundPredicate = z.compile(
   z.union([
     z.int().min(-2_147_483_648).max(2_147_483_647),
     z
@@ -18,44 +18,46 @@ export const Schema$IntBount = z.compile(
   ]),
 );
 
-export type IntBoundType = z.output<typeof Schema$IntBount>;
+export type Type$IntBoundPredicate = z.output<typeof Schema$IntBoundPredicate>;
 
-interface IntBoundRangeConfigurator {
-  min(value: number): IntBoundRangeConfigurator;
-  max(value: number): IntBoundRangeConfigurator;
+interface __Configurator$IntBoundPredicate$Range {
+  min(value: number): __Configurator$IntBoundPredicate$Range;
+  max(value: number): __Configurator$IntBoundPredicate$Range;
 }
 
-class IntBoundRangeBuilder implements IntBoundRangeConfigurator {
+class __Builder$IntBoundPredicate$Range implements __Configurator$IntBoundPredicate$Range {
   private minValue?: number;
   private maxValue?: number;
 
-  public min(value: number): this {
+  min(value: number): this {
     this.minValue = value;
     return this;
   }
 
-  public max(value: number): this {
+  max(value: number): this {
     this.maxValue = value;
     return this;
   }
 
-  public build() {
+  build() {
     return { min: this.minValue, max: this.maxValue };
   }
 }
 
-export interface IntBoundConfigurator {
+export interface Configurator$IntBoundPredicate {
   range(
-    configure: (builder: IntBoundRangeConfigurator) => void,
-  ): IntBoundConfigurator;
-  exact(value: number): IntBoundConfigurator;
+    configure: (builder: __Configurator$IntBoundPredicate$Range) => void,
+  ): Configurator$IntBoundPredicate;
+  exact(value: number): Configurator$IntBoundPredicate;
 }
 
-export class IntBoundBuilder implements IntBoundConfigurator {
+export class Builder$IntBoundPredicate implements Configurator$IntBoundPredicate {
   private value?: number | { min?: number; max?: number };
 
-  range(configure: (builder: IntBoundRangeConfigurator) => void): this {
-    const rangeBuilder = new IntBoundRangeBuilder();
+  range(
+    configure: (builder: __Configurator$IntBoundPredicate$Range) => void,
+  ): this {
+    const rangeBuilder = new __Builder$IntBoundPredicate$Range();
     configure(rangeBuilder);
     const value = rangeBuilder.build();
     this.value = value;
@@ -68,6 +70,6 @@ export class IntBoundBuilder implements IntBoundConfigurator {
   }
 
   build() {
-    return Schema$IntBount.parse(this.value);
+    return Schema$IntBoundPredicate.parse(this.value);
   }
 }
