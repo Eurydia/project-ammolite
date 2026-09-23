@@ -1,114 +1,79 @@
-import {
-  SuspiciousStewEffectData,
-  type SuspiciousStewEffectType,
-} from "#/models/data-components/common/suspicious-stew-effect.ts";
-import {
-  type DataPackModel,
-  freezeArray,
-  freezeDataClass,
-  toDataPackObject,
-} from "#/models/model.ts";
+import z from "zod";
 
-export type SuspiciousStewEffectsComponentType = Readonly<
-  | {
-    "!minecraft:suspicious_stew_effects": Readonly<
-      Record<PropertyKey, never>
-    >;
-  }
-  | {
-    "minecraft:suspicious_stew_effects": ReadonlyArray<
-      SuspiciousStewEffectType
-    >;
-  }
+const __Schema$SuspiciousStewEffectsComponent$Active = z.compile(
+  z
+    .object({
+      "minecraft:suspicious_stew_effects": z
+        .object({ id: z.string().normalize(), duration: z.int().optional() })
+        .readonly()
+        .array()
+        .readonly(),
+    })
+    .readonly(),
+);
+
+const __Schema$SuspiciousStewEffectsComponent$Disabled = z.compile(
+  z
+    .object({
+      "!minecraft:suspicious_stew_effects": z.object({}).readonly(),
+    })
+    .readonly(),
+);
+
+export const Schema$SuspiciousStewEffectsComponent = z.compile(
+  z.union([
+    __Schema$SuspiciousStewEffectsComponent$Active,
+    __Schema$SuspiciousStewEffectsComponent$Disabled,
+  ]),
+);
+
+export type Type$SuspiciousStewEffectsComponent = z.output<
+  typeof Schema$SuspiciousStewEffectsComponent
 >;
-export type SuspiciousStewEffectValue =
-  | SuspiciousStewEffectType
-  | SuspiciousStewEffectData;
 
-export class SuspiciousStewEffectsComponentData
-  implements DataPackModel<SuspiciousStewEffectsComponentType> {
-  public readonly effects: ReadonlyArray<SuspiciousStewEffectValue>;
-  public readonly negated: boolean;
-
-  public constructor(
-    effects: ReadonlyArray<SuspiciousStewEffectValue>,
-    negated = false,
-  ) {
-    this.effects = freezeArray(effects);
-    this.negated = negated;
-    freezeDataClass(this);
-  }
-
-  public asJsonObject(): SuspiciousStewEffectsComponentType {
-    return this.negated
-      ? Object.freeze({
-        "!minecraft:suspicious_stew_effects": Object.freeze({}),
-      })
-      : Object.freeze({
-        "minecraft:suspicious_stew_effects": Object.freeze(
-          this.effects.map((effect) => toDataPackObject(effect)),
-        ),
-      });
-  }
-}
-
-export interface SuspiciousStewEffectsComponentBuilderConfigurator {
+interface __Configurator$SuspiciousStewEffectsComponent$Active {
   effect(
-    value: SuspiciousStewEffectValue,
-  ): SuspiciousStewEffectsComponentBuilderConfigurator;
-  negated(): NegatedSuspiciousStewEffectsComponentBuilderConfigurator;
+    id: string,
+    duration?: number,
+  ): __Configurator$SuspiciousStewEffectsComponent$Active;
 }
 
-export interface NegatedSuspiciousStewEffectsComponentBuilderConfigurator {
-  build(): Readonly<SuspiciousStewEffectsComponentData>;
-}
+class __Builder$SuspiciousStewEffectsComponent$Active implements __Configurator$SuspiciousStewEffectsComponent$Active {
+  private values: Array<{ id: string; duration?: number }> = [];
 
-export class SuspiciousStewEffectsComponentBuilder
-  implements SuspiciousStewEffectsComponentBuilderConfigurator {
-  private readonly effectValues: Array<SuspiciousStewEffectValue> = [];
-
-  public effect(value: SuspiciousStewEffectValue): this {
-    this.effectValues.push(value);
+  effect(id: string, duration?: number): this {
+    this.values.push({
+      id,
+      duration,
+    });
     return this;
   }
 
-  public negated(): NegatedSuspiciousStewEffectsComponentBuilderConfigurator {
-    return new NegatedSuspiciousStewEffectsComponentBuilder();
-  }
-
-  public build(): Readonly<SuspiciousStewEffectsComponentData> {
-    return freezeDataClass(
-      new SuspiciousStewEffectsComponentData(this.effectValues),
-    );
+  build() {
+    return __Schema$SuspiciousStewEffectsComponent$Active.parse({
+      "minecraft:suspicious_stew_effects": this.values,
+    });
   }
 }
 
-export class NegatedSuspiciousStewEffectsComponentBuilder
-  implements NegatedSuspiciousStewEffectsComponentBuilderConfigurator {
-  public build(): Readonly<SuspiciousStewEffectsComponentData> {
-    return freezeDataClass(
-      new SuspiciousStewEffectsComponentData([], true),
-    );
+export class Builder$SuspiciousStewEffectsComponent {
+  private value?: Type$SuspiciousStewEffectsComponent;
+
+  effects(
+    configure: (
+      builder: __Configurator$SuspiciousStewEffectsComponent$Active,
+    ) => void,
+  ) {
+    const builder = new __Builder$SuspiciousStewEffectsComponent$Active();
+    configure(builder);
+    this.value = builder.build();
+  }
+
+  disabled() {
+    this.value = { "!minecraft:suspicious_stew_effects": {} };
+  }
+
+  build() {
+    return Schema$SuspiciousStewEffectsComponent.parse(this.value);
   }
 }
-
-export const SuspiciousStewEffectsComponent = {
-  builder(): SuspiciousStewEffectsComponentBuilder {
-    return new SuspiciousStewEffectsComponentBuilder();
-  },
-  negatedBuilder(): NegatedSuspiciousStewEffectsComponentBuilder {
-    return new NegatedSuspiciousStewEffectsComponentBuilder();
-  },
-  from(
-    ...effects: Array<SuspiciousStewEffectType>
-  ): SuspiciousStewEffectsComponentType {
-    return Object.freeze({
-      "minecraft:suspicious_stew_effects": Object.freeze([...effects]),
-    });
-  },
-  negated(): SuspiciousStewEffectsComponentType {
-    return Object.freeze({
-      "!minecraft:suspicious_stew_effects": Object.freeze({}),
-    });
-  },
-};

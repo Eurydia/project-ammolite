@@ -6,7 +6,7 @@ import {
 import z from "zod";
 import { BYTE_BOUND_SCHEMA } from "#/models/predicates/common/byte-bound.ts";
 import {
-  INT_BOUND_SCHEMA,
+  Schema$IntBount,
   IntBoundBuilder,
   IntBoundConfigurator,
   IntBoundType,
@@ -17,7 +17,7 @@ const __Schema$MobEffectPredicateRecord = z.record(
   z
     .object({
       amplifier: BYTE_BOUND_SCHEMA.optional(),
-      duration: INT_BOUND_SCHEMA.optional(),
+      duration: Schema$IntBount.optional(),
       ambient: z.boolean().optional(),
       visible: z.boolean().optional(),
     })
@@ -27,7 +27,7 @@ const __Schema$MobEffectPredicateRecord = z.record(
 const __Schema$PotionContentsPredicate$Effects$Count = z
   .object({
     test: __Schema$MobEffectPredicateRecord.optional(),
-    count: INT_BOUND_SCHEMA,
+    count: Schema$IntBount,
   })
   .readonly();
 
@@ -38,7 +38,7 @@ const __Schema$PotionContentsPredicate$Effects = z
       .array()
       .readonly()
       .optional(),
-    size: INT_BOUND_SCHEMA.optional(),
+    size: Schema$IntBount.optional(),
   })
   .readonly();
 

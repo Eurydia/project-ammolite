@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 
-export const INT_BOUND_SCHEMA = z.compile(
+export const Schema$IntBount = z.compile(
   z.union([
     z.int().min(-2_147_483_648).max(2_147_483_647),
     z
@@ -18,7 +18,7 @@ export const INT_BOUND_SCHEMA = z.compile(
   ]),
 );
 
-export type IntBoundType = z.output<typeof INT_BOUND_SCHEMA>;
+export type IntBoundType = z.output<typeof Schema$IntBount>;
 
 interface IntBoundRangeConfigurator {
   min(value: number): IntBoundRangeConfigurator;
@@ -68,6 +68,6 @@ export class IntBoundBuilder implements IntBoundConfigurator {
   }
 
   build() {
-    return INT_BOUND_SCHEMA.parse(this.value);
+    return Schema$IntBount.parse(this.value);
   }
 }

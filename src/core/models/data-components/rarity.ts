@@ -1,78 +1,60 @@
-import { ItemRarity } from "#/enum/item-rarity.ts";
-import { type DataPackModel, freezeDataClass } from "#/models/model.ts";
+import z from "zod";
 
-export type RarityComponentType = Readonly<
-  | { "!minecraft:rarity": Readonly<Record<PropertyKey, never>> }
-  | { "minecraft:rarity": ItemRarity }
->;
+enum ItemRarity {
+  COMMON = "common",
+  UNCOMMON = "uncommon",
+  RARE = "rare",
+  EPIC = "epic",
+}
 
-export class RarityComponentData implements DataPackModel<RarityComponentType> {
-  public readonly rarity?: ItemRarity;
-  public readonly negated: boolean;
+const __Schema$RarityComponent$Active = z.compile(
+  z.object({ "minecraft:rarity": z.enum(ItemRarity) }).readonly(),
+);
 
-  public constructor(rarity?: ItemRarity, negated = false) {
-    this.rarity = rarity;
-    this.negated = negated;
-    freezeDataClass(this);
+const __Schema$RarityComponent$Disabled = z.compile(
+  z.object({ "!minecraft:rarity": z.object({}) }).readonly(),
+);
+
+export const Schema$RarityComponent = z.compile(
+  z.union([__Schema$RarityComponent$Active, __Schema$RarityComponent$Disabled]),
+);
+
+export type Type$RarityComponent = z.output<typeof Schema$RarityComponent>;
+
+export interface Configurator$RarityComponent {
+  common(): Configurator$RarityComponent;
+  uncommon(): Configurator$RarityComponent;
+  rare(): Configurator$RarityComponent;
+  epic(): Configurator$RarityComponent;
+  disable(): Configurator$RarityComponent;
+}
+
+export class Builder$RarityComponent implements Configurator$RarityComponent {
+  private value?: Type$RarityComponent;
+
+  common(): this {
+    this.value = { "minecraft:rarity": ItemRarity.COMMON };
+    return this;
   }
-
-  public asJsonObject(): RarityComponentType {
-    return this.negated
-      ? Object.freeze({ "!minecraft:rarity": Object.freeze({}) })
-      : Object.freeze({ "minecraft:rarity": this.rarity! });
+  uncommon(): this {
+    this.value = { "minecraft:rarity": ItemRarity.UNCOMMON };
+    return this;
   }
-}
-
-export interface RarityComponentBuilderConfigurator {
-  rarity(value: ItemRarity): RarityComponentBuilderConfigurator;
-  negated(): NegatedRarityComponentBuilderConfigurator;
-}
-
-export interface NegatedRarityComponentBuilderConfigurator {
-  build(): Readonly<RarityComponentData>;
-}
-
-export class RarityComponentBuilder
-  implements RarityComponentBuilderConfigurator {
-  private rarityValue?: ItemRarity;
-
-  public rarity(value: ItemRarity): this {
-    this.rarityValue = value;
+  rare(): this {
+    this.value = { "minecraft:rarity": ItemRarity.RARE };
+    return this;
+  }
+  epic(): this {
+    this.value = { "minecraft:rarity": ItemRarity.EPIC };
     return this;
   }
 
-  public negated(): NegatedRarityComponentBuilderConfigurator {
-    return new NegatedRarityComponentBuilder();
+  disable(): this {
+    this.value = { "!minecraft:rarity": {} };
+    return this;
   }
 
-  public build(): Readonly<RarityComponentData> {
-    if (this.rarityValue === undefined) {
-      throw new Error("A rarity component needs a rarity.");
-    }
-    return freezeDataClass(
-      new RarityComponentData(this.rarityValue),
-    );
+  build() {
+    return Schema$RarityComponent.parse(this.value);
   }
 }
-
-export class NegatedRarityComponentBuilder
-  implements NegatedRarityComponentBuilderConfigurator {
-  public build(): Readonly<RarityComponentData> {
-    return freezeDataClass(new RarityComponentData(undefined, true));
-  }
-}
-
-export const RarityComponent = {
-  builder(): RarityComponentBuilder {
-    return new RarityComponentBuilder();
-  },
-  negatedBuilder(): NegatedRarityComponentBuilder {
-    return new NegatedRarityComponentBuilder();
-  },
-  from(rarity: ItemRarity): RarityComponentType {
-    return Object.freeze({ "minecraft:rarity": rarity });
-  },
-  negated(): RarityComponentType {
-    return Object.freeze({ "!minecraft:rarity": Object.freeze({}) });
-  },
-};

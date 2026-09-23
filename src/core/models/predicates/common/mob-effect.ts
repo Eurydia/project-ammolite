@@ -5,7 +5,7 @@ import {
   ByteBoundType,
 } from "#/models/predicates/common/byte-bound.ts";
 import {
-  INT_BOUND_SCHEMA,
+  Schema$IntBount,
   IntBoundBuilder,
   IntBoundConfigurator,
   IntBoundType,
@@ -17,7 +17,7 @@ export const MOB_EFFECT_PREDICATE_SCHEMA = z.compile(
     .object({
       effect: z.string().normalize(),
       amplifier: BYTE_BOUND_SCHEMA.optional(),
-      duration: INT_BOUND_SCHEMA.optional(),
+      duration: Schema$IntBount.optional(),
       ambient: z.boolean().optional(),
       visible: z.boolean().optional(),
     })
