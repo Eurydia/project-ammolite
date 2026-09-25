@@ -1,36 +1,23 @@
 import z from "zod";
 
-type TextComponentOutput = Readonly<{
-  type: "text";
-  text: string;
-  color?: string;
-  font?: string;
-  bold?: boolean;
-  italic?: boolean;
-  underlined?: boolean;
-  strikethrough?: boolean;
-  obfuscated?: boolean;
-  extra?: readonly TextComponentOutput[];
-}>;
+const __Schema$TextComponent = z.object({
+  type: z.literal("text"),
+  text: z.string(),
+  color: z.string().optional(),
+  font: z.string().optional(),
+  bold: z.boolean().optional(),
+  italic: z.boolean().optional(),
+  underlined: z.boolean().optional(),
+  strikethrough: z.boolean().optional(),
+  obfuscated: z.boolean().optional(),
+  get extra() {
+    return __Schema$TextComponent.array().readonly().optional();
+  },
+});
 
-const __Schema$TextComponent: z.ZodType<TextComponentOutput> = z.lazy(() =>
-  z
-    .object({
-      type: z.literal("text"),
-      text: z.string(),
-      color: z.string().optional(),
-      font: z.string().optional(),
-      bold: z.boolean().optional(),
-      italic: z.boolean().optional(),
-      underlined: z.boolean().optional(),
-      strikethrough: z.boolean().optional(),
-      obfuscated: z.boolean().optional(),
-      extra: z.lazy(() => __Schema$TextComponent.array().readonly()).optional(),
-    })
-    .readonly(),
+export const Schema$TextComponent = z.compile(
+  __Schema$TextComponent.readonly(),
 );
-
-export const Schema$TextComponent = z.compile(__Schema$TextComponent);
 export type Type$TextComponent = z.output<typeof Schema$TextComponent>;
 
 export interface Configurator$TextComponent {
@@ -93,7 +80,7 @@ export class Builder$TextComponent implements Configurator$TextComponent {
   extra(...configureFns: ((builder: Configurator$TextComponent) => void)[]) {
     this.extraValues ??= [];
     this.extraValues.push(
-      configureFns.map((config) => {
+      ...configureFns.map((config) => {
         const builder = new Builder$TextComponent();
         config(builder);
         return builder.build();
@@ -102,7 +89,7 @@ export class Builder$TextComponent implements Configurator$TextComponent {
     return this;
   }
   build() {
-    return __Schema$TextComponent.parse({
+    return Schema$TextComponent.parse({
       type: "text",
       text: this.textValue,
       color: this.colorValue,

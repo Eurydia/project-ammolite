@@ -27,8 +27,7 @@ export class Builder$CustomNameComponent implements Configurator$CustomNameCompo
   text(configure: (builder: Configurator$TextComponent) => void) {
     const builder = new Builder$TextComponent();
     configure(builder);
-    const value = builder.build();
-    this.value = { "minecraft:custom_name": value };
+    this.value = { "minecraft:custom_name": builder.build() };
   }
 
   disabled() {
