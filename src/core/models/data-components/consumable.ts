@@ -1,5 +1,5 @@
 import z from "zod";
-import type { ConsumeEffectType } from "#/models/data-components/common/consume-effect.ts";
+import type { Type$ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 import { Schema$ConsumeEffect } from "#/models/data-components/common/consume-effect.ts";
 import {
   Schema$SoundEventComponent,
@@ -7,15 +7,21 @@ import {
 } from "#/models/data-components/common/sound-event.ts";
 
 const Schema$ConsumableActive = z.compile(
-  z.object({
-    "minecraft:consumable": z.object({
-      consume_seconds: z.float32().min(0).optional(),
-      animation: z.string().optional(),
-      sound: Schema$SoundEventComponent.optional(),
-      has_consume_particles: z.boolean().optional(),
-      on_consume_effects: Schema$ConsumeEffect.array().readonly().optional(),
-    }).readonly(),
-  }).readonly(),
+  z
+    .object({
+      "minecraft:consumable": z
+        .object({
+          consume_seconds: z.float32().min(0).optional(),
+          animation: z.string().optional(),
+          sound: Schema$SoundEventComponent.optional(),
+          has_consume_particles: z.boolean().optional(),
+          on_consume_effects: Schema$ConsumeEffect.array()
+            .readonly()
+            .optional(),
+        })
+        .readonly(),
+    })
+    .readonly(),
 );
 const Schema$ConsumableDisabled = z.compile(
   z.object({ "!minecraft:consumable": z.object({}).readonly() }).readonly(),
@@ -32,14 +38,13 @@ export interface Configurator$ConsumableComponent {
   consumeSeconds(value: number): Configurator$ConsumableComponent;
   animation(value: string): Configurator$ConsumableComponent;
   sound(value: Type$SoundEventComponent): Configurator$ConsumableComponent;
-  consumeEffect(value: ConsumeEffectType): Configurator$ConsumableComponent;
+  consumeEffect(value: Type$ConsumeEffect): Configurator$ConsumableComponent;
   consumeParticles(value?: boolean): Configurator$ConsumableComponent;
 }
 
-export class Builder$ConsumableComponent
-  implements Configurator$ConsumableComponent {
+export class Builder$ConsumableComponent implements Configurator$ConsumableComponent {
   private readonly value: Record<string, unknown> = {};
-  private readonly effects: ConsumeEffectType[] = [];
+  private readonly effects: Type$ConsumeEffect[] = [];
   private isDisabled = false;
   consumeSeconds(value: number) {
     this.value.consume_seconds = value;
@@ -53,7 +58,7 @@ export class Builder$ConsumableComponent
     this.value.sound = value;
     return this;
   }
-  consumeEffect(value: ConsumeEffectType) {
+  consumeEffect(value: Type$ConsumeEffect) {
     this.effects.push(value);
     return this;
   }
@@ -79,16 +84,19 @@ export class Builder$ConsumableComponent
 
 export const ConsumableComponent = {
   builder: () => new Builder$ConsumableComponent(),
-  from(
-    { consumeSeconds, animation, sound, hasConsumeParticles, onConsumeEffects }:
-      {
-        consumeSeconds?: number;
-        animation?: string;
-        sound?: Type$SoundEventComponent;
-        hasConsumeParticles?: boolean;
-        onConsumeEffects?: ConsumeEffectType[];
-      },
-  ) {
+  from({
+    consumeSeconds,
+    animation,
+    sound,
+    hasConsumeParticles,
+    onConsumeEffects,
+  }: {
+    consumeSeconds?: number;
+    animation?: string;
+    sound?: Type$SoundEventComponent;
+    hasConsumeParticles?: boolean;
+    onConsumeEffects?: Type$ConsumeEffect[];
+  }) {
     return Schema$ConsumableComponent.parse({
       "minecraft:consumable": {
         consume_seconds: consumeSeconds,

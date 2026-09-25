@@ -1,7 +1,8 @@
 import z from "zod";
 import {
+  Builder$TextComponent,
+  Configurator$TextComponent,
   Schema$TextComponent,
-  type TextComponentType,
 } from "#/models/data-components/common/text.ts";
 
 export const Schema$CustomNameComponent = z.compile(
@@ -11,20 +12,22 @@ export const Schema$CustomNameComponent = z.compile(
   ]),
 );
 
-export type CustomNameComponentType = z.output<
+export type Type$CustomNameComponent = z.output<
   typeof Schema$CustomNameComponent
 >;
-export type Type$CustomNameComponent = CustomNameComponentType;
+
 export interface Configurator$CustomNameComponent {
-  text(value: TextComponentType): void;
+  text(configure: (builder: Configurator$TextComponent) => void): void;
   disabled(): void;
 }
 
-export class Builder$CustomNameComponent
-  implements Configurator$CustomNameComponent {
-  private value?: CustomNameComponentType;
+export class Builder$CustomNameComponent implements Configurator$CustomNameComponent {
+  private value?: Type$CustomNameComponent;
 
-  text(value: TextComponentType) {
+  text(configure: (builder: Configurator$TextComponent) => void) {
+    const builder = new Builder$TextComponent();
+    configure(builder);
+    const value = builder.build();
     this.value = { "minecraft:custom_name": value };
   }
 
@@ -36,13 +39,3 @@ export class Builder$CustomNameComponent
     return Schema$CustomNameComponent.parse(this.value);
   }
 }
-
-export const CustomNameComponent = {
-  builder: () => new Builder$CustomNameComponent(),
-  from(text: TextComponentType) {
-    return Schema$CustomNameComponent.parse({ "minecraft:custom_name": text });
-  },
-  negated() {
-    return Schema$CustomNameComponent.parse({ "!minecraft:custom_name": {} });
-  },
-};

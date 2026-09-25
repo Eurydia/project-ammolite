@@ -1,14 +1,19 @@
 import z from "zod";
 
 const Schema$DamageResistantActive = z.compile(
-  z.object({
-    "minecraft:damage_resistant": z.object({
-      types: z.union([z.string(), z.string().array().readonly()]),
-    }).readonly(),
-  }).readonly(),
+  z
+    .object({
+      "minecraft:damage_resistant": z
+        .object({
+          types: z.union([z.string(), z.string().array().readonly()]),
+        })
+        .readonly(),
+    })
+    .readonly(),
 );
 const Schema$DamageResistantDisabled = z.compile(
-  z.object({ "!minecraft:damage_resistant": z.object({}).readonly() })
+  z
+    .object({ "!minecraft:damage_resistant": z.object({}).readonly() })
     .readonly(),
 );
 export const Schema$DamageResistantComponent = z.compile(
@@ -23,8 +28,7 @@ export interface Configurator$DamageResistantComponent {
   type(value: string): Configurator$DamageResistantComponent;
 }
 
-class Builder$DamageResistantActive
-  implements Configurator$DamageResistantComponent {
+class Builder$DamageResistantActive implements Configurator$DamageResistantComponent {
   private readonly values: string[] = [];
 
   type(value: string) {
@@ -59,17 +63,3 @@ export class Builder$DamageResistantComponent {
     return Schema$DamageResistantComponent.parse(this.value);
   }
 }
-
-export const DamageResistantComponent = {
-  builder: () => new Builder$DamageResistantComponent(),
-  from(...types: string[]) {
-    return Schema$DamageResistantComponent.parse({
-      "minecraft:damage_resistant": { types },
-    });
-  },
-  negated() {
-    return Schema$DamageResistantComponent.parse({
-      "!minecraft:damage_resistant": {},
-    });
-  },
-};

@@ -1,17 +1,22 @@
 import z from "zod";
 import {
-  type ConsumeEffectType,
+  type Type$ConsumeEffect,
   Schema$ConsumeEffect,
 } from "#/models/data-components/common/consume-effect.ts";
 
 export const Schema$DeathProtectionComponent = z.compile(
   z.union([
-    z.object({
-      "minecraft:death_protection": z.object({
-        death_effects: Schema$ConsumeEffect.array().readonly(),
-      }).readonly(),
-    }).readonly(),
-    z.object({ "!minecraft:death_protection": z.object({}).readonly() })
+    z
+      .object({
+        "minecraft:death_protection": z
+          .object({
+            death_effects: Schema$ConsumeEffect.array().readonly(),
+          })
+          .readonly(),
+      })
+      .readonly(),
+    z
+      .object({ "!minecraft:death_protection": z.object({}).readonly() })
       .readonly(),
   ]),
 );
@@ -21,12 +26,12 @@ export type DeathProtectionComponentType = z.output<
 export type Type$DeathProtectionComponent = DeathProtectionComponentType;
 
 export interface Configurator$DeathProtectionComponent {
-  effect(value: ConsumeEffectType): Configurator$DeathProtectionComponent;
+  effect(value: Type$ConsumeEffect): Configurator$DeathProtectionComponent;
 }
 
 class Builder$DeathEffects implements Configurator$DeathProtectionComponent {
-  private readonly values: ConsumeEffectType[] = [];
-  effect(value: ConsumeEffectType) {
+  private readonly values: Type$ConsumeEffect[] = [];
+  effect(value: Type$ConsumeEffect) {
     this.values.push(value);
     return this;
   }
@@ -54,7 +59,7 @@ export class Builder$DeathProtectionComponent {
 
 export const DeathProtectionComponent = {
   builder: () => new Builder$DeathProtectionComponent(),
-  from(...deathEffects: ConsumeEffectType[]) {
+  from(...deathEffects: Type$ConsumeEffect[]) {
     return Schema$DeathProtectionComponent.parse({
       "minecraft:death_protection": { death_effects: deathEffects },
     });

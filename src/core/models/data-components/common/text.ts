@@ -1,6 +1,6 @@
 import z from "zod";
 
-export type TextComponentType = Readonly<{
+type TextComponentOutput = Readonly<{
   type: "text";
   text: string;
   color?: string;
@@ -10,14 +10,12 @@ export type TextComponentType = Readonly<{
   underlined?: boolean;
   strikethrough?: boolean;
   obfuscated?: boolean;
-  extra?: ReadonlyArray<TextComponentType>;
+  extra?: readonly TextComponentOutput[];
 }>;
-export type TextComponentValue = TextComponentType;
-export type Type$TextComponent = TextComponentType;
 
-export const Schema$TextComponent: z.ZodType<TextComponentType> = z.compile(
-  z.lazy((): z.ZodType<TextComponentType> =>
-    z.object({
+const __Schema$TextComponent: z.ZodType<TextComponentOutput> = z.lazy(() =>
+  z
+    .object({
       type: z.literal("text"),
       text: z.string(),
       color: z.string().optional(),
@@ -27,14 +25,16 @@ export const Schema$TextComponent: z.ZodType<TextComponentType> = z.compile(
       underlined: z.boolean().optional(),
       strikethrough: z.boolean().optional(),
       obfuscated: z.boolean().optional(),
-      extra: z.lazy((): z.ZodType<ReadonlyArray<TextComponentType>> =>
-        Schema$TextComponent.array().readonly()
-      ).optional(),
-    }).readonly()
-  ) as z.ZodType<TextComponentType>,
+      extra: z.lazy(() => __Schema$TextComponent.array().readonly()).optional(),
+    })
+    .readonly(),
 );
 
+export const Schema$TextComponent = z.compile(__Schema$TextComponent);
+export type Type$TextComponent = z.output<typeof Schema$TextComponent>;
+
 export interface Configurator$TextComponent {
+  text(value: string): Configurator$TextComponent;
   color(value: string): Configurator$TextComponent;
   font(value: string): Configurator$TextComponent;
   bold(value?: boolean): Configurator$TextComponent;
@@ -42,59 +42,77 @@ export interface Configurator$TextComponent {
   underlined(value?: boolean): Configurator$TextComponent;
   strikethrough(value?: boolean): Configurator$TextComponent;
   obfuscated(value?: boolean): Configurator$TextComponent;
-  extra(...values: TextComponentType[]): Configurator$TextComponent;
+  extra(
+    ...values: ((builder: Configurator$TextComponent) => void)[]
+  ): Configurator$TextComponent;
 }
 
 export class Builder$TextComponent implements Configurator$TextComponent {
-  private readonly value: { text: string } & Record<string, unknown>;
-  private readonly extraValues: TextComponentType[] = [];
-  constructor(text: string) {
-    this.value = { text };
+  private textValue?: string;
+  private colorValue?: string;
+  private fontValue?: string;
+  private boldValue?: boolean;
+  private italicValue?: boolean;
+  private underlinedValue?: boolean;
+  private strikethroughValue?: boolean;
+  private obfuscatedValue?: boolean;
+  private extraValues?: Type$TextComponent[];
+
+  text(value: string) {
+    this.textValue = value;
+    return this;
   }
   color(value: string) {
-    this.value.color = value;
+    this.colorValue = value;
     return this;
   }
   font(value: string) {
-    this.value.font = value;
+    this.fontValue = value;
     return this;
   }
   bold(value = true) {
-    this.value.bold = value;
+    this.boldValue = value;
     return this;
   }
   italic(value = true) {
-    this.value.italic = value;
+    this.italicValue = value;
     return this;
   }
   underlined(value = true) {
-    this.value.underlined = value;
+    this.underlinedValue = value;
     return this;
   }
   strikethrough(value = true) {
-    this.value.strikethrough = value;
+    this.strikethroughValue = value;
     return this;
   }
   obfuscated(value = true) {
-    this.value.obfuscated = value;
+    this.obfuscatedValue = value;
     return this;
   }
-  extra(...values: TextComponentType[]) {
-    this.extraValues.push(...values);
+  extra(...configureFns: ((builder: Configurator$TextComponent) => void)[]) {
+    this.extraValues ??= [];
+    this.extraValues.push(
+      configureFns.map((config) => {
+        const builder = new Builder$TextComponent();
+        config(builder);
+        return builder.build();
+      }),
+    );
     return this;
   }
   build() {
-    return Schema$TextComponent.parse({
+    return __Schema$TextComponent.parse({
       type: "text",
-      ...this.value,
-      extra: this.extraValues.length === 0 ? undefined : this.extraValues,
+      text: this.textValue,
+      color: this.colorValue,
+      font: this.fontValue,
+      bold: this.boldValue,
+      italic: this.italicValue,
+      underlined: this.underlinedValue,
+      strikethrough: this.strikethroughValue,
+      obfuscated: this.obfuscatedValue,
+      extra: this.extraValues,
     });
   }
 }
-
-export const TextComponent = {
-  builder: (text: string) => new Builder$TextComponent(text),
-  from(value: Omit<TextComponentType, "type">) {
-    return Schema$TextComponent.parse({ type: "text", ...value });
-  },
-};

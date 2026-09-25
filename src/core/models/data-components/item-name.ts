@@ -1,7 +1,7 @@
 import z from "zod";
 import {
   Schema$TextComponent,
-  type TextComponentType,
+  type Type$TextComponent,
 } from "#/models/data-components/common/text.ts";
 
 export const Schema$ItemNameComponent = z.compile(
@@ -14,15 +14,14 @@ export const Schema$ItemNameComponent = z.compile(
 export type ItemNameComponentType = z.output<typeof Schema$ItemNameComponent>;
 export type Type$ItemNameComponent = ItemNameComponentType;
 export interface Configurator$ItemNameComponent {
-  text(value: TextComponentType): void;
+  text(value: Type$TextComponent): void;
   disabled(): void;
 }
 
-export class Builder$ItemNameComponent
-  implements Configurator$ItemNameComponent {
+export class Builder$ItemNameComponent implements Configurator$ItemNameComponent {
   private value?: ItemNameComponentType;
 
-  text(value: TextComponentType) {
+  text(value: Type$TextComponent) {
     this.value = { "minecraft:item_name": value };
   }
 
@@ -37,7 +36,7 @@ export class Builder$ItemNameComponent
 
 export const ItemNameComponent = {
   builder: () => new Builder$ItemNameComponent(),
-  from(text: TextComponentType) {
+  from(text: Type$TextComponent) {
     return Schema$ItemNameComponent.parse({ "minecraft:item_name": text });
   },
   negated() {

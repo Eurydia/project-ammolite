@@ -1,26 +1,26 @@
 import z from "zod";
 import {
   Schema$TextComponent,
-  type TextComponentType,
+  type Type$TextComponent,
 } from "#/models/data-components/common/text.ts";
 
 export const Schema$LoreComponent = z.compile(
   z.union([
-    z.object({ "minecraft:lore": Schema$TextComponent.array().readonly() })
+    z
+      .object({ "minecraft:lore": Schema$TextComponent.array().readonly() })
       .readonly(),
     z.object({ "!minecraft:lore": z.object({}).readonly() }).readonly(),
   ]),
 );
-export type LoreComponentType = z.output<typeof Schema$LoreComponent>;
-export type Type$LoreComponent = LoreComponentType;
+export type Type$LoreComponent = z.output<typeof Schema$LoreComponent>;
 
 export interface Configurator$LoreComponent {
-  line(value: TextComponentType): Configurator$LoreComponent;
+  line(value: Type$TextComponent): Configurator$LoreComponent;
 }
 
-class Builder$LoreLines implements Configurator$LoreComponent {
-  private readonly lines: TextComponentType[] = [];
-  line(value: TextComponentType) {
+class __Builder$LoreComponent$Lines implements Configurator$LoreComponent {
+  private readonly lines: Type$TextComponent[] = [];
+  line(value: Type$TextComponent) {
     this.lines.push(value);
     return this;
   }
@@ -33,9 +33,9 @@ class Builder$LoreLines implements Configurator$LoreComponent {
 }
 
 export class Builder$LoreComponent {
-  private value?: LoreComponentType;
+  private value?: Type$LoreComponent;
   lines(configure: (builder: Configurator$LoreComponent) => void) {
-    const builder = new Builder$LoreLines();
+    const builder = new __Builder$LoreComponent$Lines();
     configure(builder);
     this.value = builder.build();
   }
@@ -46,16 +46,3 @@ export class Builder$LoreComponent {
     return Schema$LoreComponent.parse(this.value);
   }
 }
-
-export const LoreComponent = {
-  builder: () => new Builder$LoreComponent(),
-  from(...lines: TextComponentType[]) {
-    if (lines.length > 256) {
-      throw new Error("Minecraft lore supports at most 256 lines.");
-    }
-    return Schema$LoreComponent.parse({ "minecraft:lore": lines });
-  },
-  negated() {
-    return Schema$LoreComponent.parse({ "!minecraft:lore": {} });
-  },
-};
