@@ -7,16 +7,11 @@ enum ItemRarity {
   EPIC = "epic",
 }
 
-const __Schema$RarityComponent$Active = z.compile(
-  z.object({ "minecraft:rarity": z.enum(ItemRarity) }).readonly(),
-);
-
-const __Schema$RarityComponent$Disabled = z.compile(
-  z.object({ "!minecraft:rarity": z.object({}) }).readonly(),
-);
-
 export const Schema$RarityComponent = z.compile(
-  z.union([__Schema$RarityComponent$Active, __Schema$RarityComponent$Disabled]),
+  z.union([
+    z.object({ "minecraft:rarity": z.enum(ItemRarity) }).readonly(),
+    z.object({ "!minecraft:rarity": z.object({}) }).readonly(),
+  ]),
 );
 
 export type Type$RarityComponent = z.output<typeof Schema$RarityComponent>;

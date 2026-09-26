@@ -13,7 +13,8 @@ import type { Type$UseRemainderComponent } from "#/models/data-components/use-re
 
 type UnionToIntersection<T> = (
   T extends unknown ? (value: T) => void : never
-) extends (value: infer Intersection) => void ? Intersection
+) extends (value: infer Intersection) => void
+  ? Intersection
   : never;
 
 type IndividualDataComponentType =
@@ -53,14 +54,3 @@ export class Builder$DataComponent implements Configurator$DataComponent {
     return DataComponent.from(...this.componentValues);
   }
 }
-
-export const DataComponent = {
-  builder(): Builder$DataComponent {
-    return new Builder$DataComponent();
-  },
-  from(...components: Array<DataComponentInput>): DataComponentType {
-    return Object.freeze(
-      Object.assign({}, ...components),
-    );
-  },
-};

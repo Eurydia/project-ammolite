@@ -25,8 +25,7 @@ interface __Configurator$IntBoundPredicate$Range {
   max(value: number): __Configurator$IntBoundPredicate$Range;
 }
 
-class __Builder$IntBoundPredicate$Range
-  implements __Configurator$IntBoundPredicate$Range {
+class __Builder$IntBoundPredicate$Range implements __Configurator$IntBoundPredicate$Range {
   private minValue?: number;
   private maxValue?: number;
 
@@ -48,27 +47,22 @@ class __Builder$IntBoundPredicate$Range
 export interface Configurator$IntBoundPredicate {
   range(
     configure: (builder: __Configurator$IntBoundPredicate$Range) => void,
-  ): Configurator$IntBoundPredicate;
-  exact(value: number): Configurator$IntBoundPredicate;
+  ): void;
+  exact(value: number): void;
 }
 
-export class Builder$IntBoundPredicate
-  implements Configurator$IntBoundPredicate {
-  private value?: number | { min?: number; max?: number };
+export class Builder$IntBoundPredicate implements Configurator$IntBoundPredicate {
+  private value?: Type$IntBoundPredicate;
 
-  range(
-    configure: (builder: __Configurator$IntBoundPredicate$Range) => void,
-  ): this {
+  range(configure: (builder: __Configurator$IntBoundPredicate$Range) => void) {
     const rangeBuilder = new __Builder$IntBoundPredicate$Range();
     configure(rangeBuilder);
     const value = rangeBuilder.build();
     this.value = value;
-    return this;
   }
 
-  exact(value: number): this {
+  exact(value: number) {
     this.value = value;
-    return this;
   }
 
   build() {

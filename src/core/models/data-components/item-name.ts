@@ -1,7 +1,8 @@
 import z from "zod";
 import {
+  Builder$TextComponent,
+  Configurator$TextComponent,
   Schema$TextComponent,
-  type Type$TextComponent,
 } from "#/models/data-components/common/text.ts";
 
 export const Schema$ItemNameComponent = z.compile(
@@ -11,18 +12,20 @@ export const Schema$ItemNameComponent = z.compile(
   ]),
 );
 
-export type ItemNameComponentType = z.output<typeof Schema$ItemNameComponent>;
-export type Type$ItemNameComponent = ItemNameComponentType;
+export type Type$ItemNameComponent = z.output<typeof Schema$ItemNameComponent>;
+
 export interface Configurator$ItemNameComponent {
-  text(value: Type$TextComponent): void;
+  text(configure: (builder: Configurator$TextComponent) => void): void;
   disabled(): void;
 }
 
 export class Builder$ItemNameComponent implements Configurator$ItemNameComponent {
-  private value?: ItemNameComponentType;
+  private value?: Type$ItemNameComponent;
 
-  text(value: Type$TextComponent) {
-    this.value = { "minecraft:item_name": value };
+  text(configure: (builder: Configurator$TextComponent) => void) {
+    const builder = new Builder$TextComponent();
+    configure(builder);
+    this.value = { "minecraft:item_name": builder.build() };
   }
 
   disabled() {
@@ -33,13 +36,3 @@ export class Builder$ItemNameComponent implements Configurator$ItemNameComponent
     return Schema$ItemNameComponent.parse(this.value);
   }
 }
-
-export const ItemNameComponent = {
-  builder: () => new Builder$ItemNameComponent(),
-  from(text: Type$TextComponent) {
-    return Schema$ItemNameComponent.parse({ "minecraft:item_name": text });
-  },
-  negated() {
-    return Schema$ItemNameComponent.parse({ "!minecraft:item_name": {} });
-  },
-};

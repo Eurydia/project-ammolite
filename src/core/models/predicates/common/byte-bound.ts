@@ -19,54 +19,52 @@ export const Schema$ByteBoundPredicate = z.compile(
 export type Type$ByteBoundPredicate = z.output<
   typeof Schema$ByteBoundPredicate
 >;
-export type ByteBoundType = Type$ByteBoundPredicate;
 
-interface ByteBoundRangeConfigurator {
-  min(value: number): ByteBoundRangeConfigurator;
-  max(value: number): ByteBoundRangeConfigurator;
+interface __Configurator$ByteBoundPredicate$Range {
+  min(value: number): __Configurator$ByteBoundPredicate$Range;
+  max(value: number): __Configurator$ByteBoundPredicate$Range;
 }
 
-class ByteBoundRangeBuilder implements ByteBoundRangeConfigurator {
+class __Builder$ByteBoundPredicate$Range implements __Configurator$ByteBoundPredicate$Range {
   private minValue?: number;
   private maxValue?: number;
 
-  public min(value: number): this {
+  min(value: number): this {
     this.minValue = value;
     return this;
   }
 
-  public max(value: number): this {
+  max(value: number): this {
     this.maxValue = value;
     return this;
   }
 
-  public build() {
-    return Object.freeze({ min: this.minValue, max: this.maxValue });
+  build() {
+    return { min: this.minValue, max: this.maxValue };
   }
 }
 
 export interface Configurator$ByteBoundPredicate {
   range(
-    configure: (builder: ByteBoundRangeConfigurator) => void,
-  ): Configurator$ByteBoundPredicate;
-  exact(value: number): Configurator$ByteBoundPredicate;
+    configure: (builder: __Configurator$ByteBoundPredicate$Range) => void,
+  ): void;
+  exact(value: number): void;
 }
 
-export class Builder$ByteBoundPredicate
-  implements Configurator$ByteBoundPredicate {
-  private value?: ByteBoundType;
+export class Builder$ByteBoundPredicate implements Configurator$ByteBoundPredicate {
+  private value?: Type$ByteBoundPredicate;
 
-  public range(configure: (builder: ByteBoundRangeConfigurator) => void): this {
-    const rangeBuilder = new ByteBoundRangeBuilder();
+  public range(
+    configure: (builder: __Configurator$ByteBoundPredicate$Range) => void,
+  ) {
+    const rangeBuilder = new __Builder$ByteBoundPredicate$Range();
     configure(rangeBuilder);
     const value = rangeBuilder.build();
     this.value = value;
-    return this;
   }
 
-  public exact(value: number): this {
+  public exact(value: number) {
     this.value = value;
-    return this;
   }
 
   public build() {

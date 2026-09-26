@@ -1,21 +1,15 @@
 import z from "zod";
 
-const __Schema$EnchantmentGlintOverrideComponent$Active = z.compile(
-  z.object({ "minecraft:enchantment_glint_override": z.boolean() }).readonly(),
-);
-
-const __Schema$EnchantmentGlintOverrideComponent$Disabled = z.compile(
-  z
-    .object({
-      "!minecraft:enchantment_glint_override": z.object({}).readonly(),
-    })
-    .readonly(),
-);
-
 export const Schema$EnchantmentGlintOverrideComponent = z.compile(
   z.union([
-    __Schema$EnchantmentGlintOverrideComponent$Active,
-    __Schema$EnchantmentGlintOverrideComponent$Disabled,
+    z
+      .object({ "minecraft:enchantment_glint_override": z.boolean() })
+      .readonly(),
+    z
+      .object({
+        "!minecraft:enchantment_glint_override": z.object({}).readonly(),
+      })
+      .readonly(),
   ]),
 );
 
@@ -28,11 +22,10 @@ export interface Configurator$EnchantmentGlintOverrideComponent {
   disabled(): void;
 }
 
-export class Builder$EnchantmentGlintOverrideComponent
-  implements Configurator$EnchantmentGlintOverrideComponent {
+export class Builder$EnchantmentGlintOverrideComponent implements Configurator$EnchantmentGlintOverrideComponent {
   private value?: Type$EnchantmentGlintOverrideComponent;
 
-  glint(showGlint: boolean) {
+  glint(showGlint: boolean = true) {
     this.value = { "minecraft:enchantment_glint_override": showGlint };
   }
 

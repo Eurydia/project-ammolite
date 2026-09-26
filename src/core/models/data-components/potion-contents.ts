@@ -1,101 +1,107 @@
 import z from "zod";
 import {
-  type MobEffectComponentType,
+  Builder$MobEffectComponent,
+  Configurator$MobEffectComponent,
   Schema$MobEffectComponent,
+  Type$MobEffectComponent,
 } from "#/models/data-components/common/mob-effect.ts";
 
 export const Schema$PotionContentsComponent = z.compile(
   z.union([
-    z.object({
-      "minecraft:potion_contents": z.object({
-        potion: z.string().optional(),
-        custom_name: z.string().optional(),
-        custom_color: z.int().optional(),
-        custom_effects: Schema$MobEffectComponent.array().readonly().optional(),
-      }).readonly(),
-    }).readonly(),
-    z.object({ "!minecraft:potion_contents": z.object({}).readonly() })
+    z
+      .object({
+        "minecraft:potion_contents": z
+          .object({
+            potion: z.string().optional(),
+            custom_name: z.string().optional(),
+            custom_color: z.int().optional(),
+            custom_effects: Schema$MobEffectComponent.array()
+              .readonly()
+              .optional(),
+          })
+          .readonly(),
+      })
+      .readonly(),
+    z
+      .object({ "!minecraft:potion_contents": z.object({}).readonly() })
       .readonly(),
   ]),
 );
-export type PotionContentsComponentType = z.output<
+
+export type Type$PotionContentsComponent = z.output<
   typeof Schema$PotionContentsComponent
 >;
-export type Type$PotionContentsComponent = PotionContentsComponentType;
-export interface PotionContentsComponentInput {
-  potion?: string;
-  customName?: string;
-  customColor?: string;
-  customEffects?: readonly MobEffectComponentType[];
+
+interface __Configurator$PotionContentsComponent$Active {
+  potion(value: string): __Configurator$PotionContentsComponent$Active;
+  customName(value: string): __Configurator$PotionContentsComponent$Active;
+  customColor(value: number): __Configurator$PotionContentsComponent$Active;
+  customEffects(
+    ...configureFns: Array<(builder: Configurator$MobEffectComponent) => void>
+  ): __Configurator$PotionContentsComponent$Active;
 }
 
-export interface Configurator$PotionContentsComponent {
-  potion(value: string): Configurator$PotionContentsComponent;
-  customName(value: string): Configurator$PotionContentsComponent;
-  customColor(value: string): Configurator$PotionContentsComponent;
-  customEffect(
-    value: MobEffectComponentType,
-  ): Configurator$PotionContentsComponent;
-}
-
-export class Builder$PotionContentsComponent
-  implements Configurator$PotionContentsComponent {
-  private readonly values: PotionContentsComponentInput = {};
-  private readonly effects: MobEffectComponentType[] = [];
-  private isDisabled = false;
+class __Builder$PotionContentsComponent$Active implements __Configurator$PotionContentsComponent$Active {
+  private potionValue?: string;
+  private customNameValue?: string;
+  private customColorValue?: number;
+  private customEffectValue?: Array<Type$MobEffectComponent>;
 
   potion(value: string) {
-    Object.assign(this.values, { potion: value });
+    this.potionValue = value;
     return this;
   }
   customName(value: string) {
-    Object.assign(this.values, { customName: value });
+    this.customNameValue = value;
     return this;
   }
-  customColor(value: string) {
-    Object.assign(this.values, { customColor: value });
+  customColor(value: number) {
+    this.customColorValue = value;
     return this;
   }
-  customEffect(value: MobEffectComponentType) {
-    this.effects.push(value);
+  customEffects(
+    ...configureFns: Array<(builder: Configurator$MobEffectComponent) => void>
+  ) {
+    this.customEffectValue = configureFns.map((configure) => {
+      const builder = new Builder$MobEffectComponent();
+      configure(builder);
+      return builder.build();
+    });
     return this;
   }
-  disabled() {
-    this.isDisabled = true;
-  }
-
   build() {
-    return this.isDisabled
-      ? Schema$PotionContentsComponent.parse({
-        "!minecraft:potion_contents": {},
-      })
-      : PotionContentsComponent.from({
-        ...this.values,
-        customEffects: this.effects,
-      });
+    return {
+      potion: this.potionValue,
+      custom_name: this.customNameValue,
+      custom_color: this.customColorValue,
+      custom_effects: this.customEffectValue,
+    };
   }
 }
 
-export const PotionContentsComponent = {
-  builder: () => new Builder$PotionContentsComponent(),
-  from(
-    { potion, customName, customColor, customEffects }:
-      PotionContentsComponentInput,
+export interface Configurator$PotionContentsComponent {
+  content(
+    configure: (builder: __Configurator$PotionContentsComponent$Active) => void,
+  ): void;
+  disabled(): void;
+}
+
+export class Builder$PotionContentsComponent implements Configurator$PotionContentsComponent {
+  private value?: Type$PotionContentsComponent;
+
+  content(
+    configure: (builder: __Configurator$PotionContentsComponent$Active) => void,
   ) {
-    return Schema$PotionContentsComponent.parse({
-      "minecraft:potion_contents": {
-        potion,
-        custom_name: customName,
-        custom_color: customColor === undefined
-          ? undefined
-          : Number.parseInt(customColor.slice(1), 16),
-        custom_effects: customEffects,
-      },
-    });
-  },
-  negated() {
-    return Schema$PotionContentsComponent.parse({
-      "!minecraft:potion_contents": {},
-    });
-  },
-};
+    const builder = new __Builder$PotionContentsComponent$Active();
+    configure(builder);
+    this.value = { "minecraft:potion_contents": builder.build() };
+  }
+
+  disabled() {
+    this.value = { "!minecraft:potion_contents": {} };
+  }
+
+  build() {
+    return Schema$PotionContentsComponent.parse(this.value);
+  }
+}

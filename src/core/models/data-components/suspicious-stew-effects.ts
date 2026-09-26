@@ -1,29 +1,21 @@
 import z from "zod";
 
-const __Schema$SuspiciousStewEffectsComponent$Active = z.compile(
-  z
-    .object({
-      "minecraft:suspicious_stew_effects": z
-        .object({ id: z.string().normalize(), duration: z.int().optional() })
-        .readonly()
-        .array()
-        .readonly(),
-    })
-    .readonly(),
-);
-
-const __Schema$SuspiciousStewEffectsComponent$Disabled = z.compile(
-  z
-    .object({
-      "!minecraft:suspicious_stew_effects": z.object({}).readonly(),
-    })
-    .readonly(),
-);
-
 export const Schema$SuspiciousStewEffectsComponent = z.compile(
   z.union([
-    __Schema$SuspiciousStewEffectsComponent$Active,
-    __Schema$SuspiciousStewEffectsComponent$Disabled,
+    z
+      .object({
+        "minecraft:suspicious_stew_effects": z
+          .object({ id: z.string().normalize(), duration: z.int().optional() })
+          .readonly()
+          .array()
+          .readonly(),
+      })
+      .readonly(),
+    z
+      .object({
+        "!minecraft:suspicious_stew_effects": z.object({}).readonly(),
+      })
+      .readonly(),
   ]),
 );
 
@@ -38,8 +30,7 @@ interface __Configurator$SuspiciousStewEffectsComponent$Active {
   ): __Configurator$SuspiciousStewEffectsComponent$Active;
 }
 
-class __Builder$SuspiciousStewEffectsComponent$Active
-  implements __Configurator$SuspiciousStewEffectsComponent$Active {
+class __Builder$SuspiciousStewEffectsComponent$Active implements __Configurator$SuspiciousStewEffectsComponent$Active {
   private values: Array<{ id: string; duration?: number }> = [];
 
   effect(id: string, duration?: number): this {
@@ -51,9 +42,7 @@ class __Builder$SuspiciousStewEffectsComponent$Active
   }
 
   build() {
-    return __Schema$SuspiciousStewEffectsComponent$Active.parse({
-      "minecraft:suspicious_stew_effects": this.values,
-    });
+    return this.values;
   }
 }
 
@@ -67,7 +56,9 @@ export class Builder$SuspiciousStewEffectsComponent {
   ) {
     const builder = new __Builder$SuspiciousStewEffectsComponent$Active();
     configure(builder);
-    this.value = builder.build();
+    this.value = {
+      "minecraft:suspicious_stew_effects": builder.build(),
+    };
   }
 
   disabled() {

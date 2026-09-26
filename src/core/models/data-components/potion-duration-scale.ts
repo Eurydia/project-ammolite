@@ -1,25 +1,17 @@
 import z from "zod";
 
-const __Schema$PotionDurationScaleComponent$Active = z.compile(
-  z
-    .object({
-      "minecraft:potion_duration_scale": z.float32(),
-    })
-    .readonly(),
-);
-
-const __Schema$PotionDurationScaleComponent$Disabled = z.compile(
-  z
-    .object({
-      "!minecraft:potion_duration_scale": z.object({}).readonly(),
-    })
-    .readonly(),
-);
-
 const Schema$PotionDurationScaleComponent = z.compile(
   z.union([
-    __Schema$PotionDurationScaleComponent$Active,
-    __Schema$PotionDurationScaleComponent$Disabled,
+    z
+      .object({
+        "minecraft:potion_duration_scale": z.float32(),
+      })
+      .readonly(),
+    z
+      .object({
+        "!minecraft:potion_duration_scale": z.object({}).readonly(),
+      })
+      .readonly(),
   ]),
 );
 
@@ -32,8 +24,7 @@ export interface Configurator$PotionDurationScaleComponent {
   disabled(): void;
 }
 
-export class Builder$PotionDurationScaleComponent
-  implements Configurator$PotionDurationScaleComponent {
+export class Builder$PotionDurationScaleComponent implements Configurator$PotionDurationScaleComponent {
   private value?: Type$PotionDurationScaleComponent;
 
   scale(scaleValue: number) {

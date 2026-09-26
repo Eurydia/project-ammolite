@@ -1,7 +1,8 @@
 import z from "zod";
 import {
-  type Type$ConsumeEffect,
-  Schema$ConsumeEffect,
+  Builder$ConsumeEffectComponent,
+  Configurator$ConsumeEffectComponent,
+  Schema$ConsumeEffectComponent,
 } from "#/models/data-components/common/consume-effect.ts";
 
 export const Schema$DeathProtectionComponent = z.compile(
@@ -10,7 +11,7 @@ export const Schema$DeathProtectionComponent = z.compile(
       .object({
         "minecraft:death_protection": z
           .object({
-            death_effects: Schema$ConsumeEffect.array().readonly(),
+            death_effects: Schema$ConsumeEffectComponent.array().readonly(),
           })
           .readonly(),
       })
@@ -26,7 +27,12 @@ export type Type$DeathProtectionComponent = z.output<
 >;
 
 export interface Configurator$DeathProtectionComponent {
-  effects(...configureFns: Array<() => void>): void;
+  effects(
+    ...configureFns: Array<
+      (builder: Configurator$ConsumeEffectComponent) => void
+    >
+  ): void;
+  disabled(): void;
 }
 
 export class Builder$DeathProtectionComponent implements Configurator$DeathProtectionComponent {
@@ -34,13 +40,17 @@ export class Builder$DeathProtectionComponent implements Configurator$DeathProte
 
   effects(
     ...configureFns: Array<
-      (builder: Configurator$Consu) => void
+      (builder: Configurator$ConsumeEffectComponent) => void
     >
   ) {
     this.value = {
-      "minecraft:death_protection": { death_effects: configureFns.map((configure) => {
-        const 
-      }) },
+      "minecraft:death_protection": {
+        death_effects: configureFns.map((configure) => {
+          const builder = new Builder$ConsumeEffectComponent();
+          configure(builder);
+          return builder.build();
+        }),
+      },
     };
   }
 
