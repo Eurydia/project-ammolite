@@ -3,7 +3,7 @@ import {
   ItemStack,
   type ItemStackInput,
   type ItemStackType,
-  Schema$ItemStack,
+  Schema$ItemStackComponent,
 } from "#/models/data-components/common/item-stack.ts";
 import {
   type Type$PotionContentsPredicate,
@@ -30,7 +30,7 @@ export const Schema$BrewingRecipe = z.compile(
       type: z.literal("minecraft:brewing"),
       input: Schema$BrewingIngredient,
       reagent: Schema$BrewingIngredient,
-      output: Schema$ItemStack,
+      output: Schema$ItemStackComponent,
     })
     .readonly(),
 );

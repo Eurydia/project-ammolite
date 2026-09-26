@@ -41,60 +41,52 @@ interface __Configurator$PotionContentsComponent$Active {
   ): __Configurator$PotionContentsComponent$Active;
 }
 
-class __Builder$PotionContentsComponent$Active implements __Configurator$PotionContentsComponent$Active {
-  private potionValue?: string;
-  private customNameValue?: string;
-  private customColorValue?: number;
-  private customEffectValue?: Array<Type$MobEffectComponent>;
+export interface Configurator$PotionContentsComponent extends __Configurator$PotionContentsComponent$Active {
+  disabled(): void;
+}
+
+export class Builder$PotionContentsComponent implements Configurator$PotionContentsComponent {
+  private value?:
+    | { "!minecraft:potion_contents": Record<PropertyKey, never> }
+    | {
+        "minecraft:potion_contents": {
+          potion?: string;
+          custom_name?: string;
+          custom_color?: number;
+          custom_effects?: Array<Type$MobEffectComponent>;
+        };
+      };
+
+  private get activeValue() {
+    if (!this.value || !("minecraft:potion_contents" in this.value)) {
+      this.value = {
+        "minecraft:potion_contents": {},
+      };
+    }
+    return this.value["minecraft:potion_contents"];
+  }
 
   potion(value: string) {
-    this.potionValue = value;
+    this.activeValue.potion = value;
     return this;
   }
   customName(value: string) {
-    this.customNameValue = value;
+    this.activeValue.custom_name = value;
     return this;
   }
   customColor(value: number) {
-    this.customColorValue = value;
+    this.activeValue.custom_color = value;
     return this;
   }
   customEffects(
     ...configureFns: Array<(builder: Configurator$MobEffectComponent) => void>
   ) {
-    this.customEffectValue = configureFns.map((configure) => {
+    this.activeValue.custom_effects = configureFns.map((configure) => {
       const builder = new Builder$MobEffectComponent();
       configure(builder);
       return builder.build();
     });
     return this;
-  }
-  build() {
-    return {
-      potion: this.potionValue,
-      custom_name: this.customNameValue,
-      custom_color: this.customColorValue,
-      custom_effects: this.customEffectValue,
-    };
-  }
-}
-
-export interface Configurator$PotionContentsComponent {
-  content(
-    configure: (builder: __Configurator$PotionContentsComponent$Active) => void,
-  ): void;
-  disabled(): void;
-}
-
-export class Builder$PotionContentsComponent implements Configurator$PotionContentsComponent {
-  private value?: Type$PotionContentsComponent;
-
-  content(
-    configure: (builder: __Configurator$PotionContentsComponent$Active) => void,
-  ) {
-    const builder = new __Builder$PotionContentsComponent$Active();
-    configure(builder);
-    this.value = { "minecraft:potion_contents": builder.build() };
   }
 
   disabled() {
