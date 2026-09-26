@@ -170,7 +170,7 @@ export class Builder$PotionContentsPredicate implements Configurator$PotionConte
   private potionsValue?: string | Array<string>;
   private effectsValue?: __PotionContentPredicateType$Effects;
 
-  potions(...values: Array<string>): this {
+  potions(...values: Array<string>) {
     this.potionsValue = values.length === 1 ? values.at(0) : values;
     return this;
   }
@@ -179,7 +179,7 @@ export class Builder$PotionContentsPredicate implements Configurator$PotionConte
     configure: (
       builder: __Configurator$PotionContentsPredicate$Effects,
     ) => void,
-  ): this {
+  ) {
     const builder = new __Builder$PotionContentsPredicate$Effects();
     configure(builder);
     this.effectsValue = builder.build();
