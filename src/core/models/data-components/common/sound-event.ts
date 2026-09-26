@@ -12,15 +12,13 @@ export const Schema$SoundEventComponent = z.compile(
 export type Type$SoundEventComponent = z.output<
   typeof Schema$SoundEventComponent
 >;
-export type SoundEventData = Type$SoundEventComponent;
 
 export interface Configurator$SoundEventComponent {
   range(value: number): Configurator$SoundEventComponent;
   soundId(value: string): Configurator$SoundEventComponent;
 }
 
-export class Builder$SoundEventComponent
-  implements Configurator$SoundEventComponent {
+export class Builder$SoundEventComponent implements Configurator$SoundEventComponent {
   private soundIdValue?: string;
   private rangeValue?: number;
 
@@ -41,14 +39,3 @@ export class Builder$SoundEventComponent
     });
   }
 }
-
-export const SoundEvent = {
-  builder(): Builder$SoundEventComponent {
-    return new Builder$SoundEventComponent();
-  },
-  from(soundId: string, range?: number): Type$SoundEventComponent {
-    return range === undefined
-      ? Schema$SoundEventComponent.parse(soundId)
-      : Schema$SoundEventComponent.parse({ sound_id: soundId, range });
-  },
-};

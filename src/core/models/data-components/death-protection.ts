@@ -20,53 +20,35 @@ export const Schema$DeathProtectionComponent = z.compile(
       .readonly(),
   ]),
 );
-export type DeathProtectionComponentType = z.output<
+
+export type Type$DeathProtectionComponent = z.output<
   typeof Schema$DeathProtectionComponent
 >;
-export type Type$DeathProtectionComponent = DeathProtectionComponentType;
 
 export interface Configurator$DeathProtectionComponent {
-  effect(value: Type$ConsumeEffect): Configurator$DeathProtectionComponent;
+  effects(...configureFns: Array<() => void>): void;
 }
 
-class Builder$DeathEffects implements Configurator$DeathProtectionComponent {
-  private readonly values: Type$ConsumeEffect[] = [];
-  effect(value: Type$ConsumeEffect) {
-    this.values.push(value);
-    return this;
-  }
-  build() {
-    return this.values;
-  }
-}
+export class Builder$DeathProtectionComponent implements Configurator$DeathProtectionComponent {
+  private value?: Type$DeathProtectionComponent;
 
-export class Builder$DeathProtectionComponent {
-  private value?: DeathProtectionComponentType;
-  effects(configure: (builder: Configurator$DeathProtectionComponent) => void) {
-    const builder = new Builder$DeathEffects();
-    configure(builder);
-    this.value = Schema$DeathProtectionComponent.parse({
-      "minecraft:death_protection": { death_effects: builder.build() },
-    });
+  effects(
+    ...configureFns: Array<
+      (builder: Configurator$Consu) => void
+    >
+  ) {
+    this.value = {
+      "minecraft:death_protection": { death_effects: configureFns.map((configure) => {
+        const 
+      }) },
+    };
   }
+
   disabled() {
     this.value = { "!minecraft:death_protection": {} };
   }
+
   build() {
     return Schema$DeathProtectionComponent.parse(this.value);
   }
 }
-
-export const DeathProtectionComponent = {
-  builder: () => new Builder$DeathProtectionComponent(),
-  from(...deathEffects: Type$ConsumeEffect[]) {
-    return Schema$DeathProtectionComponent.parse({
-      "minecraft:death_protection": { death_effects: deathEffects },
-    });
-  },
-  negated() {
-    return Schema$DeathProtectionComponent.parse({
-      "!minecraft:death_protection": {},
-    });
-  },
-};

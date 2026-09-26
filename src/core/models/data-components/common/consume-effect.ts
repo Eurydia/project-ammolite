@@ -1,5 +1,4 @@
 import z from "zod";
-import type { MobEffectComponentType } from "#/models/data-components/common/mob-effect.ts";
 import { Schema$MobEffectComponent } from "#/models/data-components/common/mob-effect.ts";
 import {
   Schema$SoundEventComponent,
@@ -41,10 +40,12 @@ export type Type$ConsumeEffect = z.output<typeof Schema$ConsumeEffect>;
 
 export class Builder$ConsumeEffect {
   private value?: Type$ConsumeEffect;
+
   removeEffects(...effects: string[]) {
     this.value = { type: "minecraft:remove_effects", effects };
     return this;
   }
+
   applyEffects(effects: MobEffectComponentType[], probability?: number) {
     this.value = { type: "minecraft:apply_effects", effects, probability };
     return this;

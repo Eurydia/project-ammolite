@@ -5,20 +5,16 @@ import type {
 } from "#/models/data-components/data-component.ts";
 
 export const Schema$ItemStack = z.compile(
-  z.object({
-    id: z.string(),
-    count: z.int().optional(),
-    components: z.record(z.string(), z.unknown()).readonly().optional(),
-  }).readonly(),
+  z
+    .object({
+      id: z.string(),
+      count: z.int().optional(),
+      components: z.record(z.string(), z.unknown()).readonly().optional(),
+    })
+    .readonly(),
 );
 
 export type Type$ItemStack = z.output<typeof Schema$ItemStack>;
-export type ItemStackType = Type$ItemStack;
-export type ItemStackInput = {
-  id: string;
-  count?: number;
-  components?: DataComponentValue;
-};
 
 export interface Configurator$ItemStack {
   id(value: string): Configurator$ItemStack;
@@ -52,13 +48,11 @@ export class Builder$ItemStack implements Configurator$ItemStack {
     return this;
   }
 
-  build(): ItemStackType {
-    const components = this.componentValues.length === 0
-      ? undefined
-      : Object.assign(
-        {},
-        ...this.componentValues,
-      ) as DataComponentType;
+  build() {
+    const components =
+      this.componentValues.length === 0
+        ? undefined
+        : (Object.assign({}, ...this.componentValues) as DataComponentType);
 
     return Schema$ItemStack.parse({
       id: this.idValue,
@@ -67,16 +61,3 @@ export class Builder$ItemStack implements Configurator$ItemStack {
     });
   }
 }
-
-const itemStackFrom = (data: ItemStackInput): ItemStackType =>
-  Schema$ItemStack.parse({
-    ...data,
-  });
-
-export const ItemStack = {
-  builder(): Builder$ItemStack {
-    return new Builder$ItemStack();
-  },
-  from: itemStackFrom,
-  __from: itemStackFrom,
-};
