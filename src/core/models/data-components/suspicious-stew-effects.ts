@@ -46,7 +46,16 @@ class __Builder$SuspiciousStewEffectsComponent$Active implements __Configurator$
   }
 }
 
-export class Builder$SuspiciousStewEffectsComponent {
+export interface Configurator$SuspiciousStewEffectsComponent {
+  effects(
+    configFn: (
+      configurator: __Configurator$SuspiciousStewEffectsComponent$Active,
+    ) => void,
+  ): void;
+  disabled(): void;
+}
+
+export class Builder$SuspiciousStewEffectsComponent implements Configurator$SuspiciousStewEffectsComponent {
   private value?: Type$SuspiciousStewEffectsComponent;
 
   effects(

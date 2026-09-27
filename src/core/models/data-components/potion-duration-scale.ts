@@ -1,6 +1,6 @@
 import z from "zod";
 
-const Schema$PotionDurationScaleComponent = z.compile(
+export const Schema$PotionDurationScaleComponent = z.compile(
   z.union([
     z
       .object({

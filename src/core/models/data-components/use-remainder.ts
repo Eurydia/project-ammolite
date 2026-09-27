@@ -8,7 +8,11 @@ import {
 export const Schema$UseRemainderComponent = z.compile(
   z.union([
     z
-      .object({ "minecraft:use_remainder": Schema$ItemStackComponent })
+      .object({
+        get "minecraft:use_remainder"() {
+          return Schema$ItemStackComponent;
+        },
+      })
       .readonly(),
     z
       .object({ "!minecraft:use_remainder": z.object({}).readonly() })

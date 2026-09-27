@@ -1,10 +1,14 @@
-import type { BrewingRecipeType } from "#/models/data/recipe/brewing.ts";
+import {
+  Builder$BrewingRecipe,
+  type Configurator$BrewingRecipe,
+  type Type$BrewingRecipe,
+} from "#/models/data/recipe/brewing.ts";
 
 export class DataPack {
   private name: string;
   private desc: string;
 
-  private readonly recipes: Array<BrewingRecipeType> = [];
+  private readonly recipes: Array<Type$BrewingRecipe> = [];
 
   constructor(name: string, desc?: string) {
     this.name = name;
@@ -19,8 +23,12 @@ export class DataPack {
     return [...this.recipes];
   }
 
-  public addBrewingRecipe(recipe: BrewingRecipeType) {
-    this.recipes.push(recipe);
+  public addBrewingRecipe(
+    configFn: (configurator: Configurator$BrewingRecipe) => void,
+  ) {
+    const builder = new Builder$BrewingRecipe();
+    configFn(builder);
+    this.recipes.push(builder.build());
   }
   public getName() {
     return this.name;
